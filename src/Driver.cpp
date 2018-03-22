@@ -1,18 +1,20 @@
 /*
  * Driver.cpp
  *
- *  Created on: 21/03/2018
- *      Author: jvieira
+ *  Created on: Mar 22, 2018
+ *      Author: gregu
  */
 
 #include "Driver.h"
 
-Driver::Driver() {
+template <class T>
+Driver<T>::Driver() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Driver::~Driver() {
+template <class T>
+Driver<T>::~Driver() {
 	// TODO Auto-generated destructor stub
 }
 
