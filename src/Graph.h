@@ -49,6 +49,7 @@ template<class T>
 class Utili {
 public:
 	static Vertex<T>* remMin(vector<Vertex<T>*>& Q);
+	static void printPath(const list<Vertex<T>*> path);
 };
 
 //template<class T>
@@ -104,6 +105,7 @@ public:
 	bool isDAG() const;
 	int dijkstraDistance(T source, T destination);
 	int dijkstraPath(T source, T destination, list<Vertex<T>*> &retPath);
+	int dijkstraPeopleDistancePath(T source, T destination, list<Vertex<T>*> &rePath);
 	int dijkstraPeopleDistance(T source, T destination);
 	bool addPeople(T source, T destination, int num);
 };
@@ -547,6 +549,13 @@ int Graph<T>::dijkstraDistance(T source, T destination) {
 template<class T>
 int Graph<T>::dijkstraPeopleDistance(T source, T destination) {
 
+	list<Vertex<T>*> temp;
+	return this->dijkstraPeopleDistancePath(source, destination, temp);
+}
+
+template<class T>
+int Graph<T>::dijkstraPeopleDistancePath(T source, T destination, list<Vertex<T>*> &rePath) {
+
 	Vertex<T> * start;
 	Vertex<T> * ending;
 
@@ -574,12 +583,13 @@ int Graph<T>::dijkstraPeopleDistance(T source, T destination) {
 		if (temp->info == ending->info) {
 			while (temp->previous != NULL) {
 				path.push_front(temp);
-				cout << temp->info << " ";
+//				cout << temp->info << " ";
 				temp = temp->previous;
 			}
 
 			path.push_front(temp);
-			cout << temp->info << " " << endl;
+			rePath = path;
+//			cout << temp->info << " " << endl;
 			return peopleT;
 
 		}
@@ -630,12 +640,12 @@ int Graph<T>::dijkstraPath(T source, T destination,	list<Vertex<T> *>& retPath) 
 		if (temp->info == ending->info) {
 			while (temp->previous != NULL) {
 				path.push_front(temp);
-				cout << temp->info << " ";
+//				cout << temp->info << " ";
 				temp = temp->previous;
 			}
 
 			path.push_front(temp);
-			cout << temp->info << " " << endl;
+//			cout << temp->info << " " << endl;
 			retPath = path;
 			return ending->distance;
 
@@ -661,6 +671,9 @@ bool Graph<T>::addPeople(T source, T destination, int num) {
 	list<Vertex<T>*> path;
 	this->dijkstraPath(source, destination, path);
 
+	cout << num << " people added to path: " << endl;
+	Utili<T>::printPath(path);
+
 	for (auto i = path.begin(); i != path.end(); i++) {
 		auto next = ++i;
 		i--;
@@ -677,7 +690,7 @@ bool Graph<T>::addPeople(T source, T destination, int num) {
 }
 
 template<class T>
-inline void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, int numP) {
+void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, int numP) {
 	for (unsigned int j = 0; j < this->adj.size(); j++) {
 
 		if (this->adj.at(j).dest->getInfo() == vertex->getInfo()) {
@@ -687,23 +700,30 @@ inline void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, int numP) {
 }
 
 template<class T>
-inline T Vertex<T>::getInfo() {
+T Vertex<T>::getInfo() {
 	return this->info;
 }
 
 template<class T>
-inline vector<Edge<T> > Vertex<T>::getAdj() {
+vector<Edge<T> > Vertex<T>::getAdj() {
 	return this->adj;
 }
 
 template<class T>
-inline Edge<T> Vertex<T>::getAdjTo(T dest) {
+Edge<T> Vertex<T>::getAdjTo(T dest) {
 	for (auto i : this->adj) {
 		if (i.dest->info == dest)
 			return i;
 	}
 
+}
 
+template<class T>
+void Utili<T>::printPath(const list<Vertex<T> *> path) {
+	for (auto i = path.begin(); i != path.end(); i++) {
+			cout << (*i)->getInfo() << " ";
+		}
+	cout << endl;
 }
 
 #endif /* GRAPH_H_ */
