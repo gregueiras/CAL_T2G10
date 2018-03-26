@@ -62,7 +62,6 @@ void testDijkstraDistance() {
 
 }
 
-
 void testDijkstraDistancePeople() {
 
 	cout << "Start\n";
@@ -107,6 +106,7 @@ void testDijkstraDistancePeople() {
 	Passenger<int> p2 = Passenger<int>("Ada", 22, 2);
 	Passenger<int> p3 = Passenger<int>("Mary", 30, 1);
 	Passenger<int> p5 = Passenger<int>("Bane", 20, 6);
+	Passenger<int> p6 = Passenger<int>("Kate", 20, 3);
 
 //	if (!myGraph.addPeople(2, 3, 100))
 //		cout << "ERROR" << endl;
@@ -125,6 +125,8 @@ void testDijkstraDistancePeople() {
 		cout << "ERROR" << endl;
 	if (!myGraph.addPeople(2, 4, &p5))
 		cout << "ERROR" << endl;
+	if (!myGraph.addPeople(1, 3, &p6))
+		cout << "ERROR" << endl;
 
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getNumPeople() << endl;
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getWeight() << endl;
@@ -142,7 +144,6 @@ void testDijkstraDistancePeople() {
 
 	cout << endl;
 }
-
 
 int main(void) {
 

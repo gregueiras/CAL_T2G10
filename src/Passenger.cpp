@@ -43,6 +43,16 @@ int Passenger<T>::getNum() {
 }
 
 template<class T>
+Vertex<T>* Passenger<T>::getPos(){
+	return pos;
+}
+
+template<class T>
+void Passenger<T>::setPos(Vertex<T>* pos) {
+	this->pos = pos;
+}
+
+template<class T>
 Passenger<T>::~Passenger() {
 	// TODO Auto-generated destructor stub
 }

@@ -17,6 +17,7 @@ class Passenger: public Person {
 	int numPassengers;
 	vector<Vertex<T>*> path;
 	Vertex<T>* source;
+	Vertex<T>* pos;
 	Vertex<T>* destination;
 public:
 	Passenger();
@@ -25,8 +26,11 @@ public:
 	Passenger(string name, int age, int numP);
 	void addPassengers(int num);
 	int getNum();
+	
 
 	virtual ~Passenger();
+	Vertex<T>* getPos();
+	void setPos(Vertex<T>* pos);
 };
 
 

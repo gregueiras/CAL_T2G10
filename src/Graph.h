@@ -50,6 +50,12 @@ public:
 };
 
 template<class T>
+bool operator==(const Vertex<T>& lhs, const Vertex<T>& rhs)
+{
+	return lhs.getInfo() == rhs.getInfo();
+}
+
+template<class T>
 class Utili {
 public:
 	static Vertex<T>* remMin(vector<Vertex<T>*>& Q);
@@ -626,7 +632,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			vector<Passenger<T>*> picked;
 			int numPicked = 0;
 			for (unsigned int j = 0; j < temp->adj[i].waiting.size(); j++) {
-				if ((alreadyPicked + temp->adj[i].waiting[j]->getNum()) <= capacity) {
+				if (temp->adj[i].waiting[j]->getPos() == temp && (alreadyPicked + temp->adj[i].waiting[j]->getNum()) <= capacity) {
 					alreadyPicked += temp->adj[i].waiting[j]->getNum();
 					numPicked += temp->adj[i].waiting[j]->getNum();
 					picked.push_back(temp->adj[i].waiting[j]);
@@ -641,7 +647,13 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->previous = temp;
 //				temp->adj[i].dest->pickedUp = temp->adj[i].waiting;
+
+				for (unsigned int k = 0; k < picked.size(); k++)
+					picked[k]->setPos(temp);
+
 				temp->adj[i].dest->pickedUp = picked;
+
+
 			}
 		}
 	}
@@ -737,7 +749,7 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 	this->dijkstraPath(source, destination, path);
 
 	cout << (*passenger) << " added to path: " << endl;
-
+	passenger->setPos((*path.begin()));
 	Utili<T>::printPath(path);
 
 	for (auto i = path.begin(); i != path.end(); i++) {
