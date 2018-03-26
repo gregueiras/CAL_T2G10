@@ -7,8 +7,10 @@
 
 #include <iostream>
 #include <list>
+#include <vector>
 
 #include "Graph.h"
+#include "Passenger.h"
 
 using namespace std;
 
@@ -60,6 +62,7 @@ void testDijkstraDistance() {
 
 }
 
+
 void testDijkstraDistancePeople() {
 
 	cout << "Start\n";
@@ -99,11 +102,28 @@ void testDijkstraDistancePeople() {
 	myGraph.addEdge(7, 2, 25);
 	myGraph.addEdge(7, 5, 10);
 
-	if (!myGraph.addPeople(2, 3, 100))
+	Passenger<int> p1 = Passenger<int>("Jay", 20, 101);
+	Passenger<int> p0 = Passenger<int>("John", 20, 7);
+	Passenger<int> p2 = Passenger<int>("Ada", 22, 2);
+	Passenger<int> p3 = Passenger<int>("Mary", 30, 1);
+	Passenger<int> p5 = Passenger<int>("Bane", 20, 6);
+
+//	if (!myGraph.addPeople(2, 3, 100))
+//		cout << "ERROR" << endl;
+//	if (!myGraph.addPeople(2, 5, 2))
+//		cout << "ERROR" << endl;
+//	if (!myGraph.addPeople(3, 5, 1))
+//		cout << "ERROR" << endl;
+
+	if (!myGraph.addPeople(2, 3, &p1))
 		cout << "ERROR" << endl;
-	if (!myGraph.addPeople(2, 5, 2))
+	if (!myGraph.addPeople(2, 5, &p2))
 		cout << "ERROR" << endl;
-	if (!myGraph.addPeople(3, 5, 1))
+	if (!myGraph.addPeople(3, 5, &p3))
+		cout << "ERROR" << endl;
+	if (!myGraph.addPeople(2, 3, &p0))
+		cout << "ERROR" << endl;
+	if (!myGraph.addPeople(2, 4, &p5))
 		cout << "ERROR" << endl;
 
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getNumPeople() << endl;
@@ -113,13 +133,19 @@ void testDijkstraDistancePeople() {
 //	cout << myGraph.dijkstraPeopleDistance(0, 2) << endl;
 
 	list<Vertex<int>*> path;
-	cout << myGraph.dijkstraPeopleDistancePath(0, 5, path) << endl;
+	vector<Passenger<int>*> passen;
+	cout << myGraph.dijkstraPeopleDistancePath(0, 5, path, passen) << endl;
 	Utili<int>::printPath(path);
+
+	for (auto i : passen)
+		cout << (*i) << "  ";
 
 	cout << endl;
 }
 
+
 int main(void) {
+
 	testDijkstraDistancePeople();
 }
 

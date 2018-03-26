@@ -4,19 +4,22 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
-#include <vector>
-#include <stack>
-#include <queue>
-#include <set>
-#include <list>
+#include <stddef.h>
 #include <iostream>
+#include <list>
+#include <queue>
+#include <vector>
 
+#include "Passenger.h"
+
+#pragma once
 using namespace std;
 
 template<class T> class Edge;
 template<class T> class Graph;
 template<class T> class Vertex;
 template<class T> class Utili;
+template<class T> class Passenger;
 #define INT_MAX 5000
 
 /****************** Provided structures  ********************/
@@ -30,10 +33,11 @@ class Vertex {
 	bool processing;       // auxiliary field used by isDAG
 	int distance;
 	Vertex *previous;
+	vector<Passenger<T>*> pickedUp;
 
 	void addEdge(Vertex<T> *dest, double w);
 	void addEdge(Vertex<T> *dest, double w, int p);
-	void addPeopleToEdge(Vertex<T>* vertex, int numP);
+	void addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger);
 
 	bool removeEdgeTo(Vertex<T> *d);
 public:
@@ -64,6 +68,7 @@ class Edge {
 	Vertex<T> * dest;      // destination vertex
 	double weight = 0;         // edge weight
 	int numP;
+	vector<Passenger<T>*> waiting;
 public:
 	Edge(Vertex<T> *d, double w);
 	Edge(Vertex<T> *d, double w, int p);
@@ -105,9 +110,11 @@ public:
 	bool isDAG() const;
 	int dijkstraDistance(T source, T destination);
 	int dijkstraPath(T source, T destination, list<Vertex<T>*> &retPath);
-	int dijkstraPeopleDistancePath(T source, T destination, list<Vertex<T>*> &rePath);
+	int dijkstraPeopleDistancePath(T source, T destination,
+			list<Vertex<T>*> &rePath, vector<Passenger<T>*> &passengers);
 	int dijkstraPeopleDistance(T source, T destination);
 	bool addPeople(T source, T destination, int num);
+	bool addPeople(T source, T destination, Passenger<T>* passenger);
 };
 
 /****************** Provided constructors and functions ********************/
@@ -119,12 +126,12 @@ Vertex<T>::Vertex(T in) :
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w) :
-		dest(d), weight(w), numP(0) {
+		dest(d), weight(w), numP(0), waiting(NULL) {
 }
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w, int p) :
-		dest(d), weight(w), numP(p) {
+		dest(d), weight(w), numP(p), waiting(NULL) {
 }
 
 template<class T>
@@ -550,20 +557,25 @@ template<class T>
 int Graph<T>::dijkstraPeopleDistance(T source, T destination) {
 
 	list<Vertex<T>*> temp;
-	return this->dijkstraPeopleDistancePath(source, destination, temp);
+	vector<Passenger<T>*> temp2;
+	return this->dijkstraPeopleDistancePath(source, destination, temp, temp2);
 }
 
 template<class T>
-int Graph<T>::dijkstraPeopleDistancePath(T source, T destination, list<Vertex<T>*> &rePath) {
+int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
+		list<Vertex<T>*> &rePath, vector<Passenger<T>*> &passengers) {
 
 	Vertex<T> * start;
 	Vertex<T> * ending;
 
 	vector<Vertex<T>*> Q;
 
+	int capacity = 20;
+
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
 		this->vertexSet[i]->previous = NULL;
+		this->vertexSet[i]->pickedUp.clear();
 		if (this->vertexSet[i]->info == source) {
 			start = this->vertexSet[i];
 		}
@@ -576,13 +588,18 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination, list<Vertex<T>
 
 	start->distance = 0;
 	list<Vertex<T> *> path;
-	int peopleT = 0;
 	while (!Q.empty()) {
 		Vertex<T>* temp = Utili<T>::remMin(Q);
 
+		int peopleT = 0;
 		if (temp->info == ending->info) {
 			while (temp->previous != NULL) {
 				path.push_front(temp);
+				while (!temp->pickedUp.empty()) {
+					peopleT += temp->pickedUp[0]->getNum();
+					passengers.push_back(temp->pickedUp[0]);
+					temp->pickedUp.erase(temp->pickedUp.begin());
+				}
 //				cout << temp->info << " ";
 				temp = temp->previous;
 			}
@@ -594,24 +611,47 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination, list<Vertex<T>
 
 		}
 
-		int peopleTemp = peopleT;
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
-			int alt = (temp->distance + temp->adj[i].weight/(temp->adj[i].numP+1));
 
-			if (alt < temp->adj[i].dest->distance) {
-				peopleTemp += temp->adj[i].numP;
+			int alreadyPicked = 0;
+			Vertex<T>* temp1 = temp;
+			while (temp1->previous != NULL) {
+				if (!temp1->pickedUp.empty())
+					for (auto j : temp1->pickedUp)
+						alreadyPicked += j->getNum();
+				temp1 = temp1->previous;
+			}
+//			cout << temp->getInfo() << "  " << alreadyPicked << endl;
+
+			vector<Passenger<T>*> picked;
+			int numPicked = 0;
+			for (unsigned int j = 0; j < temp->adj[i].waiting.size(); j++) {
+				if ((alreadyPicked + temp->adj[i].waiting[j]->getNum()) <= capacity) {
+					alreadyPicked += temp->adj[i].waiting[j]->getNum();
+					numPicked += temp->adj[i].waiting[j]->getNum();
+					picked.push_back(temp->adj[i].waiting[j]);
+				}
+			}
+
+//			int alt = (temp->distance + temp->adj[i].weight / (temp->adj[i].numP + 1));
+			int alt = (temp->distance + temp->adj[i].weight / (numPicked + 1));
+
+			if (alreadyPicked <= capacity
+					&& alt < temp->adj[i].dest->distance) {
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->previous = temp;
+//				temp->adj[i].dest->pickedUp = temp->adj[i].waiting;
+				temp->adj[i].dest->pickedUp = picked;
 			}
 		}
-		peopleT = peopleTemp;
 	}
 
 	return 0;
 }
 
 template<class T>
-int Graph<T>::dijkstraPath(T source, T destination,	list<Vertex<T> *>& retPath) {
+int Graph<T>::dijkstraPath(T source, T destination,
+		list<Vertex<T> *>& retPath) {
 
 	Vertex<T> * start;
 	Vertex<T> * ending;
@@ -690,11 +730,38 @@ bool Graph<T>::addPeople(T source, T destination, int num) {
 }
 
 template<class T>
-void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, int numP) {
+bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
+
+	bool result = false;
+	list<Vertex<T>*> path;
+	this->dijkstraPath(source, destination, path);
+
+	cout << (*passenger) << " added to path: " << endl;
+
+	Utili<T>::printPath(path);
+
+	for (auto i = path.begin(); i != path.end(); i++) {
+		auto next = ++i;
+		i--;
+
+		if (next == path.end())
+			break;
+
+		(*i)->addPeopleToEdge((*next), passenger);
+
+		result = true;
+	}
+
+	return result;
+}
+
+template<class T>
+void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
 	for (unsigned int j = 0; j < this->adj.size(); j++) {
 
 		if (this->adj.at(j).dest->getInfo() == vertex->getInfo()) {
-			this->adj.at(j).addPeople(numP);
+			this->adj.at(j).addPeople(passenger->getNum());
+			this->adj.at(j).waiting.push_back(passenger);
 		}
 	}
 }
@@ -721,8 +788,8 @@ Edge<T> Vertex<T>::getAdjTo(T dest) {
 template<class T>
 void Utili<T>::printPath(const list<Vertex<T> *> path) {
 	for (auto i = path.begin(); i != path.end(); i++) {
-			cout << (*i)->getInfo() << " ";
-		}
+		cout << (*i)->getInfo() << " ";
+	}
 	cout << endl;
 }
 
