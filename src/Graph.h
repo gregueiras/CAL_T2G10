@@ -5,6 +5,7 @@
 #define GRAPH_H_
 
 #include <stddef.h>
+#include <cmath>
 #include <iostream>
 #include <list>
 #include <queue>
@@ -38,7 +39,7 @@ class Vertex {
 	void addEdge(Vertex<T> *dest, double w);
 	void addEdge(Vertex<T> *dest, double w, int p);
 	void addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger);
-
+	void removePeopleFromEdge(Vertex<T>* vertex, vector<Passenger<T>*> passengers);
 	bool removeEdgeTo(Vertex<T> *d);
 public:
 	Vertex(T in);
@@ -60,6 +61,7 @@ class Utili {
 public:
 	static Vertex<T>* remMin(vector<Vertex<T>*>& Q);
 	static void printPath(const list<Vertex<T>*> path);
+	static void removeFromVector(T* elem, vector<T*>& v);
 };
 
 //template<class T>
@@ -81,6 +83,11 @@ public:
 
 	void addPeople(int num) {
 		numP += num;
+	}
+
+	void removePeople(int num)
+	{
+		numP -= num;
 	}
 
 	int getNumPeople() const {
@@ -121,6 +128,7 @@ public:
 	int dijkstraPeopleDistance(T source, T destination);
 	bool addPeople(T source, T destination, int num);
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
+	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
 };
 
 /****************** Provided constructors and functions ********************/
@@ -553,6 +561,20 @@ Vertex<T>* Utili<T>::remMin(vector<Vertex<T> *>& Q) {
 }
 
 template<class T>
+void Utili<T>::removeFromVector(T* elem, vector<T*> &v)
+{
+	for(auto i = v.begin(); i != v.end(); i++)
+	{
+		if ((*i) == elem)
+		{
+			i = v.erase(i);
+			i--;
+		}
+	}
+}
+
+
+template<class T>
 int Graph<T>::dijkstraDistance(T source, T destination) {
 
 	list<Vertex<T>*> temp;
@@ -599,6 +621,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 		int peopleT = 0;
 		if (temp->info == ending->info) {
+			cout << temp->distance << endl;
 			while (temp->previous != NULL) {
 				path.push_front(temp);
 				while (!temp->pickedUp.empty()) {
@@ -640,7 +663,9 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			}
 
 //			int alt = (temp->distance + temp->adj[i].weight / (temp->adj[i].numP + 1));
-			int alt = (temp->distance + temp->adj[i].weight / (numPicked + 1));
+			double alt = (temp->distance + temp->adj[i].weight / (pow(numPicked,2) + 1));
+//			if (numPicked > 5)
+//				alt = alt*0.5;
 
 			if (alreadyPicked <= capacity
 					&& alt < temp->adj[i].dest->distance) {
@@ -767,6 +792,27 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 	return result;
 }
 
+
+template<class T>
+bool Graph<T>::removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path) {
+
+	bool result = false;
+
+	for (auto i = path.begin(); i != path.end(); i++) {
+		auto next = ++i;
+		i--;
+
+		if (next == path.end())
+			break;
+
+		(*i)->removePeopleFromEdge((*next), passengers);
+
+		result = true;
+	}
+
+	return result;
+}
+
 template<class T>
 void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
 	for (unsigned int j = 0; j < this->adj.size(); j++) {
@@ -777,6 +823,23 @@ void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
 		}
 	}
 }
+
+template<class T>
+void Vertex<T>::removePeopleFromEdge(Vertex<T>* vertex, vector<Passenger<T>*> passengers) {
+	for (unsigned int j = 0; j < this->adj.size(); j++) {
+
+		if (this->adj.at(j).dest->getInfo() == vertex->getInfo()) {
+			for(unsigned int k = 0; k < passengers.size(); k++)
+			{
+				//this->adj.at(j).removePeople(passengers.at(k)->getNum());
+				Utili<Passenger<T>>::removeFromVector(passengers.at(k),this->adj.at(j).waiting);
+
+			}
+		}
+	}
+}
+
+
 
 template<class T>
 T Vertex<T>::getInfo() {
