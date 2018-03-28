@@ -137,29 +137,10 @@ void testDijkstraDistancePeople() {
 //	cout << myGraph.dijkstraPeopleDistance(0, 6) << endl;
 //	cout << myGraph.dijkstraPeopleDistance(0, 2) << endl;
 
-	list<Vertex<int>*> path;
-	vector<Passenger<int>*> passen;
-	cout << myGraph.dijkstraPeopleDistancePath(0, 5, path, passen) << endl;
-	Utili<int>::printPath(path);
-
-	for (auto i : passen)
-		cout << (*i) << "  ";
-
-	cout << endl;
 
 
-	myGraph.removePeople(passen,path);
-
-
-	passen.clear();
-	path.clear();
-	cout << myGraph.dijkstraPeopleDistancePath(0, 5, path, passen) << endl;
-		Utili<int>::printPath(path);
-
-		for (auto i : passen)
-			cout << (*i) << "  ";
-
-		cout << endl;
+	myGraph.calculateAndPrintPath(0,5);
+	myGraph.calculateAndPrintPath(0,5);
 
 }
 

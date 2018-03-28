@@ -5,12 +5,14 @@
 #define GRAPH_H_
 
 #include <stddef.h>
+#include <cmath>
 #include <iostream>
 #include <list>
 #include <queue>
 #include <vector>
 
 #include "Passenger.h"
+#include "Person.h"
 
 #pragma once
 using namespace std;
@@ -128,6 +130,7 @@ public:
 	bool addPeople(T source, T destination, int num);
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
 	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
+	void calculateAndPrintPath(T source, T destination);
 };
 
 /****************** Provided constructors and functions ********************/
@@ -814,6 +817,23 @@ bool Graph<T>::removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> p
 	}
 
 	return result;
+}
+
+
+template<class T>
+void Graph<T>::calculateAndPrintPath(T source, T destination)
+{
+
+	list<Vertex<int>*> path;
+	vector<Passenger<int>*> passen;
+	cout << this->dijkstraPeopleDistancePath(source, destination, path, passen) << endl;
+	Utili<int>::printPath(path);
+
+	for (auto i : passen)
+		cout << static_cast<Person&>(*i) << "  ";
+
+	cout << endl;
+	this->removePeople(passen,path);
 }
 
 template<class T>
