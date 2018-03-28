@@ -14,6 +14,7 @@ Passenger<T>::Passenger() :
 	this->destination = NULL;
 	this->numPassengers = 0;
 	this->source = NULL;
+	this->pos = NULL;
 }
 
 template<class T>
@@ -22,6 +23,7 @@ Passenger<T>::Passenger(int numP) :
 	this->numPassengers = numP;
 	this->destination = NULL;
 	this->source = NULL;
+	this->pos = NULL;
 }
 
 template<class T>
@@ -30,6 +32,7 @@ Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) :
 	this->numPassengers = numP;
 	this->source = source;
 	this->destination = destination;
+	this->pos = NULL;
 }
 
 template<class T>
@@ -67,5 +70,26 @@ Passenger<T>::Passenger(string name, int age, int numP) :
 		Person(name, age) {
 	this->numPassengers = numP;
 	this->source = source;
+	this->pos = NULL;
 	this->destination = destination;
+}
+
+template<class T>
+Vertex<T>* Passenger<T>::getSource() {
+	return this->source;
+}
+
+template<class T>
+void Passenger<T>::setSource(Vertex<T>* pos) {
+	this->source = pos;
+}
+
+template<class T>
+Vertex<T>* Passenger<T>::getDestination() {
+	return this->destination;
+}
+
+template<class T>
+void Passenger<T>::setDestination(Vertex<T>* pos) {
+	this->destination = pos;
 }

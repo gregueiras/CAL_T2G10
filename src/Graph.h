@@ -5,7 +5,6 @@
 #define GRAPH_H_
 
 #include <stddef.h>
-#include <cmath>
 #include <iostream>
 #include <list>
 #include <queue>
@@ -32,7 +31,7 @@ class Vertex {
 	bool visited;          // auxiliary field used by dfs and bfs
 	int indegree;          // auxiliary field used by topsort
 	bool processing;       // auxiliary field used by isDAG
-	int distance;
+	double distance;
 	Vertex *previous;
 	vector<Passenger<T>*> pickedUp;
 
@@ -621,7 +620,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 		int peopleT = 0;
 		if (temp->info == ending->info) {
-			cout << temp->distance << endl;
+			cout << endl << "Distance: " << temp->distance << endl;
 			while (temp->previous != NULL) {
 				path.push_front(temp);
 				while (!temp->pickedUp.empty()) {
@@ -655,7 +654,9 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			vector<Passenger<T>*> picked;
 			int numPicked = 0;
 			for (unsigned int j = 0; j < temp->adj[i].waiting.size(); j++) {
-				if (temp->adj[i].waiting[j]->getPos() == temp && (alreadyPicked + temp->adj[i].waiting[j]->getNum()) <= capacity) {
+				if (temp->adj[i].waiting[j]->getPos() == temp
+						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
+								<= capacity) {
 					alreadyPicked += temp->adj[i].waiting[j]->getNum();
 					numPicked += temp->adj[i].waiting[j]->getNum();
 					picked.push_back(temp->adj[i].waiting[j]);
@@ -677,7 +678,6 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 					picked[k]->setPos(temp);
 
 				temp->adj[i].dest->pickedUp = picked;
-
 
 			}
 		}
@@ -775,6 +775,9 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 
 	cout << (*passenger) << " added to path: " << endl;
 	passenger->setPos((*path.begin()));
+	passenger->setSource((*path.begin()));
+	passenger->setDestination(path.back());
+
 	Utili<T>::printPath(path);
 
 	for (auto i = path.begin(); i != path.end(); i++) {

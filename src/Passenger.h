@@ -26,11 +26,14 @@ public:
 	Passenger(string name, int age, int numP);
 	void addPassengers(int num);
 	int getNum();
-	
 
 	virtual ~Passenger();
 	Vertex<T>* getPos();
 	void setPos(Vertex<T>* pos);
+
+	Vertex<T>* getSource();
+	void setSource(Vertex<T>* pos);
+
+	Vertex<T>* getDestination();
+	void setDestination(Vertex<T>* pos);
 };
-
-
