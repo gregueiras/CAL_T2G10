@@ -107,7 +107,7 @@ void testDijkstraDistancePeople() {
 	Passenger<int> p3 = Passenger<int>("Mary", 30, 1);
 	Passenger<int> p5 = Passenger<int>("Bane", 20, 6);
 	Passenger<int> p6 = Passenger<int>("Kate", 20, 3);
-	Passenger<int> p7 = Passenger<int>("nina", 20, 1);
+	Passenger<int> p7 = Passenger<int>("nina", 20, 3);
 
 //	if (!myGraph.addPeople(2, 3, 100))
 //		cout << "ERROR" << endl;
@@ -128,8 +128,8 @@ void testDijkstraDistancePeople() {
 		cout << "ERROR" << endl;
 	if (!myGraph.addPeople(1, 3, &p6)) //3
 		cout << "ERROR" << endl;
-	if (!myGraph.addPeople(0, 3, &p7)) //3
-		cout << "ERROR" << endl;
+	if (!myGraph.addPeople(0, 2, &p7)) //3
+			cout << "ERROR" << endl;
 
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getNumPeople() << endl;
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getWeight() << endl;
@@ -139,8 +139,10 @@ void testDijkstraDistancePeople() {
 
 	Driver<int>* driver = new Driver<int>(20);
 
+
 	myGraph.calculateAndPrintPath(0, 5, driver);
 	myGraph.calculateAndPrintPath(0, 5, driver);
+
 
 }
 
