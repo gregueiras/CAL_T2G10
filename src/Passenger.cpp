@@ -46,7 +46,7 @@ int Passenger<T>::getNum() {
 }
 
 template<class T>
-Vertex<T>* Passenger<T>::getPos(){
+Vertex<T>* Passenger<T>::getPos() {
 	return pos;
 }
 
@@ -59,11 +59,6 @@ template<class T>
 Passenger<T>::~Passenger() {
 	// TODO Auto-generated destructor stub
 }
-
-template class Passenger<int>;
-
-
-
 
 template<class T>
 Passenger<T>::Passenger(string name, int age, int numP) :
@@ -93,3 +88,5 @@ template<class T>
 void Passenger<T>::setDestination(Vertex<T>* pos) {
 	this->destination = pos;
 }
+
+template class Passenger<int> ;

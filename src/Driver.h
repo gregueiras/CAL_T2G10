@@ -5,20 +5,56 @@
  *      Author: gregu
  */
 
-#ifndef SRC_DRIVER_H_
-#define SRC_DRIVER_H_
+#pragma once
 
+#include <list>
 #include <vector>
+#include <map>
+#include "Person.h"
 
 #include "Passenger.h"
+#include "Graph.h"
+template<class T> class Passenger;
+template<class T> class Vertex;
 
-template <class T>
+template<class T> struct ptr_less {
+	bool operator()(Vertex<T>* lhs, Vertex<T>* rhs) const {
+		return *lhs < *rhs;
+	}
+};
+
+template<class T>
 class Driver: public Person {
 	int capacity; //passenger Capacity
 	std::vector<Passenger<T>*> passengers;
+	std::vector<int> capacityAtPath;
+	std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersPickedAt;
+	std::map<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersDroppedAt;
+
+	void clearPassengersPickedAt();
+	void clearPassengersDroppedAt();
+	void clearCapacityAtPath();
 public:
 	Driver();
+	Driver(int cap);
 	virtual ~Driver();
+
+	void addPassenger(Passenger<T>* passenger);
+	void updateFreeSpace();
+
+	void addPassengersPickedAt(Vertex<T>* v,
+			std::vector<Passenger<T>*> passengers);
+	void addPassengersDroppedAt(Vertex<T>* v,
+			std::vector<Passenger<T>*> passengers);
+
+	int getCapacity();
+	std::vector<int> getCapacityAtPath();
+
+	void printPassengersPickedAt();
+	void printPassengersDroppedAt();
+	void printCapacityAtPath();
+
+	void resetTravel();
+
 };
 
-#endif /* SRC_DRIVER_H_ */

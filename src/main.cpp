@@ -76,7 +76,7 @@ void testDijkstraDistancePeople() {
 	myGraph.addVertex(7);
 	myGraph.addEdge(0, 1, 20);
 	myGraph.addEdge(0, 2, 10);
-	myGraph.addEdge(0, 3, 40);
+	myGraph.addEdge(0, 3, 14);
 	myGraph.addEdge(1, 0, 20);
 	myGraph.addEdge(1, 2, 5);
 	myGraph.addEdge(1, 4, 5);
@@ -86,7 +86,7 @@ void testDijkstraDistancePeople() {
 	myGraph.addEdge(2, 3, 14);
 	myGraph.addEdge(2, 5, 20);
 	myGraph.addEdge(2, 7, 25);
-	myGraph.addEdge(3, 0, 40);
+	myGraph.addEdge(3, 0, 14);
 	myGraph.addEdge(3, 2, 14);
 	myGraph.addEdge(3, 5, 8);
 	myGraph.addEdge(4, 1, 5);
@@ -118,7 +118,7 @@ void testDijkstraDistancePeople() {
 
 	if (!myGraph.addPeople(2, 3, &p1)) //101
 		cout << "ERROR" << endl;
-	if (!myGraph.addPeople(2, 5, &p2)) //2
+	if (!myGraph.addPeople(0, 2, &p2)) //2
 		cout << "ERROR" << endl;
 	if (!myGraph.addPeople(3, 5, &p3)) //1
 		cout << "ERROR" << endl;
@@ -129,7 +129,7 @@ void testDijkstraDistancePeople() {
 	if (!myGraph.addPeople(1, 3, &p6)) //3
 		cout << "ERROR" << endl;
 	if (!myGraph.addPeople(0, 3, &p7)) //3
-			cout << "ERROR" << endl;
+		cout << "ERROR" << endl;
 
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getNumPeople() << endl;
 //	cout << myGraph.findVertex(0)->getAdjTo(2).getWeight() << endl;
@@ -137,15 +137,17 @@ void testDijkstraDistancePeople() {
 //	cout << myGraph.dijkstraPeopleDistance(0, 6) << endl;
 //	cout << myGraph.dijkstraPeopleDistance(0, 2) << endl;
 
+	Driver<int>* driver = new Driver<int>(20);
 
-
-	myGraph.calculateAndPrintPath(0,5);
-	myGraph.calculateAndPrintPath(0,5);
+	myGraph.calculateAndPrintPath(0, 5, driver);
+	myGraph.calculateAndPrintPath(0, 5, driver);
 
 }
 
 int main(void) {
 
 	testDijkstraDistancePeople();
+
+	getchar();
 }
 
