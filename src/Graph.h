@@ -856,28 +856,28 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 
 	list<Vertex<int>*> path;
 	vector<Passenger<int>*> passen;
-	cout << this->dijkstraPeopleDistancePath(0, 5, path, passen, driver)
-			<< endl;
+	cout
+			<< this->dijkstraPeopleDistancePath(source, destination, path,
+					passen, driver) << endl;
 	Utili<int>::printPath(path);
 
 	for (auto i = passen.begin(); i != passen.end(); i++)
 		cout << (*i)->getName() << " ";
 
-		cout << endl;
-		this->removePeople(passen, path);
+	cout << endl;
+	this->removePeople(passen, path);
 
-		driver->updateFreeSpace();
+	driver->updateFreeSpace();
 
-		cout << "\nPicked: \n";
-		driver->printPassengersPickedAt();
+	cout << "\nPicked: \n";
+	driver->printPassengersPickedAt();
 
-		cout << "Dropped: \n";
-		driver->printPassengersDroppedAt();
+	cout << "Dropped: \n";
+	driver->printPassengersDroppedAt();
 
-		cout << "Cap at Path: " << endl;
-		driver->printCapacityAtPath();
+	cout << "Cap at Path: " << endl;
+	driver->printCapacityAtPath();
 
-	
 	passen.clear();
 	path.clear();
 }
