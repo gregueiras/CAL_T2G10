@@ -141,7 +141,7 @@ void testDijkstraDistancePeople() {
 
 
 	myGraph.calculateAndPrintPath(0, 5, driver);
-	myGraph.calculateAndPrintPath(0, 5, driver);
+	//myGraph.calculateAndPrintPath(0, 5, driver);
 
 
 }

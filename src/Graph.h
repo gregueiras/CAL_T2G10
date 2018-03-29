@@ -616,7 +616,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 	vector<Vertex<T>*> Q;
 
 	int capacity = driver->getCapacity();
-	int timeLimit = 15;
+	int timeLimit = 40;
 
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
@@ -703,7 +703,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 					+ temp->adj[i].weight / (pow(numPicked, 2) + 1));
 			double time = temp->time + temp->adj[i].weight;
 
-			cout << "Time " << time << "  " << timeLimit << endl;
+			//cout << "Time " << time << "  " << timeLimit << endl;
 			if (alreadyPicked <= capacity && time <= timeLimit
 					&& alt < temp->adj[i].dest->distance) { //TODO Pensar melhor no alt, em por um OR em vez do AND, caso o caminho n melhore, mas temos que cumprir o tempo
 				temp->adj[i].dest->distance = alt;
@@ -860,7 +860,7 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 			<< endl;
 	Utili<int>::printPath(path);
 
-	for (auto i = passen.begin(); i != passen.end(); i++) {
+	for (auto i = passen.begin(); i != passen.end(); i++)
 		cout << (*i)->getName() << " ";
 
 		cout << endl;
@@ -877,10 +877,9 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 		cout << "Cap at Path: " << endl;
 		driver->printCapacityAtPath();
 
-		passen.clear();
-		path.clear();
-
-	}
+	
+	passen.clear();
+	path.clear();
 }
 
 template<class T>
