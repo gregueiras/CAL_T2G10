@@ -49,9 +49,11 @@ class Vertex {
 	void addEdge(Vertex<T> *dest, double w);
 	void addEdge(Vertex<T> *dest, double w, int p);
 	void addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger);
+	//void getPeopleOnEdge
 	void removePeopleFromEdge(Vertex<T>* vertex,
 			vector<Passenger<T>*> passengers);
 	bool removeEdgeTo(Vertex<T> *d);
+
 public:
 	Vertex(T in);
 	friend class Graph<T> ;
@@ -59,6 +61,9 @@ public:
 	T getInfo();
 	vector<Edge<T>> getAdj();
 	Edge<T> getAdjTo(T dest);
+	void pickUp(Passenger<T>* p) {
+		this->pickedUp.push_back(p);
+	}
 	bool operator<(const Vertex<T>& b) const {
 		return this->info < b.info;
 	}
@@ -92,8 +97,13 @@ class Edge {
 	int numP;
 	vector<Passenger<T>*> waiting;
 public:
+	Edge();
 	Edge(Vertex<T> *d, double w);
 	Edge(Vertex<T> *d, double w, int p);
+
+	string getVertexName() {
+		return to_string(dest->getInfo());
+	}
 
 	void addPeople(int num) {
 		numP += num;
@@ -109,6 +119,10 @@ public:
 
 	double getWeight() const {
 		return weight;
+	}
+
+	vector<Passenger<T>*> getWaiting() {
+		return waiting;
 	}
 
 	friend class Graph<T> ;
@@ -144,24 +158,41 @@ public:
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
 	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
 	void calculateAndPrintPath(T source, T destination, Driver<T>* driver);
+
+	void postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<Passenger<int>*> &passengers);
+	bool hasEnougthVacantSeatsOnPath(Driver<T>* driver, Passenger<T> *p, list<Vertex<T>*> path);
+	int getPositionOnPath(T source, list<Vertex<T>*> path);
+	T getTravelTime(T source, T destination, list<Vertex<T>*> path);
+
 	vector<Passenger<T>*> secondTry(list<Vertex<T>*> path, Driver<T>* driver);
 };
 
 /****************** Provided constructors and functions ********************/
 
 template<class T>
-Vertex<T>::Vertex(T in) :
-		info(in) {
+Vertex<T>::Vertex(T in) : info(in) {
+	visited = false;
+	indegree = 0;
+	processing = false;
+	distance = 0;
+	time = 0;
+	previous = NULL;
 }
 
 template<class T>
+Edge<T>::Edge() :
+dest(nullptr), weight(-1), numP(-1), waiting(vector<Passenger<T>*> { }) {
+}
+
+
+template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w) :
-		dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }) {
+dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }) {
 }
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w, int p) :
-		dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }) {
+dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }) {
 }
 
 template<class T>
@@ -616,7 +647,6 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 	vector<Vertex<T>*> Q;
 
 	int capacity = driver->getCapacity();
-	int timeLimit =driver->getTimeLimit();
 
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
@@ -692,7 +722,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			for (unsigned int j = 0; j < temp->adj[i].waiting.size(); j++) {
 				if (temp->adj[i].waiting[j]->getPos() == temp
 						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
-								<= capacity) {
+						<= capacity) {
 					alreadyPicked += temp->adj[i].waiting[j]->getNum();
 					numPicked += temp->adj[i].waiting[j]->getNum();
 					picked.push_back(temp->adj[i].waiting[j]);
@@ -704,7 +734,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			double time = temp->time + temp->adj[i].weight;
 
 			//cout << "Time " << time << "  " << timeLimit << endl;
-			if (alreadyPicked <= capacity && time <= timeLimit
+			if (alreadyPicked <= capacity && time <= driver->getMinLimit()
 					&& alt < temp->adj[i].dest->distance) { //TODO Pensar melhor no alt, em por um OR em vez do AND, caso o caminho n melhore, mas temos que cumprir o tempo
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->time = time;
@@ -730,7 +760,6 @@ double Graph<T>::dijkstraPath(T source, T destination,
 	Vertex<T> * ending = nullptr;
 
 	vector<Vertex<T>*> Q;
-
 
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
@@ -761,6 +790,7 @@ double Graph<T>::dijkstraPath(T source, T destination,
 			return ending->distance;
 
 		}
+
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 			double alt = temp->distance + temp->adj[i].weight;
 
@@ -804,8 +834,7 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 
 	bool result = false;
 	list<Vertex<T>*> path;
-	double time = this->dijkstraPath(source, destination, path);
-	if (time > passenger->getTimeLimit()) return false;
+	this->dijkstraPath(source, destination, path);
 
 	cout << (*passenger) << " (" << passenger->getNum() << ") added to path: "
 			<< endl;
@@ -814,8 +843,6 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 	passenger->setDestination(path.back());
 
 	Utili<T>::printPath(path);
-
-	cout << "time : " << time << endl;
 
 	for (auto i = path.begin(); i != path.end(); i++) {
 		auto next = ++i;
@@ -860,8 +887,8 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 	list<Vertex<int>*> path;
 	vector<Passenger<int>*> passen;
 	cout
-			<< this->dijkstraPeopleDistancePath(source, destination, path,
-					passen, driver) << endl;
+	<< this->dijkstraPeopleDistancePath(source, destination, path,
+			passen, driver) << endl;
 	Utili<int>::printPath(path);
 
 	for (auto i = passen.begin(); i != passen.end(); i++)
@@ -881,18 +908,145 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 	cout << "Cap at Path: " << endl;
 	driver->printCapacityAtPath();
 
+	cout << "\nPOSTPROCESSING START\n";
+
+	postProcessing(driver, path, passen);
+	this->removePeople(passen, path);
+
+	cout << "\nPOSTPROCESSING END\n";
+	for (auto i = passen.begin(); i != passen.end(); i++)
+		cout << (*i)->getName() << " ";
+
+	cout << "\nPicked: \n";
+	driver->printPassengersPickedAt();
+
+	cout << "Dropped: \n";
+	driver->printPassengersDroppedAt();
+
+	cout << "Cap at Path: " << endl;
+	driver->printCapacityAtPath();
+
 	passen.clear();
 	path.clear();
 }
 
-/*
 template<class T>
-vector<Passenger<T>*> Graph<T>::secondTry(list<Vertex<T>*> path, Driver<T>* driver)
-{
+void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<Passenger<int>*> &passengers) {
+
+	for (auto i = path.begin(); i != path.end(); i++) {
+		//i is the vertex in analysis
+		//checking adjacent edjes
+		vector<Edge<T> > adj = (*i)->getAdj();
+		for (unsigned int j = 0; j < adj.size(); ++j) {
+			vector<Passenger<T>*> picked;
+			//checking for for possible passengers on each edje
+			vector<Passenger<T>*> waiting = adj.at(j).getWaiting();
+			for(unsigned int k = 0; k < waiting.size(); ++k) {
+				cout << "Checking: " << (waiting.at(k))->getName() << " from " <<
+						(*i)->getInfo() << " to " << adj.at(j).getVertexName() <<
+						" :: TL: " << (waiting.at(k))->getTimeLimit() << endl;
+				int tTime = getTravelTime((*i)->getInfo(), (waiting.at(k))->getDestination()->getInfo(),path);
+				vector<Passenger<T>*> droped;
+				//if it is possible for the passenger to make that route
+				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit()) {
+					cout << "Passed time limit test: " << (waiting.at(k))->getName() << endl;
+					//check if possible for the driver to take the passenger
+					if(hasEnougthVacantSeatsOnPath(driver, waiting.at(k), path)) { //This option is prioritizing passengers register, so may not be best cost/efficiency solution
+						//Add person to travel schedule
+						cout << "Selected: " << (waiting.at(k))->getName() << endl;
+						picked.push_back(waiting.at(k));
+						droped.push_back(waiting.at(k));
+						driver->addPassenger(waiting.at(k));
+						driver->updateFreeSpace(waiting.at(k), path);
+						passengers.push_back(waiting.at(k));
+					} else { //Replace for better final result ??
+						//TODO
+					}
+				}
+				if(!droped.empty()) {
+					cout << "Added PassengersDroppedAt()" << endl;
+					driver->addNewPassengersDroppedAt((waiting.at(k))->getDestination(), droped);
+				}
+			}
+			if (!picked.empty()) {
+				cout << "Added PassengersPickedAt()" << endl;
+				driver->addNewPassengersPickedAt(*i, picked);
+			}
+		}
+	}
 }
-*/
 
+template<class T>
+bool Graph<T>::hasEnougthVacantSeatsOnPath(Driver<T>* driver, Passenger<T> *p, list<Vertex<T>*> path) {
+	T source = p->getSource()->getInfo();
+	T destination = p->getDestination()->getInfo();
+	int p_size = p->getNum();
 
+	bool hasEnougthSpace = false;
+	bool pathStartFound = false;
+	int index = 0;
+	auto i = path.begin();
+
+	for (; i != path.end() ; i++, index++) {
+		if((*i)->getInfo() == destination) {
+			break;
+		}
+
+		if((*i)->getInfo() == source) {
+			pathStartFound = true;
+			hasEnougthSpace = true;
+		}
+		if(pathStartFound) {
+			if(driver->getCapacityAtVertexOnPath(index) < p_size) {
+				hasEnougthSpace = false;
+				break;
+			}
+		}
+
+	}
+	return hasEnougthSpace;
+}
+
+template<class T>
+int Graph<T>::getPositionOnPath(T source, list<Vertex<T>*> path) {
+	int pos = 0;
+	for (auto i = path.begin(); i != path.end(); i++) {
+		if((*i)->getInfo() == source) {
+			return pos;
+		}
+		++pos;
+	}
+	return -1;
+}
+
+template<class T>
+T Graph<T>::getTravelTime(T source, T destination, list<Vertex<T>*> path) {
+	T travelTime = 0;
+
+	bool pathStartFound = false;
+	bool pathEndFound = false;
+	for (auto i = path.begin(); i != path.end(); i++) {
+		if((*i)->getInfo() == source) {
+			pathStartFound = true;
+		} else if((*i)->getInfo() == destination) {
+			pathEndFound = true;
+			break;
+		}
+
+		if(pathStartFound) {
+			auto tmp = i;
+			++tmp;
+			if(tmp == path.end())
+				break;
+			travelTime += (*i)->getAdjTo((*tmp)->getInfo()).getWeight();
+		}
+	}
+
+	if(pathStartFound && pathEndFound)
+		return travelTime;
+	else
+		return -1;
+}
 
 template<class T>
 void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
@@ -938,6 +1092,8 @@ Edge<T> Vertex<T>::getAdjTo(T dest) {
 			return i;
 	}
 
+	Edge<T> errorEdge = Edge<T>();
+	return errorEdge;
 }
 
 template<class T>

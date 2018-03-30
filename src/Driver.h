@@ -25,7 +25,8 @@ template<class T> struct ptr_less {
 
 template<class T>
 class Driver: public Person {
-	int capacity; //passenger Capacity
+	int capacity; //car passengers capacity
+	int minLimit; //drivers trip limit
 	std::vector<Passenger<T>*> passengers;
 	std::vector<int> capacityAtPath;
 	std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersPickedAt;
@@ -36,20 +37,26 @@ class Driver: public Person {
 	void clearCapacityAtPath();
 public:
 	Driver();
-	Driver(int timeLimit, int cap);
-	Driver(string name, int age, int timeLimit, int cap);
+	Driver(int cap, int lim);
 	virtual ~Driver();
 
 	void addPassenger(Passenger<T>* passenger);
 	void updateFreeSpace();
+	void updateFreeSpace(Passenger<T> *p, list<Vertex<T>*> path);
 
 	void addPassengersPickedAt(Vertex<T>* v,
 			std::vector<Passenger<T>*> passengers);
+	void addNewPassengersPickedAt(Vertex<T>* v,
+				std::vector<Passenger<T>*> passengers);
 	void addPassengersDroppedAt(Vertex<T>* v,
 			std::vector<Passenger<T>*> passengers);
+	void addNewPassengersDroppedAt(Vertex<T>* v,
+			vector<Passenger<T>*> passengers);
 
 	int getCapacity();
+	int getMinLimit();
 	std::vector<int> getCapacityAtPath();
+	int getCapacityAtVertexOnPath(int index);
 
 	void printPassengersPickedAt();
 	void printPassengersDroppedAt();

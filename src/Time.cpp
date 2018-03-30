@@ -37,41 +37,24 @@ Time::~Time() {
 	// TODO Auto-generated destructor stub
 }
 
-Time operator+(Time lhs, const Time& rhs) {
+inline Time operator+(Time lhs, const Time& rhs) {
 	return Time(lhs.getHour() + rhs.getHour(),
 			lhs.getMinute() + rhs.getMinute());
 }
 
-bool operator<(const Time& lhs, const Time& rhs) {
+inline bool operator<(const Time& lhs, const Time& rhs) {
 	if (lhs.getHour() == rhs.getHour())
 		return (lhs.getMinute() < rhs.getMinute());
 	else
 		return (lhs.getHour() < rhs.getHour());
 }
 
-bool operator==(const Time& lhs, const Time& rhs) {
+inline bool operator==(const Time& lhs, const Time& rhs) {
 	return (lhs.getHour() == rhs.getHour() && lhs.getHour() == rhs.getHour());
 }
 
 
-Time operator+(Time lhs, const int& rhs) {
+inline Time operator+(Time lhs, const int& rhs) {
 	return Time(lhs.getHour(), lhs.getMinute() + rhs);
 }
 
-bool operator!=(const Time& lhs, const Time& rhs)
-{
-	return !operator==(lhs, rhs);
-}
-
-bool operator> (const Time& lhs, const Time& rhs)
-{
-	return  operator< (rhs, lhs);
-}
-bool operator<=(const Time& lhs, const Time& rhs)
-{
-	return !operator> (lhs, rhs);
-}
-bool operator>=(const Time& lhs, const Time& rhs)
-{
-	return !operator< (lhs, rhs);
-}

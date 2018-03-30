@@ -9,8 +9,8 @@
 
 template<class T>
 Passenger<T>::Passenger() :
-		Person() {
-	// TODO Auto-generated constructor stub
+Person() {
+	this->timeLimit = 0;
 	this->destination = NULL;
 	this->numPassengers = 0;
 	this->source = NULL;
@@ -19,7 +19,8 @@ Passenger<T>::Passenger() :
 
 template<class T>
 Passenger<T>::Passenger(int numP) :
-		Person() {
+Person() {
+	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->destination = NULL;
 	this->source = NULL;
@@ -28,7 +29,18 @@ Passenger<T>::Passenger(int numP) :
 
 template<class T>
 Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) :
-		Person() {
+Person() {
+	this->timeLimit = INT_MAX;
+	this->numPassengers = numP;
+	this->source = source;
+	this->destination = destination;
+	this->pos = NULL;
+}
+
+template<class T>
+Passenger<T>::Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination) :
+Person() {
+	this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;
 	this->destination = destination;
@@ -61,8 +73,19 @@ Passenger<T>::~Passenger() {
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int timeLimit,int numP) :
-		Person(name, age, timeLimit) {
+Passenger<T>::Passenger(string name, int age, int numP) :
+Person(name, age) {
+	this->timeLimit = INT_MAX;
+	this->numPassengers = numP;
+	this->source = source;
+	this->pos = NULL;
+	this->destination = destination;
+}
+
+template<class T>
+Passenger<T>::Passenger(string name, int age, int numP, int tl) :
+Person(name, age) {
+	this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;
 	this->pos = NULL;
@@ -82,6 +105,16 @@ void Passenger<T>::setSource(Vertex<T>* pos) {
 template<class T>
 Vertex<T>* Passenger<T>::getDestination() {
 	return this->destination;
+}
+
+template<class T>
+inline int Passenger<T>::getTimeLimit() const {
+	return timeLimit;
+}
+
+template<class T>
+inline void Passenger<T>::setTimeLimit(int timeLimit) {
+	this->timeLimit = timeLimit;
 }
 
 template<class T>
