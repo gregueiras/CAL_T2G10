@@ -23,7 +23,7 @@ public:
 	Passenger();
 	Passenger(int numP, Vertex<T>* source, Vertex<T>* destination);
 	Passenger(int numP);
-	Passenger(string name, int age, int numP);
+	Passenger(string name, int age, int timeLimit,int numP);
 	void addPassengers(int num);
 	int getNum();
 

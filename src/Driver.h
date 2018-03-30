@@ -36,7 +36,8 @@ class Driver: public Person {
 	void clearCapacityAtPath();
 public:
 	Driver();
-	Driver(int cap);
+	Driver(int timeLimit, int cap);
+	Driver(string name, int age, int timeLimit, int cap);
 	virtual ~Driver();
 
 	void addPassenger(Passenger<T>* passenger);

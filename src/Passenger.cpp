@@ -61,8 +61,8 @@ Passenger<T>::~Passenger() {
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP) :
-		Person(name, age) {
+Passenger<T>::Passenger(string name, int age, int timeLimit,int numP) :
+		Person(name, age, timeLimit) {
 	this->numPassengers = numP;
 	this->source = source;
 	this->pos = NULL;

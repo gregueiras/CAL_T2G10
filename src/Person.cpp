@@ -4,12 +4,18 @@
 
 #include "Person.h"
 
-Person::Person(string n, int a): name(n), age(a) {}
+Person::Person(string n, int a, int t): name(n), age(a), timeLimit(t) {}
 Person::Person(){}
+Person:: Person(int timeLimit) : name(" "), age(0), timeLimit(timeLimit){}
 
 string Person::getName() const {
 	return name;
 }
+
+int Person::getTimeLimit() const {
+	return timeLimit;
+}
+
 
 bool Person::operator == (const Person &p2) const {
 	return (name==p2.name && age==p2.age);

@@ -616,7 +616,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 	vector<Vertex<T>*> Q;
 
 	int capacity = driver->getCapacity();
-	int timeLimit = 40;
+	int timeLimit =driver->getTimeLimit();
 
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
@@ -731,6 +731,7 @@ double Graph<T>::dijkstraPath(T source, T destination,
 
 	vector<Vertex<T>*> Q;
 
+
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
 		this->vertexSet[i]->previous = nullptr;
@@ -760,7 +761,6 @@ double Graph<T>::dijkstraPath(T source, T destination,
 			return ending->distance;
 
 		}
-
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 			double alt = temp->distance + temp->adj[i].weight;
 
@@ -804,7 +804,8 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 
 	bool result = false;
 	list<Vertex<T>*> path;
-	this->dijkstraPath(source, destination, path);
+	double time = this->dijkstraPath(source, destination, path);
+	if (time > passenger->getTimeLimit()) return false;
 
 	cout << (*passenger) << " (" << passenger->getNum() << ") added to path: "
 			<< endl;
@@ -813,6 +814,8 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 	passenger->setDestination(path.back());
 
 	Utili<T>::printPath(path);
+
+	cout << "time : " << time << endl;
 
 	for (auto i = path.begin(); i != path.end(); i++) {
 		auto next = ++i;
@@ -881,6 +884,15 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 	passen.clear();
 	path.clear();
 }
+
+/*
+template<class T>
+vector<Passenger<T>*> Graph<T>::secondTry(list<Vertex<T>*> path, Driver<T>* driver)
+{
+}
+*/
+
+
 
 template<class T>
 void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {

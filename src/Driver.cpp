@@ -38,9 +38,14 @@ void Driver<T>::addPassengersDroppedAt(Vertex<T>* v,
 }
 
 template<class T>
-Driver<T>::Driver(int cap) {
+Driver<T>::Driver(int timeLimit,int cap): Person(timeLimit) {
 	this->capacity = cap;
 
+}
+
+template<class T>
+Driver<T>::Driver(string name, int age, int timeLimit, int cap) : Person(name,age,timeLimit) {
+	this->capacity = cap;
 }
 
 template<class T>
@@ -62,9 +67,7 @@ void Driver<T>::updateFreeSpace() {
 	}
 
 	this->capacityAtPath.push_back(this->capacity);
-	for (auto i = this->passengersPickedAt.cbegin(), k =
-			this->passengersDroppedAt.cbegin();
-			count <= this->passengersPickedAt.size();) {
+	for (auto i = this->passengersPickedAt.cbegin(), k = this->passengersDroppedAt.cbegin(); count <= this->passengersPickedAt.size();) {
 		if (count != 0)
 			this->capacityAtPath.push_back(this->capacityAtPath[count - 1]); //inicializa novo elemento com capacidade anterior
 
@@ -73,12 +76,12 @@ void Driver<T>::updateFreeSpace() {
 
 		if (count != this->passengersPickedAt.size()) //este vector nao inclui o ultimo ponto
 			for (auto j : i->second) //ocupa os lugares dos passageiros que entraram naquele ponto
-				//if (j->getPos() != i->first)
 				this->capacityAtPath[count] -= j->getNum();
 
-		if (count != 0) //este vector nao inclui o primeiro ponto
-			for (auto j : k->second) //desocupa os lugares dos passageiros que sairam naquele ponto
-				this->capacityAtPath[count] += j->getNum();
+
+			if (count != 0) //este vector nao inclui o primeiro ponto
+				for (auto j : k->second) //desocupa os lugares dos passageiros que sairam naquele ponto
+					this->capacityAtPath[count] += j->getNum();
 
 		++count;
 		if (count != this->passengersPickedAt.size())
