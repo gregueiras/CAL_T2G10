@@ -898,7 +898,7 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) 
 	Utili<int>::printPath(path);
 
 	for (auto i = passen.begin(); i != passen.end(); i++)
-		cout << (*i)->getName() << " ";
+//		cout << (*i)->getName() << " ";
 
 	cout << endl;
 	this->removePeople(passen, path);
@@ -921,7 +921,7 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) 
 
 	cout << "\nPOSTPROCESSING END\n";
 	for (auto i = passen.begin(); i != passen.end(); i++)
-		cout << (*i)->getName() << " ";
+//		cout << (*i)->getName() << " ";
 
 	cout << "\nPicked: \n";
 	driver->printPassengersPickedAt();

@@ -95,26 +95,34 @@ void Driver<T>::updateFreeSpace() {
 	}
 
 	this->capacityAtPath.push_back(this->capacity);
-	for (auto i = this->path.cbegin(); i != this->path.cend(); ++i) {
-		std::vector<Passenger<T>*> picked = this->passengersPickedAt.find((*i))->second;
-		int numPicked = 0;
-		for (Passenger<T>* var : picked) {
-			numPicked += var->getNum();
+		for (auto i = this->path.cbegin(); i != this->path.cend(); ++i) {
+
+			int numPicked = 0;
+			int numDropped = 0;
+
+			auto p = this->passengersPickedAt.find((*i));
+			if (p != this->passengersPickedAt.end()) {
+				std::vector<Passenger<T>*> picked = p->second;
+				for (Passenger<T>* var : picked) {
+					numPicked += var->getNum();
+				}
+			}
+
+			auto d = this->passengersDroppedAt.find((*i));
+			if (d != this->passengersDroppedAt.end()) {
+				std::vector<Passenger<T>*> dropped = d->second;
+				for (Passenger<T>* var : dropped) {
+					numDropped += var->getNum();
+				}
+			}
+
+
+			this->capacityAtPath[count] += numDropped - numPicked;
+			if (count +1 != this->path.size())
+				this->capacityAtPath.push_back(this->capacityAtPath[count]);
+			++count;
+
 		}
-
-		std::vector<Passenger<T>*> dropped = this->passengersDroppedAt.find((*i))->second;
-		int numDropped = 0;
-		for (Passenger<T>* var : dropped) {
-			numDropped += var->getNum();
-		}
-
-
-		this->capacityAtPath[count] += numDropped - numPicked;
-		if (count +1 != this->path.size())
-			this->capacityAtPath.push_back(this->capacityAtPath[count]);
-		++count;
-
-	}
 
 }
 
