@@ -47,8 +47,6 @@ Person() {
 	this->pos = NULL;
 }
 
-
-
 template<class T>
 void Passenger<T>::addPassengers(int num) {
 	this->numPassengers += num;
@@ -130,6 +128,16 @@ inline void Passenger<T>::setTimeLimit(int timeLimit) {
 template<class T>
 void Passenger<T>::setDestination(Vertex<T>* pos) {
 	this->destination = pos;
+}
+
+template<class T>
+Vertex<T>* Passenger<T>::getPrevPos() {
+	return prevPos;
+}
+
+template<class T>
+void Passenger<T>::setPrevPos(Vertex<T>* pos) {
+	this->prevPos = pos;
 }
 
 template class Passenger<int> ;

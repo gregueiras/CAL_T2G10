@@ -85,50 +85,54 @@ Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) : Pers
 template<class T>
 void Driver<T>::updateFreeSpace() {
 	unsigned int count = 0;
+	set<Passenger<T>*> passengersDropped;
 
-	for (auto i = this->passengersPickedAt.begin();
-			i != this->passengersPickedAt.end();) {
-		bool result = false;
+	for (auto i = this->passengersDroppedAt.begin(); i != this->passengersDroppedAt.end(); ++i) {
 		for (auto j : i->second)
-			if (j->getPos() == i->first)
-				result = true;
+			passengersDropped.insert(j);
+	}
 
-		if (result)
-			this->passengersPickedAt.erase(i++);
-		else
-			++i;
+	for (auto i = this->passengersPickedAt.begin(); i != this->passengersPickedAt.end(); ++i) {
+		for (auto j = i->second.begin(); j != i->second.end();) {
+			if (!passengersDropped.count((*j))) {
+				(*j)->setPos((*j)->getPrevPos());
+				j = i->second.erase(j);
+			}
+			else
+				++j;
+		}
 
 	}
 
 	this->capacityAtPath.push_back(this->capacity);
-		for (auto i = this->path.cbegin(); i != this->path.cend(); ++i) {
+	for (auto i = this->path.cbegin(); i != this->path.cend(); ++i) {
+		
+		int numPicked = 0;
+		int numDropped = 0;
 
-			int numPicked = 0;
-			int numDropped = 0;
-
-			auto p = this->passengersPickedAt.find((*i));
-			if (p != this->passengersPickedAt.end()) {
-				std::vector<Passenger<T>*> picked = p->second;
-				for (Passenger<T>* var : picked) {
-					numPicked += var->getNum();
-				}
+		auto p = this->passengersPickedAt.find((*i));
+		if (p != this->passengersPickedAt.end()) {
+			std::vector<Passenger<T>*> picked = p->second;
+			for (Passenger<T>* var : picked) {
+				numPicked += var->getNum();
 			}
-
-			auto d = this->passengersDroppedAt.find((*i));
-			if (d != this->passengersDroppedAt.end()) {
-				std::vector<Passenger<T>*> dropped = d->second;
-				for (Passenger<T>* var : dropped) {
-					numDropped += var->getNum();
-				}
-			}
-
-
-			this->capacityAtPath[count] += numDropped - numPicked;
-			if (count +1 != this->path.size())
-				this->capacityAtPath.push_back(this->capacityAtPath[count]);
-			++count;
-
 		}
+
+		auto d = this->passengersDroppedAt.find((*i));
+		if (d != this->passengersDroppedAt.end()) {
+			std::vector<Passenger<T>*> dropped = d->second;
+			for (Passenger<T>* var : dropped) {
+				numDropped += var->getNum();
+			}
+		}
+
+
+		this->capacityAtPath[count] += numDropped - numPicked;
+		if (count +1 != this->path.size())
+			this->capacityAtPath.push_back(this->capacityAtPath[count]);
+		++count;
+
+	}
 
 }
 

@@ -14,6 +14,7 @@
 #include <list>
 #include <queue>
 #include <vector>
+#include <set>
 #include <algorithm>
 
 #include "Passenger.h"
@@ -674,24 +675,25 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		Vertex<T>* temp = Utili<T>::remMin(Q);
 
 		int peopleT = 0;
-		if (temp->info == ending->info) {
-			cout << endl << "Distance: " << temp->distance << endl;
+		if (temp->info == ending->info) { //fim do algoritmo, chegamos ao destino
+			cout << endl << "Distance: " << temp->distance << endl; //distancia final (pesada com os passageiros transportados)
 
-			while (temp->previous != nullptr) {
+			while (temp->previous != nullptr) { //percorre o caminho por ordem reversa
 				cout << temp->time << "  ";
 				path.push_front(temp);
 
 				vector<Passenger<T>*> tempPass;
 
 				for (unsigned int k = 0; k < temp->pickedUp.size(); k++) {
-
-					temp->pickedUp[k]->setPos(temp);
 					temp->pickedUp[k]->updateCurrentTime(temp->time);
-					tempPass.push_back(temp->pickedUp[k]);
+					
+					if (!temp->pickedUp[k]->getDropped()) {
+						tempPass.push_back(temp->pickedUp[k]);
+						temp->pickedUp[k]->setDropped(true);
+					}
 
 				}
 				driver->addPassengersDroppedAt(temp, tempPass);
-				tempPass.clear();
 
 				while (!temp->pickedUp.empty()) {
 					peopleT += temp->pickedUp[0]->getNum();
@@ -712,13 +714,21 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
 
+		set<Vertex<T>*> visited;
+
 		while (temp1->previous != nullptr) {
+			visited.insert(temp1);
+			
 			if (!temp1->pickedUp.empty())
 				for (auto j : temp1->pickedUp)
-					alreadyPicked += j->getNum();
+					if (!(visited.count(j->getDestination())))
+						alreadyPicked += j->getNum();
 			temp1 = temp1->previous;
 		}
 
+		cout << "ALREADY PICKED \n";
+		cout << temp->getInfo() << " cap " << alreadyPicked << endl;
+		visited.clear();
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
 			int lastAlreadyPicked = alreadyPicked;
@@ -747,8 +757,21 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->time = time;
 				temp->adj[i].dest->previous = temp;
-
 				temp->adj[i].dest->pickedUp = picked;
+
+				for (auto m = picked.begin(); m != picked.end(); ) {
+					(*m)->setPrevPos((*m)->getPos());
+					(*m)->setPos(temp->adj[i].dest);
+
+					if ((*m)->getPicked())
+						m = picked.erase(m);
+					else {
+						(*m)->setPicked(true);
+						++m;
+					}
+						
+				}
+			
 				if (!picked.empty())
 					driver->addPassengersPickedAt(temp, picked);
 

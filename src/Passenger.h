@@ -19,7 +19,10 @@ class Passenger: public Person {
 	vector<Vertex<T>*> path;
 	Vertex<T>* source;
 	Vertex<T>* pos;
+	Vertex<T>* prevPos;
 	Vertex<T>* destination;
+	bool dropped;
+	bool picked;
 public:
 	Passenger();
 	Passenger(int numP, Vertex<T>* source, Vertex<T>* destination);
@@ -35,6 +38,9 @@ public:
 	Vertex<T>* getPos();
 	void setPos(Vertex<T>* pos);
 
+	Vertex<T>* getPrevPos();
+	void setPrevPos(Vertex<T>* pos);
+
 	Vertex<T>* getSource();
 	void setSource(Vertex<T>* pos);
 
@@ -43,6 +49,22 @@ public:
 
 	int getTimeLimit() const;
 	void setTimeLimit(int timeLimit);
+
+	void setPicked(bool newPicked) {
+		this->picked = newPicked;
+	}
+
+	bool getDropped() {
+		return this->dropped;
+	}
+
+	void setDropped(bool newDropped) {
+		this->dropped = newDropped;
+	}
+
+	bool getPicked() {
+		return this->picked;
+	}
 
 	bool operator<(Passenger<T>& p) const{
 		return this->numPassengers < p.getNum();
