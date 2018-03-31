@@ -196,8 +196,8 @@ void testDijkstraDistancePeople() {
 	Passenger<int> p1 = Passenger<int>("Jay", 20,101,20,t);
 	Passenger<int> p0 = Passenger<int>("John", 20, 7, 20,t);
 	Passenger<int> p2 = Passenger<int>("Ada", 22, 2, 20,Time(12,10));
-	Passenger<int> p3 = Passenger<int>("Mary", 30, 1, 20, Time(12,33));
-	Passenger<int> p5 = Passenger<int>("Bane", 20,6 ,20,Time(12,49));
+	Passenger<int> p3 = Passenger<int>("Mary", 30, 1, 20, Time(12,40));
+	Passenger<int> p5 = Passenger<int>("Bane", 20,6 ,20,Time(12,42));
 	Passenger<int> p6 = Passenger<int>("Kate", 20, 3,20, t);
 	Passenger<int> p7 = Passenger<int>("nina", 20, 3, 20, t);
 

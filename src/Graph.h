@@ -967,7 +967,7 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 				Time driverTime(driver->getStartTime());
 				driverTime.addMinutes( (*i)->time );
 				//if it is possible for the passenger to make that route
-				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime)
+				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime && (waiting.at(k))->getPos() == (*i))
 				{
 					cout << "Passed time limit test: " << (waiting.at(k))->getName() << endl;
 					//check if possible for the driver to take the passenger
