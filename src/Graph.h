@@ -167,7 +167,7 @@ public:
 	void postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<Passenger<int>*> &passengers);
 	bool hasEnougthVacantSeatsOnPath(Driver<T>* driver, Passenger<T> *p, list<Vertex<T>*> path);
 	int getPositionOnPath(T source, list<Vertex<T>*> path);
-	T getTravelTime(T source, T destination, list<Vertex<T>*> path);
+	double getTravelTime(T source, T destination, list<Vertex<T>*> path);
 
 	vector<Passenger<T>*> secondTry(list<Vertex<T>*> path, Driver<T>* driver);
 };
@@ -1032,8 +1032,8 @@ int Graph<T>::getPositionOnPath(T source, list<Vertex<T>*> path) {
 }
 
 template<class T>
-T Graph<T>::getTravelTime(T source, T destination, list<Vertex<T>*> path) {
-	T travelTime = 0;
+double Graph<T>::getTravelTime(T source, T destination, list<Vertex<T>*> path) {
+	double travelTime = 0;
 
 	bool pathStartFound = false;
 	bool pathEndFound = false;
