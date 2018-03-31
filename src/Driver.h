@@ -31,6 +31,7 @@ class Driver: public Person {
 	std::vector<int> capacityAtPath;
 	std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersPickedAt;
 	std::map<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersDroppedAt;
+	std::list<Vertex<T>*> path;
 
 	void clearPassengersPickedAt();
 	void clearPassengersDroppedAt();
@@ -39,6 +40,8 @@ public:
 	Driver();
 	Driver(int cap, int lim);
 	virtual ~Driver();
+
+	void setPath(std::list<Vertex<T>*> newPath);
 
 	void addPassenger(Passenger<T>* passenger);
 	void updateFreeSpace();

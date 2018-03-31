@@ -143,6 +143,21 @@ void testDijkstraDistancePeople() {
 	/*if (!myGraph.addPeople(2, 5, &p11)) //2
 		cout << "ERROR" << endl;*/
 
+	//if (!myGraph.addPeople(3, 2, &p1)) //101
+	//	cout << "ERROR" << endl;
+	//if (!myGraph.addPeople(2, 0, &p2)) //2
+	//	cout << "ERROR" << endl;
+	//if (!myGraph.addPeople(5, 3, &p3)) //1
+	//	cout << "ERROR" << endl;
+	//if (!myGraph.addPeople(3, 2, &p0)) //7
+	//	cout << "ERROR" << endl;
+	//if (!myGraph.addPeople(4, 2, &p5)) //6
+	//	cout << "ERROR" << endl;
+	//if (!myGraph.addPeople(3, 1, &p6)) //3
+	//	cout << "ERROR" << endl;
+	//if (!myGraph.addPeople(2, 0, &p7)) //3
+	//	cout << "ERROR" << endl;
+
 	//	cout << myGraph.findVertex(0)->getAdjTo(2).getNumPeople() << endl;
 	//	cout << myGraph.findVertex(0)->getAdjTo(2).getWeight() << endl;
 
@@ -153,7 +168,7 @@ void testDijkstraDistancePeople() {
 
 
 	myGraph.calculateAndPrintPath(0, 5, driver);
-	//myGraph.calculateAndPrintPath(0, 5, driver);
+	//myGraph.calculateAndPrintPath(5, 0, driver);
 
 
 }

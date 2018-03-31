@@ -890,9 +890,11 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) 
 
 	list<Vertex<int>*> path;
 	vector<Passenger<int>*> passen;
-	cout
+	cout << endl
 	<< this->dijkstraPeopleDistancePath(source, destination, path,
 			passen, driver) << endl;
+
+	driver->setPath(path);
 	Utili<int>::printPath(path);
 
 	for (auto i = passen.begin(); i != passen.end(); i++)

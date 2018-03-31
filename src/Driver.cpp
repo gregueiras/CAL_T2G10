@@ -20,6 +20,12 @@ Driver<T>::~Driver() {
 }
 
 template<class T>
+void Driver<T>::setPath(std::list<Vertex<T>*> newPath)
+{
+	this->path = newPath;
+}
+
+template<class T>
 void Driver<T>::addPassenger(Passenger<T>* passenger) {
 	this->passengers.push_back(passenger);
 }
@@ -89,28 +95,27 @@ void Driver<T>::updateFreeSpace() {
 	}
 
 	this->capacityAtPath.push_back(this->capacity);
-	for (auto i = this->passengersPickedAt.cbegin(), k =
-			this->passengersDroppedAt.cbegin();
-			count <= this->passengersPickedAt.size();) {
-		if (count != 0)
-			this->capacityAtPath.push_back(this->capacityAtPath[count - 1]); //inicializa novo elemento com capacidade anterior
+	for (auto i = this->path.cbegin(); i != this->path.cend(); ++i) {
+		std::vector<Passenger<T>*> picked = this->passengersPickedAt.find((*i))->second;
+		int numPicked = 0;
+		for (Passenger<T>* var : picked) {
+			numPicked += var->getNum();
+		}
 
-		if (count >= 2)
-			++k;
+		std::vector<Passenger<T>*> dropped = this->passengersDroppedAt.find((*i))->second;
+		int numDropped = 0;
+		for (Passenger<T>* var : dropped) {
+			numDropped += var->getNum();
+		}
 
-		if (count != this->passengersPickedAt.size()) //este vector nao inclui o ultimo ponto
-			for (auto j : i->second) //ocupa os lugares dos passageiros que entraram naquele ponto
-				//if (j->getPos() != i->first)
-				this->capacityAtPath[count] -= j->getNum();
 
-		if (count != 0) //este vector nao inclui o primeiro ponto
-			for (auto j : k->second) //desocupa os lugares dos passageiros que sairam naquele ponto
-				this->capacityAtPath[count] += j->getNum();
-
+		this->capacityAtPath[count] += numDropped - numPicked;
+		if (count +1 != this->path.size())
+			this->capacityAtPath.push_back(this->capacityAtPath[count]);
 		++count;
-		if (count != this->passengersPickedAt.size())
-			++i;
+
 	}
+
 }
 
 template<class T>
