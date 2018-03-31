@@ -14,7 +14,7 @@ Time::Time() {
 
 Time::Time(int hour, int minute) {
 	this->hour = (hour + (minute / 60)) % 24;
-	this->minute = minute % 24;
+	this->minute = minute % 60;
 }
 
 int Time::getHour() const {
@@ -33,28 +33,51 @@ void Time::setMinute(int minute) {
 	this->minute = minute;
 }
 
+void Time::addMinutes(int minutes)
+{
+	hour = (hour + (minute + minutes)/ 60) % 24;
+	minute = (minute + minutes) % 60;
+}
+
 Time::~Time() {
 	// TODO Auto-generated destructor stub
 }
 
-inline Time operator+(Time lhs, const Time& rhs) {
+Time operator+(Time lhs, const Time& rhs) {
 	return Time(lhs.getHour() + rhs.getHour(),
 			lhs.getMinute() + rhs.getMinute());
 }
 
-inline bool operator<(const Time& lhs, const Time& rhs) {
+bool operator<(const Time& lhs, const Time& rhs) {
 	if (lhs.getHour() == rhs.getHour())
 		return (lhs.getMinute() < rhs.getMinute());
 	else
 		return (lhs.getHour() < rhs.getHour());
 }
 
-inline bool operator==(const Time& lhs, const Time& rhs) {
+bool operator==(const Time& lhs, const Time& rhs) {
 	return (lhs.getHour() == rhs.getHour() && lhs.getHour() == rhs.getHour());
 }
 
 
-inline Time operator+(Time lhs, const int& rhs) {
+Time operator+(Time lhs, const int& rhs) {
 	return Time(lhs.getHour(), lhs.getMinute() + rhs);
 }
 
+bool operator!=(const Time& lhs, const Time& rhs)
+{
+	return !operator==(lhs, rhs);
+}
+
+bool operator> (const Time& lhs, const Time& rhs)
+{
+	return  operator< (rhs, lhs);
+}
+bool operator<=(const Time& lhs, const Time& rhs)
+{
+	return !operator> (lhs, rhs);
+}
+bool operator>=(const Time& lhs, const Time& rhs)
+{
+	return !operator< (lhs, rhs);
+}

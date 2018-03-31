@@ -47,6 +47,8 @@ Person() {
 	this->pos = NULL;
 }
 
+
+
 template<class T>
 void Passenger<T>::addPassengers(int num) {
 	this->numPassengers += num;
@@ -73,8 +75,7 @@ Passenger<T>::~Passenger() {
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP) :
-Person(name, age) {
+Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
 	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->source = source;
@@ -83,8 +84,17 @@ Person(name, age) {
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP, int tl) :
-Person(name, age) {
+Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, age) {
+	this->timeLimit = tl;
+	this->numPassengers = numP;
+	this->source = source;
+	this->pos = NULL;
+	this->destination = destination;
+}
+
+template<class T>
+Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime)  :
+		Person(name, age, startTime) {
 	this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;

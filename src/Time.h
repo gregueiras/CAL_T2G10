@@ -19,15 +19,16 @@ public:
 	void setHour(int hour);
 	int getMinute() const;
 	void setMinute(int minute);
+	void addMinutes(int minutes);
 };
 
 Time operator+(Time lhs, const int& rhs);
 Time operator+(Time lhs, const Time& rhs);
 bool operator==(const Time& lhs, const Time& rhs);
-bool operator!=(const Time& lhs, const Time& rhs){return !operator==(lhs,rhs);}
+bool operator!=(const Time& lhs, const Time& rhs);
 bool operator< (const Time& lhs, const Time& rhs);
-bool operator> (const Time& lhs, const Time& rhs){return  operator< (rhs,lhs);}
-bool operator<=(const Time& lhs, const Time& rhs){return !operator> (lhs,rhs);}
-bool operator>=(const Time& lhs, const Time& rhs){return !operator< (lhs,rhs);}
+bool operator> (const Time& lhs, const Time& rhs);
+bool operator<=(const Time& lhs, const Time& rhs);
+bool operator>=(const Time& lhs, const Time& rhs);
 
 #endif /* SRC_TIME_H_ */

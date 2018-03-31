@@ -73,7 +73,13 @@ template<class T>
 Driver<T>::Driver(int cap, int lim) {
 	this->capacity = cap;
 	this->minLimit = lim;
+}
 
+template<class T>
+Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) : Person(name,age,startTime)
+{
+	this->capacity = cap;
+	this->minLimit = lim;
 }
 
 template<class T>

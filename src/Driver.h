@@ -39,6 +39,7 @@ class Driver: public Person {
 public:
 	Driver();
 	Driver(int cap, int lim);
+	Driver(int cap, int lim, string name, int age, Time startTime);
 	virtual ~Driver();
 
 	void setPath(std::list<Vertex<T>*> newPath);

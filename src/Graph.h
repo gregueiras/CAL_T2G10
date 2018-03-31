@@ -686,6 +686,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				for (unsigned int k = 0; k < temp->pickedUp.size(); k++) {
 
 					temp->pickedUp[k]->setPos(temp);
+					temp->pickedUp[k]->updateCurrentTime(temp->time);
 					tempPass.push_back(temp->pickedUp[k]);
 
 				}
@@ -722,12 +723,14 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 			int lastAlreadyPicked = alreadyPicked;
 
+			driver->updateCurrentTime(temp->time);
+
 			vector<Passenger<T>*> picked;
 			int numPicked = 0;
 			for (unsigned int j = 0; j < temp->adj[i].waiting.size(); j++) {
 				if (temp->adj[i].waiting[j]->getPos() == temp
 						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
-						<= capacity) {
+						<= capacity  && temp->adj[i].waiting[j]->getCurrentTime() <= driver->getCurrentTime()) {
 					alreadyPicked += temp->adj[i].waiting[j]->getNum();
 					numPicked += temp->adj[i].waiting[j]->getNum();
 					picked.push_back(temp->adj[i].waiting[j]);
@@ -896,10 +899,10 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) 
 
 	driver->setPath(path);
 	Utili<int>::printPath(path);
-
-	for (auto i = passen.begin(); i != passen.end(); i++)
-//		cout << (*i)->getName() << " ";
-
+//
+////	for (auto i = passen.begin(); i != passen.end(); i++)
+////		cout << (*i)->getName() << " ";
+//
 	cout << endl;
 	this->removePeople(passen, path);
 
@@ -920,8 +923,8 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) 
 	this->removePeople(passen, path);
 
 	cout << "\nPOSTPROCESSING END\n";
-	for (auto i = passen.begin(); i != passen.end(); i++)
-//		cout << (*i)->getName() << " ";
+//	for (auto i = passen.begin(); i != passen.end(); i++)
+////		cout << (*i)->getName() << " ";
 
 	cout << "\nPicked: \n";
 	driver->printPassengersPickedAt();
@@ -960,8 +963,12 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 						<< (waiting.at(k))->getNum() << endl;
 				int tTime = getTravelTime((*i)->getInfo(), (waiting.at(k))->getDestination()->getInfo(),path);
 				vector<Passenger<T>*> droped;
+				//to check the time
+				Time driverTime(driver->getStartTime());
+				driverTime.addMinutes( (*i)->time );
 				//if it is possible for the passenger to make that route
-				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit()) {
+				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime)
+				{
 					cout << "Passed time limit test: " << (waiting.at(k))->getName() << endl;
 					//check if possible for the driver to take the passenger
 					if(hasEnougthVacantSeatsOnPath(driver, waiting.at(k), path)) { //This option is prioritizing passengers register, so may not be best cost/efficiency solution
@@ -1033,7 +1040,7 @@ int Graph<T>::getPositionOnPath(T source, list<Vertex<T>*> path) {
 
 template<class T>
 double Graph<T>::getTravelTime(T source, T destination, list<Vertex<T>*> path) {
-	double travelTime = 0;
+	T travelTime = 0;
 
 	bool pathStartFound = false;
 	bool pathEndFound = false;

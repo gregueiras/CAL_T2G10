@@ -26,6 +26,7 @@ public:
 	Passenger(int numP);
 	Passenger(string name, int age, int numP);
 	Passenger(string name, int age, int numP, int tl);
+	Passenger(string name, int age, int numP, int tl, Time startTime);
 	Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination);
 	void addPassengers(int num);
 	int getNum();
