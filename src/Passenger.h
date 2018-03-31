@@ -42,4 +42,8 @@ public:
 
 	int getTimeLimit() const;
 	void setTimeLimit(int timeLimit);
+
+	bool operator<(Passenger<T>& p) const{
+		return this->numPassengers < p.getNum();
+	}
 };

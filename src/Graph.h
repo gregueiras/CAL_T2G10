@@ -14,6 +14,7 @@
 #include <list>
 #include <queue>
 #include <vector>
+#include <algorithm>
 
 #include "Passenger.h"
 #include "Person.h"
@@ -123,6 +124,10 @@ public:
 
 	vector<Passenger<T>*> getWaiting() {
 		return waiting;
+	}
+
+	bool operator<(const Edge<T>& e) const {
+		return this->numP < e.getNumPeople();
 	}
 
 	friend class Graph<T> ;
@@ -881,8 +886,7 @@ bool Graph<T>::removePeople(vector<Passenger<T>*> passengers,
 }
 
 template<class T>
-void Graph<T>::calculateAndPrintPath(T source, T destination,
-		Driver<T>* driver) {
+void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) {
 
 	list<Vertex<int>*> path;
 	vector<Passenger<int>*> passen;
@@ -926,6 +930,9 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,
 	cout << "Cap at Path: " << endl;
 	driver->printCapacityAtPath();
 
+	cout << "PATH: ";
+	Utili<int>::printPath(path);
+
 	passen.clear();
 	path.clear();
 }
@@ -935,16 +942,20 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 
 	for (auto i = path.begin(); i != path.end(); i++) {
 		//i is the vertex in analysis
-		//checking adjacent edjes
+		//checking adjacent edges
 		vector<Edge<T> > adj = (*i)->getAdj();
+		sort(adj.rbegin(), adj.rend());
 		for (unsigned int j = 0; j < adj.size(); ++j) {
 			vector<Passenger<T>*> picked;
-			//checking for for possible passengers on each edje
+			//checking for for possible passengers on each edge
 			vector<Passenger<T>*> waiting = adj.at(j).getWaiting();
+			//sorting waiting passengers by number of passengers
+			sort(waiting.begin(), waiting.end());
 			for(unsigned int k = 0; k < waiting.size(); ++k) {
 				cout << "Checking: " << (waiting.at(k))->getName() << " from " <<
 						(*i)->getInfo() << " to " << adj.at(j).getVertexName() <<
-						" :: TL: " << (waiting.at(k))->getTimeLimit() << endl;
+						" :: TL: " << (waiting.at(k))->getTimeLimit()  << " Value: "
+						<< (waiting.at(k))->getNum() << endl;
 				int tTime = getTravelTime((*i)->getInfo(), (waiting.at(k))->getDestination()->getInfo(),path);
 				vector<Passenger<T>*> droped;
 				//if it is possible for the passenger to make that route
@@ -959,8 +970,7 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 						driver->addPassenger(waiting.at(k));
 						driver->updateFreeSpace(waiting.at(k), path);
 						passengers.push_back(waiting.at(k));
-					} else { //Replace for better final result ??
-						//TODO
+					} else { //Replace for better final result ?? No, give priority to weight
 					}
 				}
 				if(!droped.empty()) {

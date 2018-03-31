@@ -102,15 +102,16 @@ void testDijkstraDistancePeople() {
 	myGraph.addEdge(7, 5, 10);
 
 	Passenger<int> p1 = Passenger<int>("Jay", 20, 101);
-	Passenger<int> p0 = Passenger<int>("John", 20, 7);
+	Passenger<int> p0 = Passenger<int>("John", 20, 11);
 	Passenger<int> p2 = Passenger<int>("Ada", 22, 2);
-	Passenger<int> p3 = Passenger<int>("Mary", 30, 1);
+	Passenger<int> p3 = Passenger<int>("Mary", 30, 5);
 	Passenger<int> p5 = Passenger<int>("Bane", 20, 6);
 	Passenger<int> p6 = Passenger<int>("Kate", 20, 3);
 	Passenger<int> p7 = Passenger<int>("nina", 20, 3);
 	Passenger<int> p8 = Passenger<int>("Adam1", 20, 1); //INT_MAX predefined as timeLimit; will be added
 	Passenger<int> p9 = Passenger<int>("Adam2", 20, 1, 24); //24 >= 14+8; will be added on post processing
 	Passenger<int> p10 = Passenger<int>("Adam3", 20, 1, 20); //20 < 14+8; wont be added on post processing
+	Passenger<int> p11 = Passenger<int>("Adam4", 20, 2, 24);
 
 	//	if (!myGraph.addPeople(2, 3, 100))
 	//		cout << "ERROR" << endl;
@@ -135,9 +136,11 @@ void testDijkstraDistancePeople() {
 		cout << "ERROR" << endl;
 	/*if (!myGraph.addPeople(2, 5, &p8)) //1
 		cout << "ERROR" << endl;*/
-	if (!myGraph.addPeople(2, 5, &p9)) //2
+	if (!myGraph.addPeople(2, 5, &p9)) //1
 		cout << "ERROR" << endl;
-	/*if (!myGraph.addPeople(2, 5, &p10)) //2
+	/*if (!myGraph.addPeople(2, 5, &p10)) //1
+		cout << "ERROR" << endl;*/
+	/*if (!myGraph.addPeople(2, 5, &p11)) //2
 		cout << "ERROR" << endl;*/
 
 	//	cout << myGraph.findVertex(0)->getAdjTo(2).getNumPeople() << endl;
