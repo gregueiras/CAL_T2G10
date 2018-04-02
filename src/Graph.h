@@ -20,6 +20,7 @@
 #include "Passenger.h"
 #include "Person.h"
 #include "Driver.h"
+#include "MutablePriorityQueue.h"
 
 #pragma once
 using namespace std;
@@ -46,6 +47,7 @@ class Vertex {
 	double distance;
 	double time;
 	Vertex *previous;
+	int queueIndex = 0;
 	vector<Passenger<T>*> pickedUp;
 
 	void addEdge(Vertex<T> *dest, double w);
@@ -60,6 +62,8 @@ public:
 	Vertex(T in);
 	friend class Graph<T> ;
 	friend class Utili<T> ;
+	friend class MutablePriorityQueue<Vertex<T>>;
+
 	T getInfo();
 	vector<Edge<T>> getAdj();
 	Edge<T> getAdjTo(T dest);
@@ -67,7 +71,7 @@ public:
 		this->pickedUp.push_back(p);
 	}
 	bool operator<(const Vertex<T>& b) const {
-		return this->info < b.info;
+		return this->distance < b.distance;
 	}
 	bool operator==(const Vertex<T>& b) const {
 		return this->info == b.info;
@@ -651,7 +655,9 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 	Vertex<T> * start = nullptr;
 	Vertex<T> * ending = nullptr;
 
-	vector<Vertex<T>*> Q;
+	//vector<Vertex<T>*> Q;
+	MutablePriorityQueue<Vertex<T>> Q;
+
 
 	int capacity = driver->getCapacity();
 
@@ -665,15 +671,16 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		if (this->vertexSet[i]->info == destination) {
 			ending = this->vertexSet[i];
 		}
-		Q.push_back(this->vertexSet[i]);
-
+		//Q.push_back(this->vertexSet[i]);
+		Q.insert(vertexSet[i]);
 	}
 
 	start->distance = 0;
 	start->time = 0;
 	list<Vertex<T> *> path;
 	while (!Q.empty()) {
-		Vertex<T>* temp = Utili<T>::remMin(Q);
+		//Vertex<T>* temp = Utili<T>::remMin(Q);
+		Vertex<T>* temp = Q.extractMin();
 
 		int peopleT = 0;
 		if (temp->info == ending->info) { //fim do algoritmo, chegamos ao destino
@@ -763,6 +770,10 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				temp->adj[i].dest->time = time;
 				temp->adj[i].dest->previous = temp;
 				temp->adj[i].dest->pickedUp = picked;
+
+				if (temp->adj[i].dest->queueIndex != 0)
+					Q.decreaseKey(temp->adj[i].dest);
+
 				for (auto m = picked.begin(); m != picked.end(); ) {
 					(*m)->setPrevPos((*m)->getPos());
 					(*m)->setPos(temp->adj[i].dest);
@@ -794,7 +805,7 @@ double Graph<T>::dijkstraPath(T source, T destination,
 	Vertex<T> * start = nullptr;
 	Vertex<T> * ending = nullptr;
 
-	vector<Vertex<T>*> Q;
+	MutablePriorityQueue<Vertex<T>> Q;
 
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
@@ -805,7 +816,8 @@ double Graph<T>::dijkstraPath(T source, T destination,
 		if (this->vertexSet[i]->info == destination) {
 			ending = this->vertexSet[i];
 		}
-		Q.push_back(this->vertexSet[i]);
+		//Q.push_back(this->vertexSet[i]);
+		Q.insert(vertexSet[i]);
 
 	}
 	if (start == nullptr && ending == nullptr)
@@ -820,7 +832,8 @@ double Graph<T>::dijkstraPath(T source, T destination,
 
 	
 	while (!Q.empty()) {
-		Vertex<T>* temp = Utili<T>::remMin(Q);
+		//Vertex<T>* temp = Utili<T>::remMin(Q);
+		Vertex<T>* temp = Q.extractMin();
 
 		if (temp->info == ending->info) {
 			while (temp->previous != nullptr) {
@@ -840,6 +853,8 @@ double Graph<T>::dijkstraPath(T source, T destination,
 			if (alt < temp->adj[i].dest->distance) {
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->previous = temp;
+				if (temp->adj[i].dest->queueIndex != 0)
+					Q.decreaseKey(temp->adj[i].dest);
 			}
 		}
 	}
