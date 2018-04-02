@@ -20,8 +20,7 @@ Driver<T>::~Driver() {
 }
 
 template<class T>
-void Driver<T>::setPath(std::list<Vertex<T>*> newPath)
-{
+void Driver<T>::setPath(std::list<Vertex<T>*> newPath) {
 	this->path = newPath;
 }
 
@@ -87,31 +86,42 @@ void Driver<T>::updateFreeSpace() {
 	unsigned int count = 0;
 	set<Passenger<T>*> passengersDropped;
 
-	for (auto i = this->passengersDroppedAt.begin(); i != this->passengersDroppedAt.end(); ++i) {
-		for (auto j : i->second)
-			passengersDropped.insert(j);
+	for (auto i = this->passengersDroppedAt.cbegin();
+			i != this->passengersDroppedAt.cend(); ++i) {
+		for (auto j = i->second.begin(); j != i->second.end(); ++j) {
+			(*j)->setPicked(false);
+			(*j)->setDropped(false);
+				
+			passengersDropped.insert((*j));
+		}
 	}
 
-	for (auto i = this->passengersPickedAt.begin(); i != this->passengersPickedAt.end(); ++i) {
+	for (auto i = this->passengersPickedAt.begin();
+			i != this->passengersPickedAt.end();) {
+		
+		for (auto j = i->second.begin(); j != i->second.end();) {
+			if (!passengersDropped.count((*j))) {
+				(*j)->setPos((*j)->getPrevPos());
+				(*j)->setPicked(false);
+				(*j)->setDropped(false);
+				j = i->second.erase(j);
+			}
+			else
+				++j;
+		}
+
+
 		if (i->second.empty())
 			i = this->passengersPickedAt.erase(i);
-		else {
-			for (auto j = i->second.begin(); j != i->second.end();) {
-				if (!passengersDropped.count((*j))) {
-					(*j)->setPos((*j)->getPrevPos());
-					j = i->second.erase(j);
-				}
-
-				++j;
-			}
+		else
 			++i;
-		}
+		
 
 	}
 
 	this->capacityAtPath.push_back(this->capacity);
 	for (auto i = this->path.cbegin(); i != this->path.cend(); ++i) {
-		
+
 		int numPicked = 0;
 		int numDropped = 0;
 
@@ -131,9 +141,8 @@ void Driver<T>::updateFreeSpace() {
 			}
 		}
 
-
 		this->capacityAtPath[count] += numDropped - numPicked;
-		if (count +1 != this->path.size())
+		if (count + 1 != this->path.size())
 			this->capacityAtPath.push_back(this->capacityAtPath[count]);
 		++count;
 
@@ -151,16 +160,16 @@ void Driver<T>::updateFreeSpace(Passenger<T> *p, list<Vertex<T>*> path) {
 	int index = 0;
 	auto i = path.begin();
 
-	for (; i != path.end() ; i++, index++) {
-		if((*i)->getInfo() == destination) {
+	for (; i != path.end(); i++, index++) {
+		if ((*i)->getInfo() == destination) {
 			break;
 		}
 
-		if((*i)->getInfo() == source) {
+		if ((*i)->getInfo() == source) {
 			pathStartFound = true;
 		}
 
-		if(pathStartFound) {
+		if (pathStartFound) {
 			this->capacityAtPath.at(index) -= p_size;
 		}
 

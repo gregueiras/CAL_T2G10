@@ -69,4 +69,5 @@ public:
 	bool operator<(Passenger<T>& p) const{
 		return this->numPassengers < p.getNum();
 	}
+
 };

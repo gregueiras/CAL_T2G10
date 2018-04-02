@@ -714,21 +714,22 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
 
-		set<Vertex<T>*> visited;
+		set<Vertex<T>*> VertexFuterePath;
 
 		while (temp1->previous != nullptr) {
-			visited.insert(temp1);
+			VertexFuterePath.insert(temp1);
 			
 			if (!temp1->pickedUp.empty())
 				for (auto j : temp1->pickedUp)
-					if (!(visited.count(j->getDestination())))
+					if (!(VertexFuterePath.count(j->getDestination())))
 						alreadyPicked += j->getNum();
 			temp1 = temp1->previous;
 		}
+		VertexFuterePath.clear();
 
 		cout << "ALREADY PICKED \n";
 		cout << temp->getInfo() << " cap " << alreadyPicked << endl;
-		visited.clear();
+	
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
 			int lastAlreadyPicked = alreadyPicked;

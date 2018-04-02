@@ -12,6 +12,11 @@ string Person::getName() const {
 	return name;
 }
 
+int Person::getAge() const
+{
+	return this->age;
+}
+
 Time Person::getStartTime() const {
 	return startTime;
 }

@@ -8,43 +8,51 @@
 #include "Passenger.h"
 
 template<class T>
-Passenger<T>::Passenger() :
-Person() {
+Passenger<T>::Passenger() : Person() {
 	this->timeLimit = 0;
 	this->destination = NULL;
 	this->numPassengers = 0;
 	this->source = NULL;
 	this->pos = NULL;
+	this->dropped = false;
+	this->picked = false;
+	this->prevPos = NULL;
 }
 
 template<class T>
-Passenger<T>::Passenger(int numP) :
-Person() {
+Passenger<T>::Passenger(int numP) : Person() {
 	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->destination = NULL;
 	this->source = NULL;
 	this->pos = NULL;
+	this->dropped = false;
+	this->picked = false;
+	this->prevPos = NULL;
 }
 
 template<class T>
-Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) :
-Person() {
+Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) : Person() {
 	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->source = source;
 	this->destination = destination;
 	this->pos = NULL;
+	this->dropped = false;
+	this->picked = false;
+	this->prevPos = NULL;
 }
 
 template<class T>
-Passenger<T>::Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination) :
-Person() {
+Passenger<T>::Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination) : Person() {
 	this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;
 	this->destination = destination;
 	this->pos = NULL;
+	this->dropped = false;
+	this->picked = false;
+	this->prevPos = NULL;
 }
 
 template<class T>
@@ -91,8 +99,7 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, a
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime)  :
-		Person(name, age, startTime) {
+Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) : Person(name, age, startTime) {
 	this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;

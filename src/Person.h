@@ -19,6 +19,7 @@ public:
 	Person (string n, int a);
 	Person (string n, int a, Time st);
 	string getName() const;
+	int getAge() const;
 	Time getStartTime() const;
 	Time getCurrentTime() const;
 	void updateCurrentTime(int minutes);
