@@ -10,8 +10,6 @@
 template<class T>
 Driver<T>::Driver() {
 	this->capacity = 0;
-	this->minLimit = 0;
-
 }
 
 template<class T>
@@ -80,16 +78,14 @@ void Driver<T>::addNewPassengersDroppedAt(Vertex<T>* v,
 }
 
 template<class T>
-Driver<T>::Driver(int cap, int lim) {
+Driver<T>::Driver(int cap, int lim) : Person("",0,lim, Time(0,0)){
 	this->capacity = cap;
-	this->minLimit = lim;
 }
 
 template<class T>
 Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) :
-		Person(name, age, startTime) {
+		Person(name, age,lim, startTime) {
 	this->capacity = cap;
-	this->minLimit = lim;
 }
 
 template<class T>
@@ -192,10 +188,6 @@ int Driver<T>::getCapacity() {
 	return this->capacity;
 }
 
-template<class T>
-int Driver<T>::getMinLimit() {
-	return this->minLimit;
-}
 
 template<class T>
 std::vector<int> Driver<T>::getCapacityAtPath() {

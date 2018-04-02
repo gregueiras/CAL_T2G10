@@ -163,7 +163,7 @@ public:
 	bool addPeople(T source, T destination, int num);
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
 	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
-	bool existsAndHasEnoughTime(T & source, T & destination, Driver<T>* driver);
+	bool existsAndHasEnoughTime(T & source, T & destination, Person* driver,list<Vertex<int>*> &path);
 	void calculateAndPrintPath(T source, T destination, Driver<T>* driver);
 
 	void postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<Passenger<int>*> &passengers);
@@ -687,7 +687,6 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 				for (unsigned int k = 0; k < temp->pickedUp.size(); k++) {
 					temp->pickedUp[k]->updateCurrentTime(temp->time);
-					
 					if (!temp->pickedUp[k]->getDropped()) {
 						tempPass.push_back(temp->pickedUp[k]);
 						temp->pickedUp[k]->setDropped(true);
@@ -757,14 +756,13 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 					+ temp->adj[i].weight / (pow(numPicked, 2) + 1));
 			double time = temp->time + temp->adj[i].weight;
 
-			//cout << "Time " << time << "  " << timeLimit << endl;
-			if (alreadyPicked <= capacity && time <= driver->getMinLimit()
+			//cout << "Time " << time << "  " << driver->getMinLimit() << endl;
+			if (alreadyPicked <= capacity && time <= driver->getTimeLimit()
 					&& alt < temp->adj[i].dest->distance) { //TODO Pensar melhor no alt, em por um OR em vez do AND, caso o caminho n melhore, mas temos que cumprir o tempo
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->time = time;
 				temp->adj[i].dest->previous = temp;
 				temp->adj[i].dest->pickedUp = picked;
-
 				for (auto m = picked.begin(); m != picked.end(); ) {
 					(*m)->setPrevPos((*m)->getPos());
 					(*m)->setPos(temp->adj[i].dest);
@@ -879,7 +877,8 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 
 	bool result = false;
 	list<Vertex<T>*> path;
-	this->dijkstraPath(source, destination, path);
+	if (!existsAndHasEnoughTime(source, destination, passenger,path))
+		return false;
 
 	cout << (*passenger) << " (" << passenger->getNum() << ") added to path: "
 			<< endl;
@@ -925,10 +924,37 @@ bool Graph<T>::removePeople(vector<Passenger<T>*> passengers,
 	return result;
 }
 
+//template<class T>
+//bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Driver<T> * driver)
+//{
+//	double tempDistance = this->dijkstraDistance(source, destination);
+//	if (tempDistance == -1) {
+//		cout << source << " doesn't exist." << endl;
+//		return false;
+//	}
+//	else if (tempDistance == -2) {
+//		cout << destination << " doesn't exist." << endl;
+//		return false;
+//	}
+//	else if (tempDistance == -3) {
+//		cout << source << " and " << destination << " don't exist." << endl;
+//		return false;
+//	}
+//	else if (tempDistance == INT_MAX) {
+//		cout << source << " and " << destination << " are not connected. Invalid path" << endl;
+//		return false;
+//	}
+//	else if (tempDistance > driver->getMinLimit()) {
+//		cout << driver->getName() << " has not enough time to go from " << source << " to " << destination << endl;
+//		return false;
+//	}
+//	return true;
+//}
+
 template<class T>
-bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Driver<T> * driver)
+bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Person* person, list<Vertex<int>*>& path)
 {
-	double tempDistance = this->dijkstraDistance(source, destination);
+	double tempDistance = this->dijkstraPath(source, destination,path);
 	if (tempDistance == -1) {
 		cout << source << " doesn't exist." << endl;
 		return false;
@@ -945,20 +971,23 @@ bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Driver<T> * dri
 		cout << source << " and " << destination << " are not connected. Invalid path" << endl;
 		return false;
 	}
-	else if (tempDistance > driver->getMinLimit()) {
-		cout << driver->getName() << " has not enough time to go from " << source << " to " << destination << endl;
+	else if (tempDistance > person->getTimeLimit()) {
+		cout << person->getName() << " has not enough time to go from " << source << " to " << destination << endl;
 		return false;
 	}
 	return true;
 }
 
+
+
 template<class T>
 void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) {
 
 	list<Vertex<int>*> path;
+	list<Vertex<int>*> tpath;
 	vector<Passenger<int>*> passen;
 
-	if (!existsAndHasEnoughTime(source, destination, driver))
+	if (!existsAndHasEnoughTime(source, destination, driver,tpath))
 		return;
 
 	cout << endl

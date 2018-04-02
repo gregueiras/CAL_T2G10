@@ -47,9 +47,6 @@ public:
 	Vertex<T>* getDestination();
 	void setDestination(Vertex<T>* pos);
 
-	int getTimeLimit() const;
-	void setTimeLimit(int timeLimit);
-
 	void setPicked(bool newPicked) {
 		this->picked = newPicked;
 	}

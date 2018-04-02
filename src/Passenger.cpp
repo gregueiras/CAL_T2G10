@@ -82,7 +82,6 @@ Passenger<T>::~Passenger() {
 
 template<class T>
 Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
-	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->source = source;
 	this->pos = NULL;
@@ -90,8 +89,7 @@ Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, age) {
-	this->timeLimit = tl;
+Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, age,tl,Time(0,0)) {
 	this->numPassengers = numP;
 	this->source = source;
 	this->pos = NULL;
@@ -99,8 +97,7 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, a
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) : Person(name, age, startTime) {
-	this->timeLimit = tl;
+Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) : Person(name, age,tl, startTime) {
 	this->numPassengers = numP;
 	this->source = source;
 	this->pos = NULL;
@@ -120,16 +117,6 @@ void Passenger<T>::setSource(Vertex<T>* pos) {
 template<class T>
 Vertex<T>* Passenger<T>::getDestination() {
 	return this->destination;
-}
-
-template<class T>
-inline int Passenger<T>::getTimeLimit() const {
-	return timeLimit;
-}
-
-template<class T>
-inline void Passenger<T>::setTimeLimit(int timeLimit) {
-	this->timeLimit = timeLimit;
 }
 
 template<class T>

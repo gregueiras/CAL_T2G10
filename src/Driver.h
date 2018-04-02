@@ -26,7 +26,6 @@ template<class T> struct ptr_less {
 template<class T>
 class Driver: public Person {
 	int capacity; //car passengers capacity
-	int minLimit; //drivers trip limit
 	std::vector<Passenger<T>*> passengers;
 	std::vector<int> capacityAtPath;
 	std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersPickedAt;
@@ -58,7 +57,7 @@ public:
 			vector<Passenger<T>*> passengers);
 
 	int getCapacity();
-	int getMinLimit();
+
 	std::vector<int> getCapacityAtPath();
 	int getCapacityAtVertexOnPath(int index);
 
