@@ -33,6 +33,15 @@ template<class T>
 void Driver<T>::addPassengersPickedAt(Vertex<T>* v,
 		vector<Passenger<T>*> passengers) {
 	//	auto ret = this->passengersPickedAt[v] = passengers;
+
+	if (this->passengersPickedAt.count(v) != 0)
+	{
+		auto res = this->passengersPickedAt.find(v);
+		auto temp = res->second;
+		this->passengersPickedAt.erase(v);
+		temp.insert(temp.end(), passengers.begin(), passengers.end());
+		this->passengersPickedAt.insert(std::pair<Vertex<T>*, vector<Passenger<T>*> >(v, temp));
+	} else
 	this->passengersPickedAt.insert(
 			std::pair<Vertex<T>*, vector<Passenger<T>*> >(v, passengers));
 }
@@ -42,8 +51,9 @@ void Driver<T>::addNewPassengersPickedAt(Vertex<T>* v,
 		vector<Passenger<T>*> passengers) {
 	//	auto ret = this->passengersPickedAt[v] = passengers;
 	auto it = this->passengersPickedAt.find(v);
-	if(it != this->passengersPickedAt.end()) {
-		passengers.insert(passengers.begin(), it->second.begin(), it->second.end());
+	if (it != this->passengersPickedAt.end()) {
+		passengers.insert(passengers.begin(), it->second.begin(),
+				it->second.end());
 		this->passengersPickedAt.erase(it);
 	}
 	this->passengersPickedAt.insert(
@@ -60,8 +70,9 @@ template<class T>
 void Driver<T>::addNewPassengersDroppedAt(Vertex<T>* v,
 		vector<Passenger<T>*> passengers) {
 	auto it = this->passengersDroppedAt.find(v);
-	if(it != this->passengersDroppedAt.end()) {
-		passengers.insert(passengers.begin(), it->second.begin(), it->second.end());
+	if (it != this->passengersDroppedAt.end()) {
+		passengers.insert(passengers.begin(), it->second.begin(),
+				it->second.end());
 		this->passengersDroppedAt.erase(it);
 	}
 	this->passengersDroppedAt.insert(
@@ -75,8 +86,8 @@ Driver<T>::Driver(int cap, int lim) {
 }
 
 template<class T>
-Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) : Person(name,age,startTime)
-{
+Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) :
+		Person(name, age, startTime) {
 	this->capacity = cap;
 	this->minLimit = lim;
 }
