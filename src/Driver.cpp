@@ -93,13 +93,18 @@ void Driver<T>::updateFreeSpace() {
 	}
 
 	for (auto i = this->passengersPickedAt.begin(); i != this->passengersPickedAt.end(); ++i) {
-		for (auto j = i->second.begin(); j != i->second.end();) {
-			if (!passengersDropped.count((*j))) {
-				(*j)->setPos((*j)->getPrevPos());
-				j = i->second.erase(j);
-			}
-			else
+		if (i->second.empty())
+			i = this->passengersPickedAt.erase(i);
+		else {
+			for (auto j = i->second.begin(); j != i->second.end();) {
+				if (!passengersDropped.count((*j))) {
+					(*j)->setPos((*j)->getPrevPos());
+					j = i->second.erase(j);
+				}
+
 				++j;
+			}
+			++i;
 		}
 
 	}
