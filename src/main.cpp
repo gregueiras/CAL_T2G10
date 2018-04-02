@@ -1,9 +1,9 @@
-	/*
- * main.cpp
- *
- *  Created on: Mar 22, 2018
- *      Author: gregu
- */
+/*
+* main.cpp
+*
+*  Created on: Mar 22, 2018
+*      Author: gregu
+*/
 
 #include <iostream>
 #include <list>
