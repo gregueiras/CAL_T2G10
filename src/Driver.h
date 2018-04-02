@@ -62,6 +62,8 @@ public:
 	std::vector<int> getCapacityAtPath();
 	int getCapacityAtVertexOnPath(int index);
 
+	std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> getPassengersPickedAt();
+
 	void printPassengersPickedAt();
 	void printPassengersDroppedAt();
 	void printCapacityAtPath();

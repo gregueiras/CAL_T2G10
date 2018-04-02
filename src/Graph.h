@@ -715,21 +715,21 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
 
-		set<Vertex<T>*> VertexFuterePath;
+		set<Vertex<T>*> VertexFuturePath;
 
-		while (temp1->previous != nullptr) {
-			VertexFuterePath.insert(temp1);
-			
-			if (!temp1->pickedUp.empty())
-				for (auto j : temp1->pickedUp)
-					if (!(VertexFuterePath.count(j->getDestination())))
-						alreadyPicked += j->getNum();
-			temp1 = temp1->previous;
+		//cout << "A: " << endl;
+		//driver->printPassengersPickedAt(); cout << endl;
+	
+		auto pickedTemp = driver->getPassengersPickedAt();
+		for (auto i = pickedTemp.cbegin(); i != pickedTemp.cend(); ++i)
+		{
+			for (auto j : i->second)
+				if (j->getDestination() != j->getPos() && j->getDestination() != temp)
+					alreadyPicked += j->getNum();
 		}
-		VertexFuterePath.clear();
-
-		cout << "ALREADY PICKED \n";
-		cout << temp->getInfo() << " cap " << alreadyPicked << endl;
+		
+		//cout << "ALREADY PICKED \n";
+		//cout << temp->getInfo() << " cap " << alreadyPicked << endl;
 	
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
@@ -740,10 +740,14 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			vector<Passenger<T>*> picked;
 			int numPicked = 0;
 			for (unsigned int j = 0; j < temp->adj[i].waiting.size(); j++) {
+
 				if (temp->adj[i].waiting[j]->getPos() == temp
 						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
 						<= capacity  && temp->adj[i].waiting[j]->getCurrentTime() <= driver->getCurrentTime()) {
-					alreadyPicked += temp->adj[i].waiting[j]->getNum();
+					
+					if (!temp->adj[i].waiting[j]->getPicked()) //this passenger is already in alreadyPicked
+						alreadyPicked += temp->adj[i].waiting[j]->getNum();
+
 					numPicked += temp->adj[i].waiting[j]->getNum();
 					picked.push_back(temp->adj[i].waiting[j]);
 				}

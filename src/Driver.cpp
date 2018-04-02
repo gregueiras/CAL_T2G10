@@ -208,6 +208,12 @@ int Driver<T>::getCapacityAtVertexOnPath(int index) {
 }
 
 template<class T>
+std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> Driver<T>::getPassengersPickedAt()
+{
+	return this->passengersPickedAt;
+}
+
+template<class T>
 void Driver<T>::printPassengersPickedAt() {
 	for (auto i = this->passengersPickedAt.cbegin();
 			i != this->passengersPickedAt.cend(); ++i) {
