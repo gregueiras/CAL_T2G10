@@ -163,6 +163,7 @@ public:
 	bool addPeople(T source, T destination, int num);
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
 	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
+	bool existsAndHasEnoughTime(T & source, T & destination, Driver<T>* driver);
 	void calculateAndPrintPath(T source, T destination, Driver<T>* driver);
 
 	void postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<Passenger<int>*> &passengers);
@@ -805,9 +806,17 @@ double Graph<T>::dijkstraPath(T source, T destination,
 		Q.push_back(this->vertexSet[i]);
 
 	}
+	if (start == nullptr && ending == nullptr)
+		return -3;
+	if (start == nullptr)
+		return -1;
+	if (ending == nullptr)
+		return -2;
+	
 	start->distance = 0;
 	list<Vertex<T> *> path;
 
+	
 	while (!Q.empty()) {
 		Vertex<T>* temp = Utili<T>::remMin(Q);
 
@@ -913,15 +922,40 @@ bool Graph<T>::removePeople(vector<Passenger<T>*> passengers,
 }
 
 template<class T>
+bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Driver<T> * driver)
+{
+	double tempDistance = this->dijkstraDistance(source, destination);
+	if (tempDistance == -1) {
+		cout << source << " doesn't exist." << endl;
+		return false;
+	}
+	else if (tempDistance == -2) {
+		cout << destination << " doesn't exist." << endl;
+		return false;
+	}
+	else if (tempDistance == -3) {
+		cout << source << " and " << destination << " don't exist." << endl;
+		return false;
+	}
+	else if (tempDistance == INT_MAX) {
+		cout << source << " and " << destination << " are not connected. Invalid path" << endl;
+		return false;
+	}
+	else if (tempDistance > driver->getMinLimit()) {
+		cout << driver->getName() << " has not enough time to go from " << source << " to " << destination << endl;
+		return false;
+	}
+	return true;
+}
+
+template<class T>
 void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) {
 
 	list<Vertex<int>*> path;
 	vector<Passenger<int>*> passen;
 
-	if (this->dijkstraDistance(source, destination) > driver->getMinLimit()) {
-		cout << driver->getName() << " has not enough time to go from " << source << " to " << destination << endl;
+	if (!existsAndHasEnoughTime(source, destination, driver))
 		return;
-	}
 
 	cout << endl
 	<< this->dijkstraPeopleDistancePath(source, destination, path,

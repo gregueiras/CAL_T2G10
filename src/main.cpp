@@ -165,6 +165,7 @@ void testDijkstraDistancePeople() {
 	myGraph.addVertex(5);
 	myGraph.addVertex(6);
 	myGraph.addVertex(7);
+	myGraph.addVertex(9);
 	myGraph.addEdge(0, 1, 20);
 	myGraph.addEdge(0, 2, 10);
 	myGraph.addEdge(0, 3, 14);
@@ -199,11 +200,11 @@ void testDijkstraDistancePeople() {
 	Passenger<int> p3 = Passenger<int>("Mary", 30, 1, 20, Time(12,40));
 	Passenger<int> p5 = Passenger<int>("Bane", 20,6 ,20,Time(12,42));
 	Passenger<int> p6 = Passenger<int>("Kate", 20, 3,20, t);
-	Passenger<int> p7 = Passenger<int>("nina", 20, 3, 20, t);
+	Passenger<int> p7 = Passenger<int>("Nina", 20, 3, 20, t);
 
 	if (!myGraph.addPeople(2, 3, &p1)) //101
 		cout << "ERROR" << endl;
-	if (!myGraph.addPeople(0, 2, &p2)) //2
+	if (!myGraph.addPeople(0, 7, &p2)) //2
 		cout << "ERROR" << endl;
 	if (!myGraph.addPeople(3, 5, &p3)) //1
 		cout << "ERROR" << endl;
@@ -216,17 +217,23 @@ void testDijkstraDistancePeople() {
 	if (!myGraph.addPeople(0, 2, &p7)) //3
 		cout << "ERROR" << endl;
 
-	Driver<int>* driver = new Driver<int>(20,40,"julio",20,t);
+	Driver<int>* driver = new Driver<int>(20,40,"Julio",20,t);
+
+	cout << endl;
+	myGraph.calculateAndPrintPath(0, 8, driver);
+	myGraph.calculateAndPrintPath(-1, 5, driver);
+	myGraph.calculateAndPrintPath(-1, 8, driver);
+	myGraph.calculateAndPrintPath(0, 9, driver);
+	cout << endl;
 
 	myGraph.calculateAndPrintPath(0, 7, driver);
-
 
 }
 
 int main(void) {
 
 	testDijkstraDistancePeople();
-	return 0;
-	getchar();
+	getchar(); 	return 0;
+
 }
 
