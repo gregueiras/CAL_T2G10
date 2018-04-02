@@ -917,6 +917,12 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) 
 
 	list<Vertex<int>*> path;
 	vector<Passenger<int>*> passen;
+
+	if (this->dijkstraDistance(source, destination) > driver->getMinLimit()) {
+		cout << driver->getName() << " has not enough time to go from " << source << " to " << destination << endl;
+		return;
+	}
+
 	cout << endl
 	<< this->dijkstraPeopleDistancePath(source, destination, path,
 			passen, driver) << endl;
