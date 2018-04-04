@@ -293,6 +293,7 @@ Graph<int> create_MyGraph()
 	Passenger<int> *p5 = new Passenger<int>("Bane", 20, 17, 20, Time(12, 42));
 	Passenger<int> *p6 = new Passenger<int>("Kate", 20, 3, 20, t);
 	Passenger<int> *p7 = new Passenger<int>("Nina", 20, 3, 20, t);
+	Passenger<int> *p8 = new Passenger<int>("Adam", 20, 19, 50, t);
 
 	if (!myGraph.addPeople(2, 3, p1)) //101
 		cout << "ERROR" << endl;
@@ -307,6 +308,8 @@ Graph<int> create_MyGraph()
 	if (!myGraph.addPeople(2, 5, p6)) //3
 		cout << "ERROR" << endl;
 	if (!myGraph.addPeople(0, 2, p7)) //3
+		cout << "ERROR" << endl;
+	if (!myGraph.addPeople(3, 7, p8)) //19
 		cout << "ERROR" << endl;
 	return myGraph;
 }
@@ -356,7 +359,7 @@ void testDijkstraPeopleMultipleDrivers(unordered_set<Driver<int>*> drivers)
 int main(void) {
 	unordered_set<Driver<int>*> drivers;
 	Driver<int>* bieira = new Driver<int>(0,3,20, 40, "bieira", 20, Time(12, 12));
-	Driver<int>*  gregueiras = new Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 10));
+	Driver<int>*  gregueiras = new Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 45));
 	Driver<int>*  susy = new Driver<int>(0,7,20, 40, "susy", 22, Time(12, 12));
 	drivers.insert(bieira);
 	drivers.insert(gregueiras);

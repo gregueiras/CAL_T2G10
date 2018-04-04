@@ -16,7 +16,7 @@ template<class T>
 class Passenger: public Person {
 	int numPassengers;
 	int timeLimit; //only being considered if route is deviated from the best found thru Dijsktra
-	vector<Vertex<T>*> path;
+	list<Vertex<T>*> path;
 	Vertex<T>* source;
 	Vertex<T>* pos;
 	Vertex<T>* prevPos;
@@ -65,6 +65,14 @@ public:
 
 	bool operator<(Passenger<T>& p) const{
 		return this->numPassengers < p.getNum();
+	}
+
+	void setPath(list<Vertex<T>*> path) {
+		this->path = path;
+	}
+
+	list<Vertex<T>*> getPath() const {
+		return this->path;
 	}
 
 };

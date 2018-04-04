@@ -55,7 +55,7 @@ class Vertex {
 	void addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger);
 	//void getPeopleOnEdge
 	void removePeopleFromEdge(Vertex<T>* vertex,
-			vector<Passenger<T>*> passengers);
+			Passenger<T>* passenger);
 	bool removeEdgeTo(Vertex<T> *d);
 
 public:
@@ -87,14 +87,9 @@ public:
 	static Vertex<T>* remMin(vector<Vertex<T>*>& Q);
 	static void printPath(const list<Vertex<T>*> path);
 	static void removeFromVector(T* elem, vector<T*>& v);
+	static void setPassengersPath(vector<Passenger<T>*> passengers, const list<Vertex<T>*> path);
 };
 
-//template<class T>
-//struct OrderByWeight {
-//	bool operator()(Vertex<T> const &a, Vertex<T> const &b) {
-//		return a.distance < b.distance;
-//	}
-//};
 
 template<class T>
 class Edge {
@@ -166,7 +161,7 @@ public:
 	int dijkstraPeopleDistance(T source, T destination);
 	bool addPeople(T source, T destination, int num);
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
-	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
+	void removePeople(vector<Passenger<T>*> passengers);
 	bool existsAndHasEnoughTime(T & source, T & destination, Person* driver,list<Vertex<int>*> &path);
 	bool calculatePath(T source, T destination, Driver<T>* driver);
 	void calculateAndPrintPath(T source, T destination, Driver<T>* driver, bool wasPreProcessed);
@@ -632,6 +627,45 @@ void Utili<T>::removeFromVector(T* elem, vector<T*> &v) {
 }
 
 template<class T>
+void Utili<T>::setPassengersPath(vector <Passenger<T>*> passengers, const list<Vertex<T>*> path) {
+	for (auto p = passengers.begin(); p != passengers.end(); ++p) {
+		auto pathBegin = path.end();
+		auto pathEnd = path.end();
+
+		if ((*p)->getName() == "Adam")
+		{
+			cout << "";
+		}
+		bool beginFound = false;
+		bool endFound = false;
+
+		for (auto i = path.begin(); i != path.end(); ++i) {
+			if ((*i) == (*p)->getSource()) {
+				pathBegin = i;
+				beginFound = true;
+			}
+				
+			else if ((*i) == (*p)->getPos()) {
+				pathEnd = i;
+				endFound = true;
+			}
+
+			if (pathEnd != path.end()) {
+				++pathEnd;
+				break;
+			}
+			
+		}
+		if (beginFound && endFound) {
+			list<Vertex<T>*> passengerPath;
+			passengerPath.insert(passengerPath.end(), pathBegin, pathEnd);
+			(*p)->setPath(passengerPath);
+		}
+	}
+ }
+
+
+template<class T>
 double Graph<T>::dijkstraDistance(T source, T destination) {
 
 	list<Vertex<T>*> temp;
@@ -742,6 +776,12 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		//cout << "ALREADY PICKED \n";
 		//cout << temp->getInfo() << " cap " << alreadyPicked << endl;
 	
+		if (driver->getName() == "gregueiras" && temp->getInfo() == 5)
+			cout << "";
+
+		if (driver->getName() == "susy" && temp->getInfo() == 5)
+			cout << "";
+
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
 			int lastAlreadyPicked = alreadyPicked;
@@ -925,25 +965,42 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 	return result;
 }
 
+//template<class T>
+//bool Graph<T>::removePeople(vector<Passenger<T>*> passengers,
+//		list<Vertex<T>*> path) {
+//
+//	bool result = false;
+//
+//	for (auto i = path.begin(); i != path.end(); i++) {
+//		auto j = i;
+//		auto next = ++j;
+//
+//		if (next == path.end())
+//			break;
+//
+//		(*i)->removePeopleFromEdge((*next), passengers);
+//
+//		result = true;
+//	}
+//
+//	return result;
+//}
+
 template<class T>
-bool Graph<T>::removePeople(vector<Passenger<T>*> passengers,
-		list<Vertex<T>*> path) {
+void Graph<T>::removePeople(vector<Passenger<T>*> passengers)
+{
+	for (auto p = passengers.begin(); p != passengers.end(); ++p) {
+		list<Vertex<T>*> pPath = (*p)->getPath();
+		for (auto i = pPath.begin(); i != pPath.end(); ++i) {
+			auto j = i;
+			auto next = ++j;
 
-	bool result = false;
+			if (next == pPath.end())
+				break;
 
-	for (auto i = path.begin(); i != path.end(); i++) {
-		auto j = i;
-		auto next = ++j;
-
-		if (next == path.end())
-			break;
-
-		(*i)->removePeopleFromEdge((*next), passengers);
-
-		result = true;
+			(*i)->removePeopleFromEdge((*next), (*p));
+		}
 	}
-
-	return result;
 }
 
 //template<class T>
@@ -1010,19 +1067,21 @@ bool Graph<T>::calculatePath(T source, T destination, Driver<T>* driver)
 
 	if (!existsAndHasEnoughTime(source, destination, driver, tpath))
 		return false;
-	this->removePeople(passen, path);
 
+	
 	this->dijkstraPeopleDistancePath(source, destination, path,
 		passen, driver);
 
 	driver->setPath(path);
-
-	this->removePeople(passen, path);
+	Utili<int>::setPassengersPath(passen, path);
+	/*this->removePeople(passen, path);*/
+	this->removePeople(passen);
 
 	driver->updateFreeSpace();
 
 	postProcessing(driver, path, passen);
-	this->removePeople(passen, path);
+	//this->removePeople(passen, path);
+	this->removePeople(passen);
 
 	passen.clear();
 	path.clear();
@@ -1045,6 +1104,8 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 	<< this->dijkstraPeopleDistancePath(source, destination, path,
 			passen, driver) << endl;
 
+	Utili<int>::setPassengersPath(passen, path);
+
 	driver->setPath(path);
 	Utili<int>::printPath(path);
 //
@@ -1052,7 +1113,8 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 ////		cout << (*i)->getName() << " ";
 //
 	cout << endl;
-	this->removePeople(passen, path);
+	//this->removePeople(passen, path);
+	this->removePeople(passen);
 
 	driver->updateFreeSpace();
 
@@ -1068,7 +1130,8 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 	cout << "\nPOSTPROCESSING START\n";
 
 	postProcessing(driver, path, passen);
-	this->removePeople(passen, path);
+	//this->removePeople(passen, path);
+	this->removePeople(passen);
 
 	cout << "\nPOSTPROCESSING END\n";
 //	for (auto i = passen.begin(); i != passen.end(); i++)
@@ -1129,6 +1192,7 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 						driver->updateFreeSpace(waiting.at(k), path);
 						passengers.push_back(waiting.at(k));
 						driver->increaseTransportedPassengers();
+						waiting.at(k)->setPos(waiting.at(k)->getDestination());
 					} else { //Replace for better final result ?? No, give priority to weight
 					}
 				}
@@ -1225,21 +1289,33 @@ void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
 			this->adj.at(j).addPeople(passenger->getNum());
 			this->adj.at(j).waiting.push_back(passenger);
 		}
+		std::sort(this->adj.at(j).waiting.begin(), this->adj.at(j).waiting.end(),
+			[](const auto& lhs, const auto& rhs) {
+			return lhs->getNum() > rhs->getNum();
+		});
+
 	}
 }
 
+
+
+
 template<class T>
 void Vertex<T>::removePeopleFromEdge(Vertex<T>* vertex,
-		vector<Passenger<T>*> passengers) {
+		Passenger<T>* passenger) {
 	for (unsigned int j = 0; j < this->adj.size(); j++) {
 
 		if (this->adj.at(j).dest->getInfo() == vertex->getInfo()) {
-			for (unsigned int k = 0; k < passengers.size(); k++) {
-				//this->adj.at(j).removePeople(passengers.at(k)->getNum());
-				Utili<Passenger<T>>::removeFromVector(passengers.at(k),
-						this->adj.at(j).waiting);
+			//this->adj.at(j).removePeople(passengers.at(k)->getNum());
 
+			if (passenger->getName() == "Adam")
+			{
+				cout << "";
 			}
+			Utili<Passenger<T>>::removeFromVector(passenger,
+				this->adj.at(j).waiting);
+
+
 		}
 	}
 }
