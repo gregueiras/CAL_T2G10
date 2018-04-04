@@ -795,7 +795,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				if (temp->adj[i].waiting[j]->getPos() == temp
 						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
 						<= capacity  && temp->adj[i].waiting[j]->getCurrentTime() <= driver->getCurrentTime()
-					&& driver->getStartTime() < (temp->adj[i].waiting.at(j)->getStartTime() + Time(0, temp->adj[i].waiting.at(j)->getTimeLimit()))) {
+					&& driver->getCurrentTime() < (temp->adj[i].waiting.at(j)->getStartTime() + Time(0, temp->adj[i].waiting.at(j)->getTimeLimit()))) {
 					
 					if (!temp->adj[i].waiting[j]->getPicked()) //this passenger is already in alreadyPicked
 						alreadyPicked += temp->adj[i].waiting[j]->getNum();
@@ -1179,7 +1179,7 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 				driverTime.addMinutes( (*i)->time );
 				//if it is possible for the passenger to make that route
 				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime
-					&& (waiting.at(k))->getPos() == (*i) && driver->getStartTime() < (waiting.at(k)->getStartTime() + Time(0,waiting.at(k)->getTimeLimit())))
+					&& (waiting.at(k))->getPos() == (*i) && driver->getCurrentTime() < (waiting.at(k)->getStartTime() + Time(0,waiting.at(k)->getTimeLimit())))
 				{
 					cout << "Passed time limit test: " << (waiting.at(k))->getName() << endl;
 					//check if possible for the driver to take the passenger
