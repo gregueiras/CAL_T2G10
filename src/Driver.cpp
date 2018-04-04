@@ -80,12 +80,24 @@ void Driver<T>::addNewPassengersDroppedAt(Vertex<T>* v,
 template<class T>
 Driver<T>::Driver(int cap, int lim) : Person("",0,lim, Time(0,0)){
 	this->capacity = cap;
+	this->transportedPassengers = 0;
 }
 
 template<class T>
 Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) :
 		Person(name, age,lim, startTime) {
 	this->capacity = cap;
+	this->transportedPassengers = 0;
+}
+
+
+template<class T>
+Driver<T>::Driver(T src, T dest, int cap, int lim, string name, int age, Time startTime) :
+	Person(name, age, lim, startTime) {
+	this->capacity = cap;
+	this->source = src;
+	this->destination = dest;
+	this->transportedPassengers = 0;
 }
 
 template<class T>
@@ -188,6 +200,43 @@ int Driver<T>::getCapacity() {
 	return this->capacity;
 }
 
+template<class T>
+int Driver<T>::getTransportedPassengers() const
+{
+	return transportedPassengers;
+}
+template<class T>
+void Driver<T>::increaseTransportedPassengers(int number)
+{
+	transportedPassengers += number;
+}
+
+template<class T>
+void Driver<T>::increaseTransportedPassengers()
+{
+	transportedPassengers +=1;
+}
+template<class T>
+void Driver<T>::setTransportedPassengers(int tp)
+{
+	transportedPassengers = tp;
+}
+
+template<class T>
+int Driver<T>::getSource()const
+{
+	return source;
+}
+template<class T>
+int Driver<T>::getDestination()const
+{
+	return destination;
+}
+
+
+
+
+
 
 template<class T>
 std::vector<int> Driver<T>::getCapacityAtPath() {
@@ -246,6 +295,13 @@ void Driver<T>::resetTravel() {
 	this->clearPassengersDroppedAt();
 	this->clearPassengersPickedAt();
 	this->clearCapacityAtPath();
+}
+
+template<class T>
+void Driver<T>::resetValues()
+{
+	this->resetTravel();
+	this->transportedPassengers = 0;
 }
 
 template<class T>

@@ -35,10 +35,16 @@ class Driver: public Person {
 	void clearPassengersPickedAt();
 	void clearPassengersDroppedAt();
 	void clearCapacityAtPath();
+
+	int transportedPassengers;
+
+	T source;
+	T destination;
 public:
 	Driver();
 	Driver(int cap, int lim);
 	Driver(int cap, int lim, string name, int age, Time startTime);
+	Driver(T src, T dest,int cap, int lim,string name, int age, Time startTime);
 	virtual ~Driver();
 
 	void setPath(std::list<Vertex<T>*> newPath);
@@ -68,6 +74,15 @@ public:
 	void printCapacityAtPath();
 
 	void resetTravel();
+	void resetValues();
+
+	int getTransportedPassengers() const;
+	void increaseTransportedPassengers(int number);
+	void increaseTransportedPassengers();
+	void setTransportedPassengers(int tp);
+	int getSource()const;
+	int getDestination()const;
+
 
 };
 

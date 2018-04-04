@@ -168,7 +168,8 @@ public:
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
 	bool removePeople(vector<Passenger<T>*> passengers, list<Vertex<T>*> path);
 	bool existsAndHasEnoughTime(T & source, T & destination, Person* driver,list<Vertex<int>*> &path);
-	void calculateAndPrintPath(T source, T destination, Driver<T>* driver);
+	bool calculatePath(T source, T destination, Driver<T>* driver);
+	void calculateAndPrintPath(T source, T destination, Driver<T>* driver, bool wasPreProcessed);
 
 	void postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<Passenger<int>*> &passengers);
 	bool hasEnougthVacantSeatsOnPath(Driver<T>* driver, Passenger<T> *p, list<Vertex<T>*> path);
@@ -177,6 +178,8 @@ public:
 
 	vector<Passenger<T>*> secondTry(list<Vertex<T>*> path, Driver<T>* driver);
 };
+
+
 
 /****************** Provided constructors and functions ********************/
 
@@ -714,6 +717,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 			path.push_front(temp);
 			rePath = path;
+			driver->increaseTransportedPassengers(peopleT);
 			return peopleT;
 
 		}
@@ -749,7 +753,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 				if (temp->adj[i].waiting[j]->getPos() == temp
 						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
-						<= capacity  && temp->adj[i].waiting[j]->getCurrentTime() <= driver->getCurrentTime()) {
+						<= capacity  && temp->adj[i].waiting[j]->getCurrentTime() <= driver->getCurrentTime()
+					&& driver->getStartTime() < (temp->adj[i].waiting.at(j)->getStartTime() + Time(0, temp->adj[i].waiting.at(j)->getTimeLimit()))) {
 					
 					if (!temp->adj[i].waiting[j]->getPicked()) //this passenger is already in alreadyPicked
 						alreadyPicked += temp->adj[i].waiting[j]->getNum();
@@ -994,16 +999,45 @@ bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Person* person,
 }
 
 
+template<class T>
+bool Graph<T>::calculatePath(T source, T destination, Driver<T>* driver)
+{
+	list<Vertex<int>*> path;
+	list<Vertex<int>*> tpath;
+	vector<Passenger<int>*> passen;
+
+	if (!existsAndHasEnoughTime(source, destination, driver, tpath))
+		return false;
+	this->removePeople(passen, path);
+
+	this->dijkstraPeopleDistancePath(source, destination, path,
+		passen, driver);
+
+	driver->setPath(path);
+
+	this->removePeople(passen, path);
+
+	driver->updateFreeSpace();
+
+	postProcessing(driver, path, passen);
+	this->removePeople(passen, path);
+
+	passen.clear();
+	path.clear();
+	return true;
+}
+
 
 template<class T>
-void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver) {
+void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, bool wasPreProcessed) {
 
 	list<Vertex<int>*> path;
 	list<Vertex<int>*> tpath;
 	vector<Passenger<int>*> passen;
 
-	if (!existsAndHasEnoughTime(source, destination, driver,tpath))
-		return;
+	if (!wasPreProcessed)
+		if (!existsAndHasEnoughTime(source, destination, driver,tpath))
+			return;
 
 	cout << endl
 	<< this->dijkstraPeopleDistancePath(source, destination, path,
@@ -1079,7 +1113,8 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 				Time driverTime(driver->getStartTime());
 				driverTime.addMinutes( (*i)->time );
 				//if it is possible for the passenger to make that route
-				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime && (waiting.at(k))->getPos() == (*i))
+				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime
+					&& (waiting.at(k))->getPos() == (*i) && driver->getStartTime() < (waiting.at(k)->getStartTime() + Time(0,waiting.at(k)->getTimeLimit())))
 				{
 					cout << "Passed time limit test: " << (waiting.at(k))->getName() << endl;
 					//check if possible for the driver to take the passenger
@@ -1091,6 +1126,7 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 						driver->addPassenger(waiting.at(k));
 						driver->updateFreeSpace(waiting.at(k), path);
 						passengers.push_back(waiting.at(k));
+						driver->increaseTransportedPassengers();
 					} else { //Replace for better final result ?? No, give priority to weight
 					}
 				}

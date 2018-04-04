@@ -6,6 +6,7 @@
  */
 
 #include "Time.h"
+#include <cmath>
 
 Time::Time() {
 	// TODO Auto-generated constructor stub
@@ -43,6 +44,7 @@ Time::~Time() {
 	// TODO Auto-generated destructor stub
 }
 
+
 Time operator+(Time lhs, const Time& rhs) {
 	return Time(lhs.getHour() + rhs.getHour(),
 			lhs.getMinute() + rhs.getMinute());
@@ -63,6 +65,8 @@ bool operator==(const Time& lhs, const Time& rhs) {
 Time operator+(Time lhs, const int& rhs) {
 	return Time(lhs.getHour(), lhs.getMinute() + rhs);
 }
+
+
 
 bool operator!=(const Time& lhs, const Time& rhs)
 {
