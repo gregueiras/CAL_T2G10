@@ -670,6 +670,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		this->vertexSet[i]->pickedUp.clear();
 		if (this->vertexSet[i]->info == source) {
 			start = this->vertexSet[i];
+			this->vertexSet[i]->distance = 0;
+			this->vertexSet[i]->time = 0;
 		}
 		if (this->vertexSet[i]->info == destination) {
 			ending = this->vertexSet[i];
@@ -678,8 +680,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		Q.insert(vertexSet[i]);
 	}
 
-	start->distance = 0;
-	start->time = 0;
+
 	list<Vertex<T> *> path;
 	while (!Q.empty()) {
 		//Vertex<T>* temp = Utili<T>::remMin(Q);
@@ -815,10 +816,11 @@ double Graph<T>::dijkstraPath(T source, T destination,
 	for (unsigned int i = 0; i < this->vertexSet.size(); i++) {
 		this->vertexSet[i]->distance = INT_MAX;
 		this->vertexSet[i]->previous = nullptr;
+
 		if (this->vertexSet[i]->info == source) {
 			start = this->vertexSet[i];
-		}
-		if (this->vertexSet[i]->info == destination) {
+			this->vertexSet[i]->distance = 0;
+		} else if (this->vertexSet[i]->info == destination) {
 			ending = this->vertexSet[i];
 		}
 		//Q.push_back(this->vertexSet[i]);
@@ -832,7 +834,7 @@ double Graph<T>::dijkstraPath(T source, T destination,
 	if (ending == nullptr)
 		return -2;
 	
-	start->distance = 0;
+
 	list<Vertex<T> *> path;
 
 	
