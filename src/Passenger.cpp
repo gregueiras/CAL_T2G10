@@ -86,6 +86,8 @@ Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
 	this->source = source;
 	this->pos = NULL;
 	this->destination = destination;
+	this->picked = false;
+	this->dropped = false;
 }
 
 template<class T>
@@ -94,6 +96,8 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, a
 	this->source = source;
 	this->pos = NULL;
 	this->destination = destination;
+	this->picked = false;
+	this->dropped = false;
 }
 
 template<class T>
@@ -102,6 +106,8 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) 
 	this->source = source;
 	this->pos = NULL;
 	this->destination = destination;
+	this->picked = false;
+	this->dropped = false;
 }
 
 template<class T>
