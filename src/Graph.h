@@ -21,6 +21,7 @@
 #include "Person.h"
 #include "Driver.h"
 #include "MutablePriorityQueue.h"
+#include "graphviewer.h"
 
 #pragma once
 using namespace std;
@@ -40,6 +41,8 @@ template<class T> class Driver;
 template<class T>
 class Vertex {
 	T info;                // contents
+	unsigned long x;		//coordinate
+	unsigned long y;		//coordinate
 	vector<Edge<T> > adj;  // list of outgoing edges
 	bool visited;          // auxiliary field used by dfs and bfs
 	int indegree;          // auxiliary field used by topsort
@@ -59,12 +62,14 @@ class Vertex {
 	bool removeEdgeTo(Vertex<T> *d);
 
 public:
-	Vertex(T in);
+	Vertex(T in, unsigned long x, unsigned long y);
 	friend class Graph<T> ;
 	friend class Utili<T> ;
 	friend class MutablePriorityQueue<Vertex<T>>;
 
 	T getInfo();
+	unsigned long getX();
+	unsigned long getY();
 	vector<Edge<T>> getAdj();
 	Edge<T> getAdjTo(T dest);
 	void pickUp(Passenger<T>* p) {
@@ -143,7 +148,7 @@ class Graph {
 public:
 	Vertex<T> *findVertex(const T &in) const;
 	int getNumVertex() const;
-	bool addVertex(const T &in);
+	bool addVertex(const T &in, unsigned long x, unsigned long y);
 	bool removeVertex(const T &in);
 	bool addEdge(const T &sourc, const T &dest, double w);
 	bool addEdge(const T &sourc, const T &dest, double w, int p);
@@ -172,6 +177,8 @@ public:
 	double getTravelTime(T source, T destination, list<Vertex<T>*> path);
 
 	vector<Passenger<T>*> secondTry(list<Vertex<T>*> path, Driver<T>* driver);
+
+	void addGraphToViewer(GraphViewer *gv) const;
 };
 
 
@@ -179,7 +186,9 @@ public:
 /****************** Provided constructors and functions ********************/
 
 template<class T>
-Vertex<T>::Vertex(T in) : info(in) {
+Vertex<T>::Vertex(T in, unsigned long x, unsigned long y) : info(in) {
+	this->x = x;
+	this->y = y;
 	visited = false;
 	indegree = 0;
 	processing = false;
@@ -227,14 +236,14 @@ Vertex<T> * Graph<T>::findVertex(const T &in) const {
  *  Returns true if successful, and false if a vertex with that content already exists.
  */
 template<class T>
-bool Graph<T>::addVertex(const T &in) {
+bool Graph<T>::addVertex(const T &in, unsigned long x, unsigned long y) {
 	// TODO (4 lines)
 	// HINT: use the findVertex function to check if a vertex already exists
 
 	if (findVertex(in) != nullptr)
 		return false;
 	else {
-		Vertex<T>* newV = new Vertex<T>(in);
+		Vertex<T>* newV = new Vertex<T>(in, x, y);
 		this->vertexSet.push_back(newV);
 		return true;
 	}
@@ -1245,6 +1254,19 @@ double Graph<T>::getTravelTime(T source, T destination, list<Vertex<T>*> path) {
 }
 
 template<class T>
+void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
+	int edgeId = 0;
+	for(auto it1 = this->vertexSet.begin(); it1 != this->vertexSet.end(); ++it1) {
+		gv->addNode((*it1)->info, (*it1)->x, (*it1)->y);
+
+		for(auto it2 = (*it1)->adj.begin(); it2 != (*it1)->adj.end(); ++it2) {
+			gv->addEdge(edgeId, (*it1)->info, (*it2).dest->info, EdgeType::UNDIRECTED);
+			gv->setEdgeLabel(edgeId++, to_string((*it2).weight));
+		}
+	}
+}
+
+template<class T>
 void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
 	for (unsigned int j = 0; j < this->adj.size(); j++) {
 
@@ -1286,6 +1308,16 @@ void Vertex<T>::removePeopleFromEdge(Vertex<T>* vertex,
 template<class T>
 T Vertex<T>::getInfo() {
 	return this->info;
+}
+
+template<class T>
+unsigned long Vertex<T>::getX() {
+	return this->x;
+}
+
+template<class T>
+unsigned long Vertex<T>::getY() {
+	return this->y;
 }
 
 template<class T>
