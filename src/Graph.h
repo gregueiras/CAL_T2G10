@@ -632,10 +632,6 @@ void Utili<T>::setPassengersPath(vector <Passenger<T>*> passengers, const list<V
 		auto pathBegin = path.end();
 		auto pathEnd = path.end();
 
-		if ((*p)->getName() == "Adam")
-		{
-			cout << "";
-		}
 		bool beginFound = false;
 		bool endFound = false;
 
@@ -776,12 +772,6 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		//cout << "ALREADY PICKED \n";
 		//cout << temp->getInfo() << " cap " << alreadyPicked << endl;
 	
-		if (driver->getName() == "gregueiras" && temp->getInfo() == 5)
-			cout << "";
-
-		if (driver->getName() == "susy" && temp->getInfo() == 5)
-			cout << "";
-
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
 			int lastAlreadyPicked = alreadyPicked;
@@ -1002,33 +992,6 @@ void Graph<T>::removePeople(vector<Passenger<T>*> passengers)
 		}
 	}
 }
-
-//template<class T>
-//bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Driver<T> * driver)
-//{
-//	double tempDistance = this->dijkstraDistance(source, destination);
-//	if (tempDistance == -1) {
-//		cout << source << " doesn't exist." << endl;
-//		return false;
-//	}
-//	else if (tempDistance == -2) {
-//		cout << destination << " doesn't exist." << endl;
-//		return false;
-//	}
-//	else if (tempDistance == -3) {
-//		cout << source << " and " << destination << " don't exist." << endl;
-//		return false;
-//	}
-//	else if (tempDistance == INT_MAX) {
-//		cout << source << " and " << destination << " are not connected. Invalid path" << endl;
-//		return false;
-//	}
-//	else if (tempDistance > driver->getMinLimit()) {
-//		cout << driver->getName() << " has not enough time to go from " << source << " to " << destination << endl;
-//		return false;
-//	}
-//	return true;
-//}
 
 template<class T>
 bool Graph<T>::existsAndHasEnoughTime(T &source, T &destination, Person* person, list<Vertex<int>*>& path)

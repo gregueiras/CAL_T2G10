@@ -11,8 +11,12 @@
 
 #include "Graph.h"
 #include "Passenger.h"
+#include "graphviewer.h"
 
 #include <unordered_set>
+#include <cstdio>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -354,7 +358,25 @@ void testDijkstraPeopleMultipleDrivers(unordered_set<Driver<int>*> drivers)
 
 }
 
+void graphInit() {
+	GraphViewer *gv = new GraphViewer(600, 600, false);
 
+	gv->setBackground("background.jpg");
+
+	gv->createWindow(600, 600);
+
+
+	gv->defineVertexColor("blue");
+	gv->defineEdgeColor("black");
+
+	gv->addNode(0, 30, 30);
+	gv->addEdge(0, 0, 1, EdgeType::UNDIRECTED);
+	gv->addNode(1, 120, 180);
+	gv->setEdgeLabel(0, "10");
+
+
+	gv->rearrange();
+}
 
 int main(void) {
 	unordered_set<Driver<int>*> drivers;
@@ -366,6 +388,8 @@ int main(void) {
 	drivers.insert(susy);
 
 	testDijkstraPeopleMultipleDrivers(drivers);
+
+	graphInit();
 
 	getchar(); 	return 0;
 
