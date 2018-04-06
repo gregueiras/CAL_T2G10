@@ -59,6 +59,7 @@ void testDijkstraDistance() {
 	myGraph.addEdge(7, 2, 25);
 	myGraph.addEdge(7, 5, 10);
 
+
 	list<Vertex<int>*> path;
 	cout << myGraph.dijkstraPath(1, 6, path) << endl;
 	for (auto i = path.begin(); i != path.end(); i++) {
@@ -287,6 +288,8 @@ Graph<int> create_MyGraph()
 	//myGraph.addEdge(3, 10, 4);
 	//myGraph.addEdge(10, 3, 4);
 
+	myGraph.updateGraphConnectivity();
+	myGraph.printNotConnected();
 
 
 	Time t(12, 12);

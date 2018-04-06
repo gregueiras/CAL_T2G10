@@ -39,6 +39,22 @@ template<class T> class Driver;
 /****************** Provided structures  ********************/
 
 template<class T>
+class VertexPtr {
+	Vertex<T> * v;
+public:
+	VertexPtr(Vertex<T> * v) {
+		this->v=v;
+	}
+	bool operator<(const VertexPtr<T> &b) const {
+		return (this->v)->info < (b.v)->info;
+	}
+
+	friend class Graph<T> ;
+};
+
+template class VertexPtr<int> ;
+
+template<class T>
 class Vertex {
 	T info;                // contents
 	unsigned long x;		//coordinate
@@ -47,6 +63,7 @@ class Vertex {
 	bool visited;          // auxiliary field used by dfs and bfs
 	int indegree;          // auxiliary field used by topsort
 	bool processing;       // auxiliary field used by isDAG
+	set<VertexPtr<T>> notConected;// non-connected vertexes
 	double distance;
 	double time;
 	Vertex *previous;
@@ -60,6 +77,7 @@ class Vertex {
 	void removePeopleFromEdge(Vertex<T>* vertex,
 			Passenger<T>* passenger);
 	bool removeEdgeTo(Vertex<T> *d);
+	void updateVertexConnectivity(Graph<T> *g, Vertex<T> *v);
 
 public:
 	Vertex(T in, unsigned long x, unsigned long y);
@@ -84,6 +102,8 @@ public:
 	bool operator!=(const Vertex<T>& b) const {
 		return !(this == b);
 	}
+
+	friend class VertexPtr<T> ;
 };
 
 template<class T>
@@ -177,8 +197,9 @@ public:
 	double getTravelTime(T source, T destination, list<Vertex<T>*> path);
 
 	vector<Passenger<T>*> secondTry(list<Vertex<T>*> path, Driver<T>* driver);
-
 	void addGraphToViewer(GraphViewer *gv) const;
+	void updateGraphConnectivity();
+	void printNotConnected();
 };
 
 
@@ -266,7 +287,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	Vertex<T>* tempDest = findVertex(dest);
 	if (tempSrc == nullptr || tempDest == nullptr)
 		return false;
-	else {
+	else{
 		tempSrc->addEdge(tempDest, w);
 		return true;
 	}
@@ -343,6 +364,16 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 		}
 	}
 	return false;
+}
+
+template<class T>
+void Vertex<T>::updateVertexConnectivity(Graph<T> *g, Vertex<T> *v) {
+	if(this->notConected.find(VertexPtr<T>(v)) != this->notConected.end()) {
+		this->notConected.erase(VertexPtr<T>(v));
+		for(unsigned int i = 0; i < v->adj.size(); i++) {
+			updateVertexConnectivity(g, v->adj.at(i).dest);
+		}
+	}
 }
 
 /****************** 1d) removeVertex ********************/
@@ -649,7 +680,7 @@ void Utili<T>::setPassengersPath(vector <Passenger<T>*> passengers, const list<V
 				pathBegin = i;
 				beginFound = true;
 			}
-				
+
 			else if ((*i) == (*p)->getPos()) {
 				pathEnd = i;
 				endFound = true;
@@ -659,7 +690,7 @@ void Utili<T>::setPassengersPath(vector <Passenger<T>*> passengers, const list<V
 				++pathEnd;
 				break;
 			}
-			
+
 		}
 		if (beginFound && endFound) {
 			list<Vertex<T>*> passengerPath;
@@ -667,7 +698,7 @@ void Utili<T>::setPassengersPath(vector <Passenger<T>*> passengers, const list<V
 			(*p)->setPath(passengerPath);
 		}
 	}
- }
+}
 
 
 template<class T>
@@ -769,7 +800,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 		//cout << "A: " << endl;
 		//driver->printPassengersPickedAt(); cout << endl;
-	
+
 		auto pickedTemp = driver->getPassengersPickedAt();
 		for (auto i = pickedTemp.cbegin(); i != pickedTemp.cend(); ++i)
 		{
@@ -777,10 +808,10 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				if (j->getDestination() != j->getPos() && j->getDestination() != temp)
 					alreadyPicked += j->getNum();
 		}
-		
+
 		//cout << "ALREADY PICKED \n";
 		//cout << temp->getInfo() << " cap " << alreadyPicked << endl;
-	
+
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
 			int lastAlreadyPicked = alreadyPicked;
@@ -794,8 +825,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				if (temp->adj[i].waiting[j]->getPos() == temp
 						&& (alreadyPicked + temp->adj[i].waiting[j]->getNum())
 						<= capacity  && temp->adj[i].waiting[j]->getCurrentTime() <= driver->getCurrentTime()
-					&& driver->getCurrentTime() < (temp->adj[i].waiting.at(j)->getStartTime() + Time(0, temp->adj[i].waiting.at(j)->getTimeLimit()))) {
-					
+						&& driver->getCurrentTime() < (temp->adj[i].waiting.at(j)->getStartTime() + Time(0, temp->adj[i].waiting.at(j)->getTimeLimit()))) {
+
 					if (!temp->adj[i].waiting[j]->getPicked()) //this passenger is already in alreadyPicked
 						alreadyPicked += temp->adj[i].waiting[j]->getNum();
 
@@ -829,9 +860,9 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 						(*m)->setPicked(true);
 						++m;
 					}
-						
+
 				}
-			
+
 				if (!picked.empty())
 					driver->addPassengersPickedAt(temp, picked);
 
@@ -872,11 +903,11 @@ double Graph<T>::dijkstraPath(T source, T destination,
 		return -1;
 	if (ending == nullptr)
 		return -2;
-	
+
 
 	list<Vertex<T> *> path;
 
-	
+
 	while (!Q.empty()) {
 		//Vertex<T>* temp = Utili<T>::remMin(Q);
 		Vertex<T>* temp = Q.extractMin();
@@ -935,6 +966,32 @@ bool Graph<T>::addPeople(T source, T destination, int num) {
 
 template<class T>
 bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
+
+	bool sFound = false;
+	bool dFound = false;
+	Vertex<T> *s;
+	Vertex<T> *d;
+	for(unsigned int i = 0; i < this->vertexSet.size(); ++i) {
+		if(sFound && dFound) {
+			break;
+		} else if(this->vertexSet.at(i)->info == source) {
+			s = this->vertexSet.at(i);
+			sFound = true;
+		} else if(this->vertexSet.at(i)->info == destination) {
+			d = this->vertexSet.at(i);
+			dFound = true;
+		}
+	}
+
+	if(!(sFound && dFound)) {
+		cout << "Source and/or Destination don't exist.\n";
+		return false;
+	}
+
+	if(s->notConected.find(VertexPtr<T>(d)) != s->notConected.end()) {
+		cout << "Source and Destination are not connected.\n";
+		return false;
+	}
 
 	bool result = false;
 	list<Vertex<T>*> path;
@@ -1040,9 +1097,9 @@ bool Graph<T>::calculatePath(T source, T destination, Driver<T>* driver)
 	if (!existsAndHasEnoughTime(source, destination, driver, tpath))
 		return false;
 
-	
+
 	this->dijkstraPeopleDistancePath(source, destination, path,
-		passen, driver);
+			passen, driver);
 
 	driver->setPath(path);
 	Utili<int>::setPassengersPath(passen, path);
@@ -1073,17 +1130,17 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 			return;
 
 	cout << endl
-	<< this->dijkstraPeopleDistancePath(source, destination, path,
-			passen, driver) << endl;
+			<< this->dijkstraPeopleDistancePath(source, destination, path,
+					passen, driver) << endl;
 
 	Utili<int>::setPassengersPath(passen, path);
 
 	driver->setPath(path);
 	Utili<int>::printPath(path);
-//
-////	for (auto i = passen.begin(); i != passen.end(); i++)
-////		cout << (*i)->getName() << " ";
-//
+	//
+	////	for (auto i = passen.begin(); i != passen.end(); i++)
+	////		cout << (*i)->getName() << " ";
+	//
 	cout << endl;
 	//this->removePeople(passen, path);
 	this->removePeople(passen);
@@ -1106,8 +1163,8 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 	this->removePeople(passen);
 
 	cout << "\nPOSTPROCESSING END\n";
-//	for (auto i = passen.begin(); i != passen.end(); i++)
-////		cout << (*i)->getName() << " ";
+	//	for (auto i = passen.begin(); i != passen.end(); i++)
+	////		cout << (*i)->getName() << " ";
 
 	cout << "\nPicked: \n";
 	driver->printPassengersPickedAt();
@@ -1151,7 +1208,7 @@ void Graph<T>::postProcessing(Driver<T>* driver, list<Vertex<T>*> path, vector<P
 				driverTime.addMinutes( (*i)->time );
 				//if it is possible for the passenger to make that route
 				if(tTime > 0 && tTime <= (waiting.at(k))->getTimeLimit() && (waiting.at(k))->getCurrentTime() <= driverTime
-					&& (waiting.at(k))->getPos() == (*i) && driver->getCurrentTime() < (waiting.at(k)->getStartTime() + Time(0,waiting.at(k)->getTimeLimit())))
+						&& (waiting.at(k))->getPos() == (*i) && driver->getCurrentTime() < (waiting.at(k)->getStartTime() + Time(0,waiting.at(k)->getTimeLimit())))
 				{
 					cout << "Passed time limit test: " << (waiting.at(k))->getName() << endl;
 					//check if possible for the driver to take the passenger
@@ -1254,6 +1311,31 @@ double Graph<T>::getTravelTime(T source, T destination, list<Vertex<T>*> path) {
 }
 
 template<class T>
+void Graph<T>::updateGraphConnectivity() {
+	for(unsigned int i = 0; i < vertexSet.size(); ++i) {
+		//add all vertexes to non connected
+		for(unsigned int j = 0; j < vertexSet.size(); ++j) {
+			vertexSet.at(i)->notConected.insert(vertexSet.at(j));
+		}
+
+		vertexSet.at(i)->updateVertexConnectivity(this, vertexSet.at(i));
+	}
+
+}
+
+template<class T>
+void Graph<T>::printNotConnected() {
+	cout << "Not Connected Vertex:\n";
+	for(unsigned int i = 0; i < vertexSet.size(); ++i) {
+		cout << "Vertex " << vertexSet.at(i)->info << ": ";
+		for(auto it = vertexSet.at(i)->notConected.begin(); it != vertexSet.at(i)->notConected.end(); ++it) {
+			cout << (*it).v->info << "; ";
+		}
+		cout << endl;
+	}
+}
+
+template<class T>
 void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 	int edgeId = 0;
 	for(auto it1 = this->vertexSet.begin(); it1 != this->vertexSet.end(); ++it1) {
@@ -1275,7 +1357,7 @@ void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {
 			this->adj.at(j).waiting.push_back(passenger);
 		}
 		std::sort(this->adj.at(j).waiting.begin(), this->adj.at(j).waiting.end(),
-			[](const auto& lhs, const auto& rhs) {
+				[](const auto& lhs, const auto& rhs) {
 			return lhs->getNum() > rhs->getNum();
 		});
 
@@ -1298,7 +1380,7 @@ void Vertex<T>::removePeopleFromEdge(Vertex<T>* vertex,
 				cout << "";
 			}
 			Utili<Passenger<T>>::removeFromVector(passenger,
-				this->adj.at(j).waiting);
+					this->adj.at(j).waiting);
 
 
 		}
