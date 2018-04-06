@@ -66,6 +66,19 @@ int Passenger<T>::getNum() {
 }
 
 template<class T>
+bool Passenger<T>::writeToFile(ofstream *output) {
+	if (output->is_open()) {
+		*output << this->getName() << endl;
+		*output << this->getAge() << " " << this->getNum() << " " << this->getTimeLimit() << " ";
+		*output << this->getCurrentTime().getHour() << " " << this->getCurrentTime().getMinute() << endl;
+		*output << this->getSource()->getInfo() << " " << this->getDestination()->getInfo() << endl;
+	} else {
+		return false;
+	}
+	return true;
+}
+
+template<class T>
 Vertex<T>* Passenger<T>::getPos() {
 	return pos;
 }
@@ -88,6 +101,8 @@ Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
 	this->destination = destination;
 	this->picked = false;
 	this->dropped = false;
+	this->timeLimit = 0;
+	this->prevPos = nullptr;
 }
 
 template<class T>
@@ -98,6 +113,8 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, a
 	this->destination = destination;
 	this->picked = false;
 	this->dropped = false;
+	this->timeLimit = 0;
+	this->prevPos = nullptr;
 }
 
 template<class T>
@@ -108,6 +125,8 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) 
 	this->destination = destination;
 	this->picked = false;
 	this->dropped = false;
+	this->timeLimit = 0;
+	this->prevPos = nullptr;
 }
 
 template<class T>

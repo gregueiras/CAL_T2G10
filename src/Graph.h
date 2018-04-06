@@ -16,12 +16,16 @@
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <unordered_set>
 
 #include "Passenger.h"
 #include "Person.h"
 #include "Driver.h"
 #include "MutablePriorityQueue.h"
 #include "graphviewer.h"
+
 
 #pragma once
 using namespace std;
@@ -78,6 +82,7 @@ class Vertex {
 			Passenger<T>* passenger);
 	bool removeEdgeTo(Vertex<T> *d);
 	void updateVertexConnectivity(Graph<T> *g, Vertex<T> *v);
+	bool writeVertexToFile(ofstream *output);
 
 public:
 	Vertex(T in, unsigned long x, unsigned long y);
@@ -162,6 +167,8 @@ public:
 template<class T>
 class Graph {
 	vector<Vertex<T> *> vertexSet;    // vertex set
+	unordered_set<Driver<T>*> drivers;
+	unordered_set<Passenger<T>*> passengers;
 
 	void dfsVisit(Vertex<T> *v, vector<T> & res) const;
 	bool dfsIsDAG(Vertex<T> *v) const;
@@ -170,6 +177,10 @@ public:
 	int getNumVertex() const;
 	bool addVertex(const T &in, unsigned long x, unsigned long y);
 	bool removeVertex(const T &in);
+	unordered_set<Driver<T>*> getDrivers();
+	void addDriver(Driver<T>* d);
+	unordered_set<Passenger<T>*> getPassengers();
+	void addPassenger(Passenger<T>* p);
 	bool addEdge(const T &sourc, const T &dest, double w);
 	bool addEdge(const T &sourc, const T &dest, double w, int p);
 	bool removeEdge(const T &sourc, const T &dest);
@@ -200,6 +211,13 @@ public:
 	void addGraphToViewer(GraphViewer *gv) const;
 	void updateGraphConnectivity();
 	void printNotConnected();
+
+	bool writeGraphToFile(string graphName);
+	bool readMapFromFile(string file);
+	bool readPassengersFromFile(string file);
+	bool readDriversFromFile(string file);
+	bool readGraphFromFile(string graphName);
+
 };
 
 
@@ -374,6 +392,18 @@ void Vertex<T>::updateVertexConnectivity(Graph<T> *g, Vertex<T> *v) {
 			updateVertexConnectivity(g, v->adj.at(i).dest);
 		}
 	}
+}
+
+template<class T>
+bool Vertex<T>::writeVertexToFile(ofstream *output) {
+	if (output->is_open()) {
+		*output << "V " << this->info << " " << this->x << " " << this->y << endl;
+		for(unsigned int i = 0; i < this->adj.size(); ++i) {
+			*output << "\tE" << this->adj.at(i).dest->info << " " << this->adj.at(i).weight << endl;
+		}
+	} else
+		return false;
+	return true;
 }
 
 /****************** 1d) removeVertex ********************/
@@ -725,7 +755,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 	driver->resetTravel();
 
-	Vertex<T> * start = nullptr;
+	//usefull??
+	//Vertex<T> * start;
 	Vertex<T> * ending = nullptr;
 
 	//vector<Vertex<T>*> Q;
@@ -739,7 +770,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		this->vertexSet[i]->previous = nullptr;
 		this->vertexSet[i]->pickedUp.clear();
 		if (this->vertexSet[i]->info == source) {
-			start = this->vertexSet[i];
+			//usefull??
+			//start = this->vertexSet[i];
 			this->vertexSet[i]->distance = 0;
 			this->vertexSet[i]->time = 0;
 		}
@@ -793,7 +825,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 		}
 
-		Vertex<T>* temp1 = temp;
+		//usefull??
+		//Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
 
 		set<Vertex<T>*> VertexFuturePath;
@@ -1018,6 +1051,8 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 		result = true;
 	}
 
+	if(result)
+		this->passengers.insert(passenger);
 	return result;
 }
 
@@ -1336,6 +1371,158 @@ void Graph<T>::printNotConnected() {
 }
 
 template<class T>
+bool Graph<T>::writeGraphToFile(string graphName) {
+	bool result = true;
+	string fileName = graphName + ".txt";
+	ofstream output(fileName);
+	for(unsigned int i = 0; i < this->vertexSet.size(); ++i) {
+		result &= this->vertexSet.at(i)->writeVertexToFile(&output);
+	}
+	output.close();
+	fileName = graphName + "Driver.txt";
+	output.open(fileName);
+	for(auto it = this->drivers.begin(); it != this->drivers.end(); ++it) {
+		result &= (*it)->writeToFile(&output);
+	}
+	output.close();
+	fileName = graphName + "Passenger.txt";
+	output.open(fileName);
+	for(auto it = this->passengers.begin(); it != this->passengers.end(); ++it) {
+		result &= (*it)->writeToFile(&output);
+	}
+
+	output.close();
+	return result;
+}
+
+template<class T>
+bool Graph<T>::readMapFromFile(string file) {
+	string line;
+	ifstream input;
+	stringstream lineStream;
+
+	input.open(file);
+	if (input.is_open()) {
+		while(!input.eof()) {
+			char type;
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> type;
+			if(type == '\t')
+				continue;
+			T info;
+			unsigned long x, y;
+
+			lineStream >> info;
+			lineStream >> x;
+			lineStream >> y;
+			this->addVertex(info, x, y);
+		}
+
+		input.clear();
+		input.seekg(0, ios::beg);
+
+		T source;
+		while(!input.eof()) {
+			char type;
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> type;
+			if(type == 'V') {
+				lineStream >> source;
+				continue;
+			}
+			T destination;
+			double weight;
+
+			lineStream >> destination;
+			lineStream >> weight;
+			this->addEdge(source, destination, weight);
+		}
+	} else
+		return false;
+	input.close();
+	return true;
+}
+
+template<class T>
+bool Graph<T>::readPassengersFromFile(string file) {
+	string fileName = file + "Passenger.txt";
+	ifstream input;
+	stringstream lineStream;
+	input.open(fileName);
+	if (input.is_open()) {
+		while(!input.eof()) {
+			string line, name;
+			int age, num, tl, h, m;
+			T source, destination;
+			getline(input, name);
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> age;
+			lineStream >> num;
+			lineStream >> tl;
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> h;
+			lineStream >> m;
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> source;
+			lineStream >> destination;
+			Passenger<T> *p = new  Passenger<T>(name, age, num, tl, Time(h,m));
+			this->addPeople(source, destination, p);
+		}
+	} else
+		return false;
+	input.close();
+	return true;
+
+}
+
+template<class T>
+bool Graph<T>::readDriversFromFile(string file) {
+	string fileName = file + "Driver.txt";
+	ifstream input;
+	stringstream lineStream;
+	input.open(fileName);
+	if (input.is_open()) {
+		while(!input.eof()) {
+			string line, name;
+			int age, cap, tl, h, m;
+			T source, destination;
+			getline(input, name);
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> age;
+			lineStream >> cap;
+			lineStream >> tl;
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> h;
+			lineStream >> m;
+			getline(input, line);
+			lineStream.str(line);
+			lineStream >> source;
+			lineStream >> destination;
+			Driver<T>*  d = new Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
+			this->drivers.insert(d);
+		}
+	} else
+		return false;
+	input.close();
+	return true;
+
+}
+
+template<class T>
+bool Graph<T>::readGraphFromFile(string graphName) {
+	return readMapFromFile(graphName) &&
+			readPassengersFromFile(graphName) &&
+			readDriversFromFile(graphName);
+}
+
+template<class T>
 void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 	int edgeId = 0;
 	for(auto it1 = this->vertexSet.begin(); it1 != this->vertexSet.end(); ++it1) {
@@ -1346,6 +1533,26 @@ void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 			gv->setEdgeLabel(edgeId++, to_string((*it2).weight));
 		}
 	}
+}
+
+template<class T>
+unordered_set<Driver<T>*> Graph<T>::getDrivers() {
+	return this->drivers;
+}
+
+template<class T>
+void Graph<T>::addDriver(Driver<T>* d) {
+	this->drivers.insert(d);
+}
+
+template<class T>
+unordered_set<Passenger<T>*> Graph<T>::getPassengers() {
+	return this->passengers;
+}
+
+template<class T>
+void Graph<T>::addPassenger(Passenger<T>* p) {
+	this->passengers.insert(p);
 }
 
 template<class T>

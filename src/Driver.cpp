@@ -7,9 +7,11 @@
 
 #include "Driver.h"
 #include <iostream>
+
 template<class T>
 Driver<T>::Driver() {
 	this->capacity = 0;
+	this->transportedPassengers = 0;
 }
 
 template<class T>
@@ -40,8 +42,8 @@ void Driver<T>::addPassengersPickedAt(Vertex<T>* v,
 		temp.insert(temp.end(), passengers.begin(), passengers.end());
 		this->passengersPickedAt.insert(std::pair<Vertex<T>*, vector<Passenger<T>*> >(v, temp));
 	} else
-	this->passengersPickedAt.insert(
-			std::pair<Vertex<T>*, vector<Passenger<T>*> >(v, passengers));
+		this->passengersPickedAt.insert(
+				std::pair<Vertex<T>*, vector<Passenger<T>*> >(v, passengers));
 }
 
 template<class T>
@@ -85,7 +87,7 @@ Driver<T>::Driver(int cap, int lim) : Person("",0,lim, Time(0,0)){
 
 template<class T>
 Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) :
-		Person(name, age,lim, startTime) {
+Person(name, age,lim, startTime) {
 	this->capacity = cap;
 	this->transportedPassengers = 0;
 }
@@ -93,7 +95,7 @@ Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) :
 
 template<class T>
 Driver<T>::Driver(T src, T dest, int cap, int lim, string name, int age, Time startTime) :
-	Person(name, age, lim, startTime) {
+Person(name, age, lim, startTime) {
 	this->capacity = cap;
 	this->source = src;
 	this->destination = dest;
@@ -110,14 +112,14 @@ void Driver<T>::updateFreeSpace() {
 		for (auto j = i->second.begin(); j != i->second.end(); ++j) {
 			(*j)->setPicked(false);
 			(*j)->setDropped(false);
-				
+
 			passengersDropped.insert((*j));
 		}
 	}
 
 	for (auto i = this->passengersPickedAt.begin();
 			i != this->passengersPickedAt.end();) {
-		
+
 		for (auto j = i->second.begin(); j != i->second.end();) {
 			if (!passengersDropped.count((*j))) {
 				(*j)->setPos((*j)->getPrevPos());
@@ -134,7 +136,7 @@ void Driver<T>::updateFreeSpace() {
 			i = this->passengersPickedAt.erase(i);
 		else
 			++i;
-		
+
 
 	}
 
@@ -234,6 +236,18 @@ int Driver<T>::getDestination()const
 }
 
 
+template<class T>
+bool Driver<T>::writeToFile(ofstream *output) {
+	if (output->is_open()) {
+		*output << this->getName() << endl;
+		*output << this->getAge() << " " << this->getCapacity() << " " << this->getTimeLimit() << " ";
+		*output << this->getStartTime().getHour() << " " << this->getStartTime().getMinute() << endl;
+		*output << this->getSource() << " " << this->getDestination() << endl;
+	}else {
+		return false;
+	}
+	return true;
+}
 
 
 

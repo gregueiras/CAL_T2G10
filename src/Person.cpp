@@ -8,8 +8,16 @@ Person::Person(string n, int a): name(n), age(a) {
 	startTime = Time(0,0);
 	timeLimit = 0;
 }
-Person::Person(){}
-Person::Person(string n, int a, int tl, Time st): name(n), age(a), timeLimit(tl), startTime(st), currentTime(st){}
+
+Person::Person(){
+	timeLimit = 0;
+	age = 0;
+}
+
+Person::Person(string n, int a, int tl, Time st): name(n), startTime(st), currentTime(st){
+	timeLimit = tl;
+	age = a;
+}
 
 string Person::getName() const {
 	return name;

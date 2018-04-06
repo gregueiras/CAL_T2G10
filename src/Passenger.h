@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <fstream>
+
 #include "Person.h"
 #include "Graph.h"
 
@@ -33,6 +35,7 @@ public:
 	Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination);
 	void addPassengers(int num);
 	int getNum();
+	bool writeToFile(ofstream *output);
 
 	virtual ~Passenger();
 	Vertex<T>* getPos();

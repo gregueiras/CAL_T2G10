@@ -9,8 +9,8 @@
 #include <cmath>
 
 Time::Time() {
-	// TODO Auto-generated constructor stub
-
+	this->hour = -1;
+	this->minute = -1;
 }
 
 Time::Time(int hour, int minute) {

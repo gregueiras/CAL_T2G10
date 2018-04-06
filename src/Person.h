@@ -9,7 +9,7 @@
 #include "Time.h"
 using namespace std;
 
-class Person {
+class Person { //Shouldn't be abstract??
 	string name;
 	int age;
 	Time startTime;
@@ -27,6 +27,7 @@ public:
 	bool operator == (const Person &p2) const;
 	int getTimeLimit() const;
 	void setTimeLimit(int timeLimit);
+	//virtual bool writeToFile(string file);
 	friend ostream & operator << (ostream &os, Person &p);
 };
 

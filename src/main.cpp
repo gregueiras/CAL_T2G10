@@ -1,9 +1,9 @@
 /*
-* main.cpp
-*
-*  Created on: Mar 22, 2018
-*      Author: gregu
-*/
+ * main.cpp
+ *
+ *  Created on: Mar 22, 2018
+ *      Author: gregu
+ */
 
 #include <iostream>
 #include <list>
@@ -13,10 +13,10 @@
 #include "Passenger.h"
 #include "graphviewer.h"
 
-#include <unordered_set>
 #include <cstdio>
 #include <fstream>
 #include <sstream>
+#include <unordered_set>
 
 using namespace std;
 
@@ -247,7 +247,7 @@ template<class T> struct p_less {
 //}
 
 Graph<int> create_MyGraph()
-{
+		{
 	Graph<int> myGraph;
 	myGraph.addVertex(0, 10, 10);
 	myGraph.addVertex(1, 0, 20);
@@ -319,10 +319,10 @@ Graph<int> create_MyGraph()
 	if (!myGraph.addPeople(3, 7, p8)) //19
 		cout << "ERROR" << endl;
 
-
+	//myGraph.readGraphFromFile("myGraph");
 
 	return myGraph;
-}
+		}
 
 
 
@@ -336,17 +336,19 @@ bool testDijkstraPeopleDriver(Driver<int>* driver)
 
 
 
-void testDijkstraPeopleMultipleDrivers(Graph<int> myGraph, unordered_set<Driver<int>*> drivers)
+void testDijkstraPeopleMultipleDrivers(Graph<int> myGraph)
 {
-	if (drivers.size() == 1)
+	if (myGraph.getDrivers().size() == 1)
 	{
-		myGraph.calculateAndPrintPath((*drivers.begin())->getSource(), (*drivers.begin())->getDestination(), (*drivers.begin()), false);
+		myGraph.calculateAndPrintPath((*(myGraph.getDrivers()).begin())->getSource(),
+				(*(myGraph.getDrivers()).begin())->getDestination(), (*(myGraph.getDrivers()).begin()), false);
 		cout << endl;
 		return;
 	}
 
 	multimap<int, Driver<int>*,p_less<int>> ordered_drivers;
-	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	unordered_set<Driver<int>*> d = myGraph.getDrivers();
+	for (auto i = d.begin(); i != d.end(); i++)
 	{
 		cout << "1. " << (*i)->getName() << endl;
 		if (testDijkstraPeopleDriver((*i)))
@@ -381,16 +383,25 @@ void graphInit(const Graph<T> &g) {
 }
 
 int main(void) {
-	unordered_set<Driver<int>*> drivers;
+
 	Driver<int>* bieira = new Driver<int>(0,3,20, 40, "bieira", 20, Time(12, 12));
 	Driver<int>*  gregueiras = new Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 45));
 	Driver<int>*  susy = new Driver<int>(0,7,20, 40, "susy", 22, Time(12, 12));
-	drivers.insert(bieira);
-	drivers.insert(gregueiras);
-	drivers.insert(susy);
+
 
 	Graph<int> myGraph = create_MyGraph();
-	testDijkstraPeopleMultipleDrivers(myGraph, drivers);
+
+	myGraph.addDriver(bieira);
+	myGraph.addDriver(gregueiras);
+	myGraph.addDriver(susy);
+
+	testDijkstraPeopleMultipleDrivers(myGraph);
+
+	cout << "writeGraphToFile-before\n";
+
+	myGraph.writeGraphToFile("myGraph");
+
+	cout << "writeGraphToFile-after\n";
 
 	graphInit(myGraph);
 

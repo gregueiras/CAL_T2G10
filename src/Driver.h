@@ -10,10 +10,12 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <fstream>
 #include "Person.h"
 
 #include "Passenger.h"
 #include "Graph.h"
+
 template<class T> class Passenger;
 template<class T> class Vertex;
 
@@ -82,6 +84,7 @@ public:
 	void setTransportedPassengers(int tp);
 	int getSource()const;
 	int getDestination()const;
+	bool writeToFile(ofstream *output);
 
 
 };
