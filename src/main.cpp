@@ -13,6 +13,7 @@
 #include "Passenger.h"
 #include "graphviewer.h"
 #include "RideShare.h"
+#include "menu.h"
 
 #include <unordered_set>
 #include <cstdio>
@@ -505,6 +506,8 @@ int main(void) {
 	cout << "writeGraphToFile-after\n";
 
 	graphInit(myGraph);
+
+
 
 	getchar(); 	return 0;
 
