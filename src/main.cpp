@@ -507,6 +507,8 @@ int main(void) {
 
 	graphInit(myGraph);
 
+	//FirstMenu(rs);
+
 
 
 	getchar(); 	return 0;

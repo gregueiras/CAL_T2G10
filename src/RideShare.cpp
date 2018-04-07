@@ -93,6 +93,18 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 	}
 }
 
+template<class T>
+bool RideShare<T>::addEdge(const T &sourc, const T &dest, double w)
+{
+	return this->graph.addEdge(sourc,dest,w);
+}
+
+template<class T>
+bool RideShare<T>::addVertex(const T &in, unsigned long x, unsigned long y)
+{
+	return this->graph.addVertex(in,x,y);
+}
+
 
 
 template class RideShare<int>;

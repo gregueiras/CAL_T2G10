@@ -18,6 +18,10 @@ public:
 	void setGraph(Graph<T> graph);
 
 	void DijkstraPeopleMultipleDrivers();
+
+	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addVertex(const T &in, unsigned long x, unsigned long y);
+
 private:
 	unordered_set<Passenger<T>*> passengers;
 	unordered_set<Driver<T>*> drivers;

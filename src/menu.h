@@ -15,10 +15,22 @@ string getFileName();
 
 void FirstMenu(RideShare<int> &rideShare);
 
+void SelectMapMenu(RideShare<int> &rideShare);
+
+void AddVertexMenu(RideShare<int> &rideShare);
+
+void AddEdgeMenu(RideShare<int> &rideShare);
+
+void AddPassengerMenu(RideShare<int> &rideShare);
+
+void AddDriverMenu(RideShare<int> &rideShare);
+
 void DriverSignUpMenu(RideShare<int> &rideShare);
 
 void PassengerSignUpMenu(RideShare<int> &rideShare);
 
-void DriverRouteOptionsMenu(Driver<int> *driver);
+void GenerateRoutesMenu(RideShare<int> &rideShare);
 
-void PassengerRouteOptionsMenu(Passenger<int> *passenger);
+void AddVertexSubMenu(RideShare<int> &rideShare);
+
+void AddEdgeSubMenu(RideShare<int> &rideShare);

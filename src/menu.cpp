@@ -79,35 +79,151 @@ string getFileName()
 	return filename;
 }
 
+
+
 void FirstMenu(RideShare<int> &rideShare)
 {
-	bool endInput = false;
 	cout << "Welcome" << endl;
-
-	do
+	cout
+	<< "1- Choose map" << endl
+	<< "2- Quit" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 2))
 	{
-		cout
-		<< "1- Driver sign up" << endl
-		<< "2- Passenger sign up" << endl
-		<< "3- View graph" << endl
-		<< "4- Quit" << endl
-		<< "Select one" << endl;
-		switch (getIntInInterval(1, 4))
-		{
-		case 1:
-			DriverSignUpMenu(rideShare);
-			break;
-		case 2:
-			PassengerSignUpMenu(rideShare);
-			break;
-		case 3:
-			//DISPLAY GRAPH
-			break;
-		case 4:
-			endInput = true;
-			break;
-		}
-	} while(!endInput);
+	case 1:
+		SelectMapMenu(rideShare);
+		break;
+	case 2:
+		return;
+		break;
+	}
+}
+
+void SelectMapMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Nome do primeiro mapa" << endl
+	<< "2- se existirem outros mapas" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		//escolhe
+		AddVertexMenu(rideShare);
+		break;
+	case 2:
+		//escolhe
+		AddVertexMenu(rideShare);
+		break;
+	case 3:
+		FirstMenu(rideShare);
+		break;
+	}
+}
+
+void AddVertexMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Add location/vertex" << endl
+	<< "2- Skip" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		AddVertexSubMenu(rideShare);
+		break;
+	case 2:
+		AddEdgeMenu(rideShare);
+		break;
+	case 3:
+		SelectMapMenu(rideShare);
+		break;
+	}
+}
+
+void AddEdgeMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Add road/edge" << endl
+	<< "2- Skip" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		AddEdgeSubMenu(rideShare);
+		break;
+	case 2:
+		AddPassengerMenu(rideShare);
+		break;
+	case 3:
+		AddVertexMenu(rideShare);
+		break;
+	}
+
+}
+
+void AddPassengerMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Add passenger" << endl
+	<< "2- Skip" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		PassengerSignUpMenu(rideShare);
+		break;
+	case 2:
+		AddDriverMenu(rideShare);
+		break;
+	case 3:
+		AddEdgeMenu(rideShare);
+		break;
+	}
+}
+
+void AddDriverMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Add driver" << endl
+	<< "2- Skip" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		DriverSignUpMenu(rideShare);
+		break;
+	case 2:
+		GenerateRoutesMenu(rideShare);
+		break;
+	case 3:
+		AddPassengerMenu(rideShare);
+		break;
+	}
+
+}
+
+void GenerateRoutesMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Calculate routes" << endl
+	<< "2- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 2))
+	{
+	case 1:
+		rideShare.DijkstraPeopleMultipleDrivers();
+		break;
+	case 2:
+		AddDriverMenu(rideShare);
+		break;
+	}
+	return;
 }
 
 
@@ -144,9 +260,7 @@ void DriverSignUpMenu(RideShare<int> &rideShare)
 	if (capacity == -1) return;
 	Driver<int> *driver = new Driver<int>(src,dest,capacity,timeLimit,name,age,Time(hour,minutes));
 	rideShare.addDriver(driver);
-	cout << "Calculating route..." << endl;
-	rideShare.DijkstraPeopleMultipleDrivers();
-	DriverRouteOptionsMenu(driver);
+	GenerateRoutesMenu(rideShare);
 }
 
 
@@ -183,57 +297,49 @@ void PassengerSignUpMenu(RideShare<int> &rideShare)
 	if (numberPeople == -1) return;
 	Passenger<int> *passenger = new Passenger<int>(name,age,numberPeople, timeLimit,Time(hour,minutes),src,dest);
 	rideShare.addPassenger(passenger);
-	cout << "Calculating route..." << endl;
-	rideShare.DijkstraPeopleMultipleDrivers();
-	PassengerRouteOptionsMenu(passenger);
+	AddDriverMenu(rideShare);
 }
 
-void DriverRouteOptionsMenu(Driver<int> *driver)
+
+void AddVertexSubMenu(RideShare<int> &rideShare)
 {
-	cout
-	<< "1- Print route information" << endl
-	<< "2- View route "	<< endl
-	<< "3- Print passenger list" << endl
-	<< "4- Go back" << endl
-	<< "Select one" << endl;
+	int in, x, y;
+	cout << "Vertex identifier? " << endl;
+	in = getInt();
 
-	switch(getIntInInterval(1,4))
+	cout << "x coordinate ? " << endl;
+	x = getInt();
+	if (x == -1) return AddVertexMenu(rideShare);
+	cout << "y coordinate ? " << endl;
+	y = getInt();
+	if (y == -1) return AddVertexMenu(rideShare);
+
+	if (!rideShare.addVertex(in,x,y))
 	{
-	case 1:
-		//FUNCTION THAT PRINTS THE ROUTE INFORMATION
-		break;
-	case 2:
-		//FUNCTION THAT DISPLAYS THE ROUTE
-		break;
-	case 3:
-		//FUNCTION THAT PRINTS PASSANGER LIST
-		break;
-	case 4:
-		return;
-		break;
+		cout << "Invalid location!" << endl;
+		return AddVertexMenu(rideShare);
 	}
+	AddEdgeMenu(rideShare);
 }
 
-void PassengerRouteOptionsMenu(Passenger<int> *passenger)
+void AddEdgeSubMenu(RideShare<int> &rideShare)
 {
-	cout
-	<< "1- Print route information" << endl
-	<< "2- View route "	<< endl
-	<< "3- Go back" << endl
-	<< "Select one" << endl;
+	int source, destination, time;
+	cout << "Source vertex? " << endl;
+	source = getInt();
+	cout << "Destination vertex? " << endl;
+	destination = getInt();
+	cout << "Time between the two vertexes? " << endl;
+	time = getInt();
+	if (time == -1) return AddEdgeMenu(rideShare);
 
-	switch(getIntInInterval(1,3))
+	if(!rideShare.addEdge(source,destination,time))
 	{
-	case 1:
-		//FUNCTION THAT PRINTS THE ROUTE INFORMATION
-		break;
-	case 2:
-		//FUNCTION THAT DISPLAYS THE ROUTE
-		break;
-	case 3:
-		return;
-		break;
+		cout << "Invalid road!" << endl;
+		return AddEdgeMenu(rideShare);
 	}
+	AddPassengerMenu(rideShare);
 }
+
 
 
