@@ -197,6 +197,9 @@ public:
 	int dijkstraPeopleDistance(T source, T destination);
 	bool addPeople(T source, T destination, int num);
 	bool addPeople(T source, T destination, Passenger<T>* passenger);
+	bool addPassenger(Passenger<T>* passenger);
+	bool addPeople(unordered_set<Passenger<T>*> passenger);
+
 	void removePeople(vector<Passenger<T>*> passengers);
 	bool existsAndHasEnoughTime(T & source, T & destination, Person* driver,list<Vertex<int>*> &path);
 	bool calculatePath(T source, T destination, Driver<T>* driver);
@@ -425,13 +428,16 @@ bool Graph<T>::removeVertex(const T &in) {
 	if (temp == nullptr)
 		return false;
 
-	for (auto i = this->vertexSet.begin(); i != this->vertexSet.end(); i++) {
+	for (auto i = this->vertexSet.begin(); i != this->vertexSet.end();) {
 		if ((*i)->info == in) {
-			this->vertexSet.erase(i);
+			i = this->vertexSet.erase(i);
 			res = true;
-		} else
+		}
+		else {
 			//			this->removeEdge((*i)->info, in);
 			(*i)->removeEdgeTo(temp);
+			++i;
+		}
 	}
 
 	return res;
@@ -755,8 +761,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 	driver->resetTravel();
 
-	//usefull??
-	//Vertex<T> * start;
+	Vertex<T> * start = nullptr;
 	Vertex<T> * ending = nullptr;
 
 	//vector<Vertex<T>*> Q;
@@ -770,8 +775,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		this->vertexSet[i]->previous = nullptr;
 		this->vertexSet[i]->pickedUp.clear();
 		if (this->vertexSet[i]->info == source) {
-			//usefull??
-			//start = this->vertexSet[i];
+			start = this->vertexSet[i];
 			this->vertexSet[i]->distance = 0;
 			this->vertexSet[i]->time = 0;
 		}
@@ -782,6 +786,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		Q.insert(vertexSet[i]);
 	}
 
+	if (ending == nullptr)
+		return -1;
 
 	list<Vertex<T> *> path;
 	while (!Q.empty()) {
@@ -825,8 +831,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 		}
 
-		//usefull??
-		//Vertex<T>* temp1 = temp;
+		Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
 
 		set<Vertex<T>*> VertexFuturePath;
@@ -997,6 +1002,22 @@ bool Graph<T>::addPeople(T source, T destination, int num) {
 	return result;
 }
 
+template <class T>
+bool Graph<T>::addPassenger(Passenger<T>* passenger)
+{
+	return addPeople(passenger->getInfoSource(), passenger->getInfoDestination(), passenger);
+}
+
+template <class T>
+bool Graph<T>::addPeople(unordered_set<Passenger<T>*> passengers)
+{
+	for (auto i = passengers.begin(); i != passengers.end(); ++i)
+		if (!this->addPassenger((*i)))
+			return false;
+
+	return true;
+}
+
 template<class T>
 bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 
@@ -1136,19 +1157,19 @@ bool Graph<T>::calculatePath(T source, T destination, Driver<T>* driver)
 	this->dijkstraPeopleDistancePath(source, destination, path,
 			passen, driver);
 
-	driver->setPath(path);
-	Utili<int>::setPassengersPath(passen, path);
-	/*this->removePeople(passen, path);*/
-	this->removePeople(passen);
+	//driver->setPath(path);
+	//Utili<int>::setPassengersPath(passen, path);
+	///*this->removePeople(passen, path);*/
+	//this->removePeople(passen);
 
-	driver->updateFreeSpace();
+	//driver->updateFreeSpace();
 
-	postProcessing(driver, path, passen);
-	//this->removePeople(passen, path);
-	this->removePeople(passen);
+	//postProcessing(driver, path, passen);
+	////this->removePeople(passen, path);
+	//this->removePeople(passen);
 
-	passen.clear();
-	path.clear();
+	//passen.clear();
+	//path.clear();
 	return true;
 }
 
@@ -1529,7 +1550,7 @@ void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 		gv->addNode((*it1)->info, (*it1)->x, (*it1)->y);
 
 		for(auto it2 = (*it1)->adj.begin(); it2 != (*it1)->adj.end(); ++it2) {
-			gv->addEdge(edgeId, (*it1)->info, (*it2).dest->info, EdgeType::UNDIRECTED);
+			gv->addEdge(edgeId, (*it1)->info, (*it2).dest->info, EdgeType::DIRECTED);
 			gv->setEdgeLabel(edgeId++, to_string((*it2).weight));
 		}
 	}

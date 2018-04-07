@@ -23,8 +23,10 @@ public:
 	int getAge() const;
 	Time getStartTime() const;
 	Time getCurrentTime() const;
+	void setCurrentTime(Time cT);
 	void updateCurrentTime(int minutes);
-	bool operator == (const Person &p2) const;
+	bool operator== (const Person &p2) const;
+	bool operator< (const Person &p2) const;
 	int getTimeLimit() const;
 	void setTimeLimit(int timeLimit);
 	//virtual bool writeToFile(string file);

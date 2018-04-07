@@ -58,7 +58,7 @@ bool operator<(const Time& lhs, const Time& rhs) {
 }
 
 bool operator==(const Time& lhs, const Time& rhs) {
-	return (lhs.getHour() == rhs.getHour() && lhs.getHour() == rhs.getHour());
+	return (lhs.getHour() == rhs.getHour() && lhs.getMinute() == rhs.getMinute());
 }
 
 

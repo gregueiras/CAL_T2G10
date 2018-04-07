@@ -25,6 +25,8 @@ class Passenger: public Person {
 	Vertex<T>* destination;
 	bool dropped;
 	bool picked;
+	T infoSource;
+	T infoDestination;
 public:
 	Passenger();
 	Passenger(int numP, Vertex<T>* source, Vertex<T>* destination);
@@ -32,12 +34,13 @@ public:
 	Passenger(string name, int age, int numP);
 	Passenger(string name, int age, int numP, int tl);
 	Passenger(string name, int age, int numP, int tl, Time startTime);
+	Passenger(string name, int age, int numP, int tl, Time startTime, T source, T destination);
 	Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination);
 	void addPassengers(int num);
 	int getNum();
 	bool writeToFile(ofstream *output);
 
-	virtual ~Passenger();
+//	virtual ~Passenger();
 	Vertex<T>* getPos();
 	void setPos(Vertex<T>* pos);
 
@@ -78,4 +81,29 @@ public:
 		return this->path;
 	}
 
+	T getInfoSource() const {
+		return this->infoSource;
+	}
+
+	T getInfoDestination() const {
+		return this->infoDestination;
+	}
+
+	virtual Passenger<T>* clone() const
+	{
+		return(new Passenger<T>(*this));
+	};
 };
+
+namespace std
+{
+	template<class T>
+	struct hash<Passenger<T>>
+	{
+		size_t
+			operator()(const Passenger<T> & obj) const
+		{
+			return hash<std::string>()(obj.getName());
+		}
+	};
+}

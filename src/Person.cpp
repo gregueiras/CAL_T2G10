@@ -18,6 +18,8 @@ Person::Person(string n, int a, int tl, Time st): name(n), startTime(st), curren
 	timeLimit = tl;
 	age = a;
 }
+Person::Person(){}
+Person::Person(string n, int a, int tl, Time st): name(n), age(a), timeLimit(tl), startTime(st), currentTime(st){}
 
 string Person::getName() const {
 	return name;
@@ -36,6 +38,11 @@ Time Person::getCurrentTime() const {
 	return currentTime;
 }
 
+void Person::setCurrentTime(Time cT)
+{
+	this->currentTime = cT;
+}
+
 void Person::updateCurrentTime(int minutes)
 {
 	currentTime = startTime + Time(0,minutes);
@@ -50,8 +57,13 @@ void Person::setTimeLimit(int timeLimit) {
 	this->timeLimit = timeLimit;
 }
 
-bool Person::operator == (const Person &p2) const {
+bool Person::operator== (const Person &p2) const {
 	return (name==p2.name && age==p2.age);
+}
+
+bool Person::operator<(const Person & p2) const
+{
+	return this->name < p2.name;
 }
 
 ostream & operator << (ostream &os, Person &p) {
