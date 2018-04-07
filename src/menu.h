@@ -15,16 +15,10 @@ string getFileName();
 
 void FirstMenu(RideShare<int> &rideShare);
 
-void DriverOptionsMenu(RideShare<int> &rideShare);
-
-void DriverSignInMenu(RideShare<int> &rideShare);
-
 void DriverSignUpMenu(RideShare<int> &rideShare);
-
-void PassengerOptionsMenu(RideShare<int> &rideShare);
-
-void PassengerSignInMenu(RideShare<int> &rideShare);
 
 void PassengerSignUpMenu(RideShare<int> &rideShare);
 
+void DriverRouteOptionsMenu(Driver<int> *driver);
 
+void PassengerRouteOptionsMenu(Passenger<int> *passenger);
