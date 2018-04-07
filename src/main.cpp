@@ -327,15 +327,15 @@ Graph<int> create_MyGraph()
 Graph<int> create_MyGraphNoPassengers()
 {
 	Graph<int> myGraph;
-	myGraph.addVertex(0, 10, 10);
-	myGraph.addVertex(1, 0, 20);
-	myGraph.addVertex(2, 15, 5);
-	myGraph.addVertex(3, 20, 5);
-	myGraph.addVertex(4, 20, 25);
-	myGraph.addVertex(5, 35, 12);
-	myGraph.addVertex(6, 33, 17);
-	myGraph.addVertex(7, 50, 12);
-	myGraph.addVertex(9, 100, 100);
+	myGraph.addVertex(0, 50, 300);
+	myGraph.addVertex(1, 50, 100);
+	myGraph.addVertex(2, 150, 200);
+	myGraph.addVertex(3, 290, 300);
+	myGraph.addVertex(4, 250, 100);
+	myGraph.addVertex(5, 370, 250);
+	myGraph.addVertex(6, 370, 100);
+	myGraph.addVertex(7, 450, 170);
+	myGraph.addVertex(9, 550, 300);
 	myGraph.addEdge(0, 1, 20);
 	myGraph.addEdge(0, 2, 10);
 	myGraph.addEdge(0, 3, 14);
@@ -446,13 +446,6 @@ int main(void) {
 	myGraph.addDriver(gregueiras);
 	myGraph.addDriver(susy);
 
-	testDijkstraPeopleMultipleDrivers(myGraph);
-
-	cout << "writeGraphToFile-before\n";
-
-	myGraph.writeGraphToFile("myGraph");
-
-	cout << "writeGraphToFile-after\n";
 	//Graph<int> myGraph = create_MyGraph();
 	Time t(12, 12);
 	Passenger<int>* p1 = new Passenger<int>("Jay", 20, 101, 20, t, 2, 3);
@@ -504,6 +497,12 @@ int main(void) {
 	//testDijkstraPeopleMultipleDrivers(myGraph, drivers);
 	RideShare<int> rs = RideShare<int>(passengers, drivers, myGraph);
 	rs.DijkstraPeopleMultipleDrivers();
+
+	cout << "writeGraphToFile-before\n";
+
+	myGraph.writeGraphToFile("myGraph");
+
+	cout << "writeGraphToFile-after\n";
 
 	graphInit(myGraph);
 

@@ -19,6 +19,7 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_set>
+#include <iomanip>
 
 #include "Passenger.h"
 #include "Person.h"
@@ -1551,7 +1552,11 @@ void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 
 		for(auto it2 = (*it1)->adj.begin(); it2 != (*it1)->adj.end(); ++it2) {
 			gv->addEdge(edgeId, (*it1)->info, (*it2).dest->info, EdgeType::DIRECTED);
-			gv->setEdgeLabel(edgeId++, to_string((*it2).weight));
+
+			stringstream stream;
+			stream << fixed << setprecision(2) << (*it2).weight;
+			string s = stream.str();
+			gv->setEdgeLabel(edgeId++, s);
 		}
 	}
 }
