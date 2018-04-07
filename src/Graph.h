@@ -180,7 +180,6 @@ public:
 	unordered_set<Driver<T>*> getDrivers();
 	void addDriver(Driver<T>* d);
 	unordered_set<Passenger<T>*> getPassengers();
-	void addPassenger(Passenger<T>* p);
 	bool addEdge(const T &sourc, const T &dest, double w);
 	bool addEdge(const T &sourc, const T &dest, double w, int p);
 	bool removeEdge(const T &sourc, const T &dest);
@@ -1005,7 +1004,8 @@ bool Graph<T>::addPeople(T source, T destination, int num) {
 template <class T>
 bool Graph<T>::addPassenger(Passenger<T>* passenger)
 {
-	return addPeople(passenger->getInfoSource(), passenger->getInfoDestination(), passenger);
+	this->passengers.insert(passenger);
+	return  addPeople(passenger->getInfoSource(), passenger->getInfoDestination(), passenger) ;
 }
 
 template <class T>
@@ -1571,10 +1571,6 @@ unordered_set<Passenger<T>*> Graph<T>::getPassengers() {
 	return this->passengers;
 }
 
-template<class T>
-void Graph<T>::addPassenger(Passenger<T>* p) {
-	this->passengers.insert(p);
-}
 
 template<class T>
 void Vertex<T>::addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger) {

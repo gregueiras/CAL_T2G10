@@ -18,8 +18,6 @@ Person::Person(string n, int a, int tl, Time st): name(n), startTime(st), curren
 	timeLimit = tl;
 	age = a;
 }
-Person::Person(){}
-Person::Person(string n, int a, int tl, Time st): name(n), age(a), timeLimit(tl), startTime(st), currentTime(st){}
 
 string Person::getName() const {
 	return name;

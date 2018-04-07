@@ -440,7 +440,7 @@ int main(void) {
 
 	Graph<int> myGraph = create_MyGraphNoPassengers();
 
-	Graph<int> myGraph = create_MyGraph();
+//	Graph<int> myGraph = create_MyGraph();
 
 	myGraph.addDriver(bieira);
 	myGraph.addDriver(gregueiras);

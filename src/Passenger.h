@@ -36,6 +36,7 @@ public:
 	Passenger(string name, int age, int numP, int tl, Time startTime);
 	Passenger(string name, int age, int numP, int tl, Time startTime, T source, T destination);
 	Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination);
+	~Passenger();
 	void addPassengers(int num);
 	int getNum();
 	bool writeToFile(ofstream *output);
