@@ -75,10 +75,10 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 	multimap<T, Driver<T>*, p_less<T>> ordered_drivers;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
-		cout << "1. " << (*i)->getName() << endl;
+		//cout << "1. " << (*i)->getName() << endl;
 		if (this->graph.calculatePath((*i)->getSource(), (*i)->getDestination(), (*i)))
 			ordered_drivers.insert(pair<int, Driver<int>*>((*i)->getTransportedPassengers(), (*i)));
-		cout << endl << endl;
+		//cout << endl << endl;
 
 		this->resetPassengers();
 
@@ -86,10 +86,10 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 	for (auto i = ordered_drivers.begin(); i != ordered_drivers.end(); i++)
 	{
 
-		cout << "2." << i->second->getName() << endl;
+		//cout << "2." << i->second->getName() << endl;
 		i->second->resetValues();
 		this->graph.calculateAndPrintPath(i->second->getSource(), i->second->getDestination(), i->second, true);
-		cout << endl;
+		//cout << endl;
 	}
 }
 
@@ -128,6 +128,62 @@ void RideShare<T>::graphInit() {
 	graph.addGraphToViewer(gv);
 
 	gv->rearrange();
+}
+
+template<class T>
+bool RideShare<T>::PrintPassengerInfo(string name, int age)
+{
+	for (auto i = passengers.begin(); i != passengers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			cout <<"Passenger: " << name << endl;
+			cout << "Traveling with: " << (*i)->getNum() -1 << endl;
+			cout << "Route : " ;
+			Utili<T>::printPath((*i)->getPath());
+			return true;
+		}
+	}
+	return false;
+}
+
+template<class T>
+bool RideShare<T>::PrintDriverInfo(string name, int age)
+{
+	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			cout <<"Driver: " << name << endl;
+			cout << "Vehicle capacity: " << (*i)->getCapacity() << endl;
+			cout << "Route : " ;
+			(*i)->printPath();
+			cout << "\nPicked:" << endl;
+			(*i)->printPassengersPickedAt();
+			cout << "Dropped:" << endl;
+			(*i)->printPassengersDroppedAt();
+			cout << endl;
+			return true;
+		}
+	}
+	return false;
+}
+
+template<class T>
+void RideShare<T>::PrintAllDriversInfo()
+{
+	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	{
+		cout <<"Driver: " << (*i)->getName() << endl;
+		cout << "Vehicle capacity: " << (*i)->getCapacity() << endl;
+		cout << "Route : " ;
+		(*i)->printPath();
+		cout << "\nPicked:" << endl;
+		(*i)->printPassengersPickedAt();
+		cout << "Dropped:" << endl;
+		(*i)->printPassengersDroppedAt();
+		cout << endl << endl;
+	}
 }
 
 template class RideShare<int>;

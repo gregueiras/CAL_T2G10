@@ -94,6 +94,7 @@ void FirstMenu(RideShare<int> &rideShare)
 		SelectMapMenu(rideShare);
 		break;
 	case 2:
+		cout << "Closing..." << endl;
 		return;
 		break;
 	}
@@ -104,7 +105,7 @@ void SelectMapMenu(RideShare<int> &rideShare)
 	cout
 	<< "1- Nome do primeiro mapa" << endl
 	<< "2- se existirem outros mapas" << endl
-	<< "3- Go back" << endl
+	<< "3- Quit" << endl
 	<< "Select one" << endl;
 	switch (getIntInInterval(1, 3))
 	{
@@ -115,7 +116,8 @@ void SelectMapMenu(RideShare<int> &rideShare)
 		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	case 3:
-		FirstMenu(rideShare);
+		cout << "Closing..." << endl;
+		return;
 		break;
 	}
 }
@@ -263,7 +265,8 @@ void PrintRouteInformations(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 4))
 	{
 	case 1:
-		//PRINT STUFF
+		rideShare.PrintAllDriversInfo();
+		PrintRouteInformations(rideShare);
 		break;
 	case 2:
 		SelectDriverMenu(rideShare);
@@ -272,6 +275,7 @@ void PrintRouteInformations(RideShare<int> &rideShare)
 		SelectPassengerMenu(rideShare);
 		break;
 	case 4:
+		cout << "Closing..." << endl;
 		return;
 		break;
 	}
@@ -384,6 +388,7 @@ void AddEdgeSubMenu(RideShare<int> &rideShare)
 
 void SelectPersonMenu(string&name, int&age)
 {
+	cleanfunction();
 	cout << "Name? (first and last) " << endl;
 	getline(cin, name);
 	cout << "Age? " << endl;
@@ -395,7 +400,7 @@ void SelectDriverMenu(RideShare<int> &rideShare)
 	string name;
 	int age;
 	SelectPersonMenu(name,age);
-	//PRINT INFORMATION
+	DriverOptionsMenu(rideShare,name,age);
 }
 
 void SelectPassengerMenu(RideShare<int> &rideShare)
@@ -403,6 +408,58 @@ void SelectPassengerMenu(RideShare<int> &rideShare)
 	string name;
 	int age;
 	SelectPersonMenu(name,age);
-	//PRINT INFORMATION
+	PassengerOptionsMenu(rideShare,name,age);
+
+}
+
+void DriverOptionsMenu(RideShare<int> &rideShare, string name, int age)
+{
+	cout
+	<< "1- Print route information" << endl
+	<< "2- View route in map" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		if (!rideShare.PrintDriverInfo(name,age))
+			cout << "Invalid driver..." << endl;
+		DriverOptionsMenu(rideShare,name,age);
+		break;
+	case 2:
+
+		//VIEW ROUTE
+		DriverOptionsMenu(rideShare,name,age);
+		break;
+	case 3:
+		PrintRouteInformations(rideShare);
+		break;
+	}
+
+}
+
+void PassengerOptionsMenu(RideShare<int> &rideShare, string name, int age)
+{
+	cout
+	<< "1- Print route information" << endl
+	<< "2- View route in map" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		if (!rideShare.PrintPassengerInfo(name,age))
+			cout << "Invalid passenger..." << endl;
+		PassengerOptionsMenu(rideShare,name,age);
+		break;
+	case 2:
+
+		//VIEW ROUTE
+		PassengerOptionsMenu(rideShare,name,age);
+		break;
+	case 3:
+		PrintRouteInformations(rideShare);
+		break;
+	}
 }
 

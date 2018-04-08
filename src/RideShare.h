@@ -25,6 +25,10 @@ public:
 	void checkSelectedMapConnectivity();
 	void graphInit();
 
+	bool PrintPassengerInfo(string name, int age);
+	bool PrintDriverInfo(string name, int age);
+	void PrintAllDriversInfo();
+
 private:
 	unordered_set<Passenger<T>*> passengers;
 	unordered_set<Driver<T>*> drivers;

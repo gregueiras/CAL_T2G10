@@ -328,4 +328,10 @@ void Driver<T>::clearCapacityAtPath() {
 	this->capacityAtPath.clear();
 }
 
+template<class T>
+void Driver<T>::printPath()
+{
+	Utili<T>::printPath(path);
+}
+
 template class Driver<int> ;

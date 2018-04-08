@@ -49,3 +49,7 @@ void SelectDriverMenu(RideShare<int> &rideShare);
 
 void SelectPassengerMenu(RideShare<int> &rideShare);
 
+void DriverOptionsMenu(RideShare<int> &rideShare, string name, int age);
+
+void PassengerOptionsMenu(RideShare<int> &rideShare, string name, int age);
+

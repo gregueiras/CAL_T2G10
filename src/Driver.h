@@ -74,6 +74,7 @@ public:
 	void printPassengersPickedAt();
 	void printPassengersDroppedAt();
 	void printCapacityAtPath();
+	void printPath();
 
 	void resetTravel();
 	void resetValues();

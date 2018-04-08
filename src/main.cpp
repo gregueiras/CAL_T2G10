@@ -366,8 +366,8 @@ Graph<int> create_MyGraphNoPassengers()
 	//myGraph.addEdge(3, 10, 4);
 	//myGraph.addEdge(10, 3, 4);
 
-	myGraph.updateGraphConnectivity();
-	myGraph.printNotConnected();
+//	myGraph.updateGraphConnectivity();
+//	myGraph.printNotConnected();
 
 
 	return myGraph;
