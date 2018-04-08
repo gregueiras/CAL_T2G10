@@ -384,7 +384,7 @@ bool testDijkstraPeopleDriver(Driver<int>* driver)
 
 
 
-void testDijkstraPeopleMultipleDrivers(Graph<int> myGraph)
+/*void testDijkstraPeopleMultipleDrivers(Graph<int> myGraph)
 {
 	if (myGraph.getDrivers().size() == 1)
 	{
@@ -411,7 +411,7 @@ void testDijkstraPeopleMultipleDrivers(Graph<int> myGraph)
 		cout << endl;
 	}
 
-}
+}*/
 
 template<class T>
 void graphInit(const Graph<T> &g) {
@@ -431,32 +431,47 @@ void graphInit(const Graph<T> &g) {
 }
 
 int main(void) {
-	unordered_set<Driver<int>*> drivers;
-	Driver<int>* bieira = new Driver<int>(0,3,20, 40, "bieira", 20, Time(12, 12));
-	Driver<int>*  gregueiras = new Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 45));
-	Driver<int>*  susy = new Driver<int>(0,7,20, 40, "susy", 22, Time(12, 12));
-	drivers.insert(bieira);
-	drivers.insert(gregueiras);
-	drivers.insert(susy);
+	bool read = true;
+	RideShare<int> rs;
+	if(read) {
+	rs = RideShare<int>("rs");
+	} else {
+		unordered_set<Driver<int>*> drivers;
 
-	Graph<int> myGraph = create_MyGraphNoPassengers();
+		Driver<int>* bieira = new Driver<int>(0,3,20, 40, "bieira", 20, Time(12, 12));
+		Driver<int>*  gregueiras = new Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 45));
+		Driver<int>*  susy = new Driver<int>(0,7,20, 40, "susy", 22, Time(12, 12));
+		drivers.insert(bieira);
+		drivers.insert(gregueiras);
+		drivers.insert(susy);
 
-//	Graph<int> myGraph = create_MyGraph();
+		unordered_set<Passenger<int>*> passengers;
+		passengers.clear();
 
-	myGraph.addDriver(bieira);
-	myGraph.addDriver(gregueiras);
-	myGraph.addDriver(susy);
+		Graph<int> myGraph = create_MyGraphNoPassengers();
 
-	//Graph<int> myGraph = create_MyGraph();
-	Time t(12, 12);
-	Passenger<int>* p1 = new Passenger<int>("Jay", 20, 101, 20, t, 2, 3);
-	Passenger<int>* p0 = new Passenger<int>("John", 20, 7, 20, t, 2, 3);
-	Passenger<int>* p2 = new Passenger<int>("Ada", 22, 2, 20, Time(12, 10), 0, 3);
-	Passenger<int>* p3 = new Passenger<int>("Mary", 30, 1, 20, Time(12, 40), 3, 5);
-	Passenger<int>* p5 = new Passenger<int>("Bane", 20, 17, 20, Time(12, 42), 5, 7);
-	Passenger<int>* p6 = new Passenger<int>("Kate", 20, 3, 20, t, 2, 5);
-	Passenger<int>* p7 = new Passenger<int>("Nina", 20, 3, 20, t, 0, 2);
-	Passenger<int>* p8 = new Passenger<int>("Adam", 20, 19, 50, t, 3, 7);
+		rs = RideShare<int>("rs", passengers, drivers, myGraph);
+
+	//	Graph<int> myGraph = create_MyGraph();
+
+		//Graph<int> myGraph = create_MyGraph();
+		Time t(12, 12);
+		Passenger<int>* p1 = new Passenger<int>("Jay", 20, 101, 20, t, 2, 3);
+		Passenger<int>* p0 = new Passenger<int>("John", 20, 7, 20, t, 2, 3);
+		Passenger<int>* p2 = new Passenger<int>("Ada", 22, 2, 20, Time(12, 10), 0, 3);
+		Passenger<int>* p3 = new Passenger<int>("Mary", 30, 1, 20, Time(12, 40), 3, 5);
+		/*PPassenger<int>* p5 = new Passenger<int>("Bane", 20, 17, 20, Time(12, 42), 5, 7);
+		Passenger<int>* p6 = new Passenger<int>("Kate", 20, 3, 20, t, 2, 5);
+		Passenger<int>* p7 = new Passenger<int>("Nina", 20, 3, 20, t, 0, 2);
+		Passenger<int>* p8 = new Passenger<int>("Adam", 20, 19, 50, t, 3, 7);*/
+
+		rs.addPassenger(2, 3, p1);
+		rs.addPassenger(0, 3, p2);
+		rs.addPassenger(3, 5, p3);
+		rs.addPassenger(2, 3, p0);
+
+	}
+
 
 	//Passenger<int> p1 = Passenger<int>("Jay", 20, 101, 20, t, 2, 3);
 	//Passenger<int> p0 = Passenger<int>("John", 20, 7, 20, t, 2, 3);
@@ -466,6 +481,7 @@ int main(void) {
 	//Passenger<int> p6 = Passenger<int>("Kate", 20, 3, 20, t, 2, 5);
 	//Passenger<int> p7 = Passenger<int>("Nina", 20, 3, 20, t, 0, 2);
 	//Passenger<int> p8 = Passenger<int>("Adam", 20, 19, 50, t, 3, 7);
+
 
 	//if (!myGraph.addPeople(2, 3, p1)) //101
 	//	cout << "ERROR" << endl;
@@ -484,7 +500,7 @@ int main(void) {
 	//if (!myGraph.addPeople(3, 7, p8)) //19
 	//	cout << "ERROR" << endl;
 
-	unordered_set<Passenger<int>*> passengers;
+	/*unordered_set<Passenger<int>*> passengers;
 	passengers.insert(p0);
 	passengers.insert(p1);
 	passengers.insert(p2);
@@ -492,11 +508,11 @@ int main(void) {
 	passengers.insert(p8);
 	passengers.insert(p5);
 	passengers.insert(p6);
-	passengers.insert(p7);
+	passengers.insert(p7);*/
 
 
 	//testDijkstraPeopleMultipleDrivers(myGraph, drivers);
-	RideShare<int> rs = RideShare<int>(passengers, drivers, myGraph);
+
 //	rs.DijkstraPeopleMultipleDrivers();
 //
 //	cout << "writeGraphToFile-before\n";
@@ -507,7 +523,10 @@ int main(void) {
 //
 //	graphInit(myGraph);
 
-	FirstMenu(rs);
+	cout << endl;
+
+	rs.writeToFile();
+	//FirstMenu(rs);
 
 
 	getchar(); 	return 0;

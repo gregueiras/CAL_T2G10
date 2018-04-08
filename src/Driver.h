@@ -58,7 +58,7 @@ public:
 	void addPassengersPickedAt(Vertex<T>* v,
 			std::vector<Passenger<T>*> passengers);
 	void addNewPassengersPickedAt(Vertex<T>* v,
-				std::vector<Passenger<T>*> passengers);
+			std::vector<Passenger<T>*> passengers);
 	void addPassengersDroppedAt(Vertex<T>* v,
 			std::vector<Passenger<T>*> passengers);
 	void addNewPassengersDroppedAt(Vertex<T>* v,
@@ -87,11 +87,9 @@ public:
 	int getDestination()const;
 	bool writeToFile(ofstream *output);
 
-
-	std::list<Vertex<T>*> getPath() const;
-
 	virtual Driver<T>* clone() const;
 
+	std::list<Vertex<T>*> getPath() const;
 
 };
 

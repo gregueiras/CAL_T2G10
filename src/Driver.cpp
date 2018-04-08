@@ -343,7 +343,7 @@ std::list<Vertex<T>*> Driver<T>::getPath() const
 template<class T>
 Driver<T>* Driver<T>::clone() const
 {
-	return(new Driver<T>(*this));
+  return(new Driver<T>(*this));
 }
 
 template class Driver<int> ;

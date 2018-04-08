@@ -9,17 +9,30 @@
 template <class T>
 class RideShare
 {
+	string name;
+	unordered_set<Passenger<T>*> passengers;
+	unordered_set<Driver<T>*> drivers;
+	Graph<T> graph;
+
+	unordered_set<Passenger<T>*> copyPassengers();
+	Graph<T> copyGraph();
+	void resetPassengers();
+
+	bool readPassengersFromFile();
+	bool readDriversFromFile();
+
+	bool writePassengersToFile();
+	bool writeDriversToFile();
 public:
 	RideShare();
-	RideShare(unordered_set<Passenger<T>*> passengers, unordered_set<Driver<T>*> drivers, Graph<T> graph);
+	RideShare(string n);
+	RideShare(string n, unordered_set<Passenger<T>*> passengers, unordered_set<Driver<T>*> drivers, Graph<T> graph);
 	~RideShare(); 
-	
+
 	void addPassenger(Passenger<T>* passenger);
+	void addPassenger(T source, T destination, Passenger<T>* passenger);
 	void addDriver(Driver<T>* driver);
-	
 	void setGraph(Graph<T> graph);
-	void setPassengers(unordered_set<Passenger<T>> passengers);
-	void setDrivers(unordered_set<Driver<T>> drivers);
 
 	void DijkstraPeopleMultipleDrivers();
 
@@ -35,18 +48,9 @@ public:
 	void SetDriverPathColour(string name, int age);
 	void SetPassengerPathColour(string name,int age);
 
+	bool writeToFile();
 
-
-private:
-	unordered_set<Passenger<T>*> passengers;
-	unordered_set<Driver<T>*> drivers;
-	Graph<T> graph;
-
-	
-	void resetPassengers();
-	void deletePassengers();
-	void deleteDrivers();
-	void deleteVertices();
+	bool readFromFile();
 
 };
 

@@ -2,35 +2,43 @@
 
 using namespace std;
 template <class T>
-RideShare<T>::RideShare()
+RideShare<T>::RideShare(){}
+
+template <class T>
+RideShare<T>::RideShare(string n)
 {
+	name = n;
+	this->readFromFile();
 }
 
 template<class T>
-RideShare<T>::RideShare(unordered_set<Passenger<T>*> passengers, unordered_set<Driver<T>*> drivers, Graph<T> graph)
+RideShare<T>::RideShare(string n, unordered_set<Passenger<T>*> passengers, unordered_set<Driver<T>*> drivers, Graph<T> graph)
 {
+	name = n;
 	this->passengers = passengers;
 	this->drivers = drivers;
 	this->graph = graph;
-
-	this->graph.addPeople(passengers);
-
 }
 
 template <class T>
 RideShare<T>::~RideShare()
 {
-	this->deletePassengers();
-	this->deleteDrivers();
 }
 
 template<class T>
 void RideShare<T>::addPassenger(Passenger<T>* passenger)
 {
 	this->passengers.insert(passenger);
-	this->graph.addPassenger(passenger);
-
 }
+
+
+template<class T>
+void RideShare<T>::addPassenger(T source, T destination, Passenger<T>* passenger)
+{
+	this->passengers.insert(passenger);
+	this->graph.addPeople(source, destination, passenger);
+}
+
 
 template<class T>
 void RideShare<T>::addDriver(Driver<T>* driver)
@@ -45,25 +53,9 @@ void RideShare<T>::setGraph(Graph<T> graph)
 }
 
 template<class T>
-void RideShare<T>::setPassengers(unordered_set<Passenger<T>> passengers)
+Graph<T> RideShare<T>::copyGraph()
 {
-	if (!this->passengers.empty())
-		this->graph.removePeople(vector <Passenger<T>*>(this->passengers.begin(), this->passengers.end()));
-
-	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
-		this->addPassenger((*i)->clone());
-	}
-
-	this->graph.addPeople(this->passengers);
-}
-
-template<class T>
-void RideShare<T>::setDrivers(unordered_set<Driver<T>> drivers)
-{
-	for (auto i = this->drivers.begin(); i != this->drivers.end(); ++i) {
-		
-		this->addDriver((*i)->clone());
-	}
+	return this->graph;
 }
 
 template<class T>
@@ -78,24 +70,9 @@ void RideShare<T>::resetPassengers()
 }
 
 template<class T>
-void RideShare<T>::deletePassengers()
+unordered_set<Passenger<T>*> RideShare<T>::copyPassengers()
 {
-	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
-		delete (*i);
-	}
-}
-
-template<class T>
-void RideShare<T>::deleteDrivers()
-{
-	for (auto i = this->drivers.begin(); i != this->drivers.end(); ++i) {
-		delete (*i);
-	}
-}
-
-template<class T>
-void RideShare<T>::deleteVertices()
-{
+	return this->passengers;
 }
 
 template<class T>
@@ -121,6 +98,7 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 	}
 	for (auto i = ordered_drivers.begin(); i != ordered_drivers.end(); i++)
 	{
+
 		//cout << "2." << i->second->getName() << endl;
 		i->second->resetValues();
 		this->graph.calculateAndPrintPath(i->second->getSource(), i->second->getDestination(), i->second, true);
@@ -181,7 +159,7 @@ void RideShare<T>::SetDriverPathColour(string name, int age)
 		{
 			list<Vertex<T>*> list = (*i)->getPath();
 			for (auto j = list.begin(); j != list.end(); j++) {
-					gv->setVertexColor((*j)->getInfo(), "magenta");
+				gv->setVertexColor((*j)->getInfo(), "magenta");
 			}
 			return;
 		}
@@ -205,7 +183,7 @@ void RideShare<T>::SetPassengerPathColour(string name, int age)
 		{
 			list<Vertex<T>*> list = (*i)->getPath();
 			for (auto j = list.begin(); j != list.end(); j++) {
-					gv->setVertexColor((*j)->getInfo(), "green");
+				gv->setVertexColor((*j)->getInfo(), "green");
 			}
 			return;
 		}
@@ -268,6 +246,116 @@ void RideShare<T>::PrintAllDriversInfo()
 		(*i)->printPassengersDroppedAt();
 		cout << endl << endl;
 	}
+}
+
+template<class T>
+bool RideShare<T>::writePassengersToFile() {
+	bool result = true;
+	string fileName = name + "Passenger.txt";
+	ofstream output(fileName);
+	for(auto it = this->passengers.begin(); it != this->passengers.end(); ++it) {
+		result &= (*it)->writeToFile(&output);
+	}
+	output.close();
+	return result;
+}
+
+template<class T>
+bool RideShare<T>::writeDriversToFile() {
+	bool result = true;
+	string fileName = name + "Driver.txt";
+	ofstream output(fileName);
+	for(auto it = this->drivers.begin(); it != this->drivers.end(); ++it) {
+		result &= (*it)->writeToFile(&output);
+	}
+	output.close();
+	return result;
+}
+
+template<class T>
+bool RideShare<T>::writeToFile() {
+	return this->graph.writeToFile(name) && this->writePassengersToFile() && this->writeDriversToFile();
+}
+
+template<class T>
+bool RideShare<T>::readPassengersFromFile() {
+	string fileName = name + "Passenger.txt";
+	ifstream input;
+	istringstream lineStream;
+	input.open(fileName);
+	if (input.is_open()) {
+		while(!input.eof()) {
+			string line, name;
+			int age, num, tl, h, m;
+			T source, destination;
+			getline(input, name);
+			if(name.empty())
+				break;
+			getline(input, line);
+			lineStream.clear();
+			lineStream.str(line);
+			lineStream >> age;
+			lineStream >> num;
+			lineStream >> tl;
+			lineStream >> h;
+			lineStream >> m;
+			getline(input, line);
+			lineStream.clear();
+			lineStream.str(line);
+			lineStream >> source;
+			lineStream >> destination;
+			Passenger<T> *p = new  Passenger<T>(name, age, num, tl, Time(h,m));
+			/*cout << "Passenger read: *" << name << "* " << age << " " << num << " " << tl << " " << h << " " << m << " " <<
+					source << " " << destination << endl;*/
+			this->addPassenger(source, destination, p);
+		}
+	} else
+		return false;
+	input.close();
+	return true;
+}
+
+template<class T>
+bool RideShare<T>::readDriversFromFile() {
+	string fileName = name + "Driver.txt";
+	ifstream input;
+	istringstream lineStream;
+	input.open(fileName);
+	if (input.is_open()) {
+		while(!input.eof()) {
+			string line, name;
+			int age, cap, tl, h, m;
+			T source, destination;
+			getline(input, name);
+			if(name.empty())
+				break;
+			getline(input, line);
+			lineStream.clear();
+			lineStream.str(line);
+			lineStream >> age;
+			lineStream >> cap;
+			lineStream >> tl;
+			lineStream >> h;
+			lineStream >> m;
+			getline(input, line);
+			lineStream.clear();
+			lineStream.str(line);
+			lineStream >> source;
+			lineStream >> destination;
+			Driver<T>*  d = new Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
+			/*cout << "Driver read: *" << name << "* " << age << " " << cap << " " << tl << " " << h << " " << m << " " <<
+					source << " " << destination << endl;*/
+			this->addDriver(d);
+		}
+	} else
+		return false;
+	input.close();
+	return true;
+}
+
+template<class T>
+bool RideShare<T>::readFromFile() {
+	return this->graph.readFromFile(name) && this->readPassengersFromFile() && this->readDriversFromFile();
 }
 
 template class RideShare<int>;

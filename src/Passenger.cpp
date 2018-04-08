@@ -125,6 +125,10 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime, 
 	this->dropped = false;
 	this->infoSource = source;
 	this->infoDestination = destination;
+	this->timeLimit = tl;
+	this->prevPos = nullptr;
+	this->destination = nullptr;
+	this->source = nullptr;
 }
 
 template<class T>
@@ -160,12 +164,6 @@ void Passenger<T>::setDestination(Vertex<T>* pos) {
 }
 
 template<class T>
-Passenger<T>* Passenger<T>::clone() const
-{
-	return(new Passenger<T>(*this));
-};
-
-template<class T>
 Vertex<T>* Passenger<T>::getPrevPos() {
 	return prevPos;
 }
@@ -174,5 +172,11 @@ template<class T>
 void Passenger<T>::setPrevPos(Vertex<T>* pos) {
 	this->prevPos = pos;
 }
+
+template<class T>
+Passenger<T>* Passenger<T>::clone() const
+{
+  return(new Passenger<T>(*this));
+};
 
 template class Passenger<int> ;
