@@ -160,6 +160,12 @@ void Passenger<T>::setDestination(Vertex<T>* pos) {
 }
 
 template<class T>
+Passenger<T>* Passenger<T>::clone() const
+{
+	return(new Passenger<T>(*this));
+};
+
+template<class T>
 Vertex<T>* Passenger<T>::getPrevPos() {
 	return prevPos;
 }
