@@ -47,9 +47,14 @@ void RideShare<T>::setGraph(Graph<T> graph)
 template<class T>
 void RideShare<T>::setPassengers(unordered_set<Passenger<T>> passengers)
 {
+	if (!this->passengers.empty())
+		this->graph.removePeople(vector <Passenger<T>*>(this->passengers.begin(), this->passengers.end()));
+
 	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
 		this->addPassenger((*i)->clone());
 	}
+
+	this->graph.addPeople(this->passengers);
 }
 
 template<class T>
