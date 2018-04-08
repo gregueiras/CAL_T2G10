@@ -16,7 +16,10 @@ public:
 	
 	void addPassenger(Passenger<T>* passenger);
 	void addDriver(Driver<T>* driver);
+	
 	void setGraph(Graph<T> graph);
+	void setPassengers(unordered_set<Passenger<T>> passengers);
+	void setDrivers(unordered_set<Driver<T>> drivers);
 
 	void DijkstraPeopleMultipleDrivers();
 
@@ -32,14 +35,18 @@ public:
 	void SetDriverPathColour(string name, int age);
 	void SetPassengerPathColour(string name,int age);
 
+
+
 private:
 	unordered_set<Passenger<T>*> passengers;
 	unordered_set<Driver<T>*> drivers;
 	Graph<T> graph;
 
-	unordered_set<Passenger<T>*> copyPassengers();
-	Graph<T> copyGraph();
+	
 	void resetPassengers();
+	void deletePassengers();
+	void deleteDrivers();
+	void deleteVertices();
 
 };
 

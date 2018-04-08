@@ -12,17 +12,24 @@ RideShare<T>::RideShare(unordered_set<Passenger<T>*> passengers, unordered_set<D
 	this->passengers = passengers;
 	this->drivers = drivers;
 	this->graph = graph;
+
+	this->graph.addPeople(passengers);
+
 }
 
 template <class T>
 RideShare<T>::~RideShare()
 {
+	this->deletePassengers();
+	this->deleteDrivers();
 }
 
 template<class T>
 void RideShare<T>::addPassenger(Passenger<T>* passenger)
 {
 	this->passengers.insert(passenger);
+	this->graph.addPassenger(passenger);
+
 }
 
 template<class T>
@@ -38,9 +45,20 @@ void RideShare<T>::setGraph(Graph<T> graph)
 }
 
 template<class T>
-Graph<T> RideShare<T>::copyGraph()
+void RideShare<T>::setPassengers(unordered_set<Passenger<T>> passengers)
 {
-	return this->graph;
+	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
+		this->addPassenger((*i)->clone());
+	}
+}
+
+template<class T>
+void RideShare<T>::setDrivers(unordered_set<Driver<T>> drivers)
+{
+	for (auto i = this->drivers.begin(); i != this->drivers.end(); ++i) {
+		
+		this->addDriver((*i)->clone());
+	}
 }
 
 template<class T>
@@ -55,16 +73,29 @@ void RideShare<T>::resetPassengers()
 }
 
 template<class T>
-unordered_set<Passenger<T>*> RideShare<T>::copyPassengers()
+void RideShare<T>::deletePassengers()
 {
-	return this->passengers;
+	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
+		delete (*i);
+	}
+}
+
+template<class T>
+void RideShare<T>::deleteDrivers()
+{
+	for (auto i = this->drivers.begin(); i != this->drivers.end(); ++i) {
+		delete (*i);
+	}
+}
+
+template<class T>
+void RideShare<T>::deleteVertices()
+{
 }
 
 template<class T>
 void RideShare<T>::DijkstraPeopleMultipleDrivers()
 {
-	this->graph.addPeople(passengers);
-
 	if (drivers.size() == 1)
 	{
 		this->graph.calculateAndPrintPath((*drivers.begin())->getSource(), (*drivers.begin())->getDestination(), (*drivers.begin()), false);
@@ -85,7 +116,6 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 	}
 	for (auto i = ordered_drivers.begin(); i != ordered_drivers.end(); i++)
 	{
-
 		//cout << "2." << i->second->getName() << endl;
 		i->second->resetValues();
 		this->graph.calculateAndPrintPath(i->second->getSource(), i->second->getDestination(), i->second, true);

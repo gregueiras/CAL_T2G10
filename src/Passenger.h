@@ -90,10 +90,7 @@ public:
 		return this->infoDestination;
 	}
 
-	virtual Passenger<T>* clone() const
-	{
-		return(new Passenger<T>(*this));
-	};
+	virtual Passenger<T>* clone() const;
 };
 
 namespace std

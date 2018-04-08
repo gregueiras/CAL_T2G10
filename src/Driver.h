@@ -90,5 +90,8 @@ public:
 
 	std::list<Vertex<T>*> getPath() const;
 
+	virtual Driver<T>* clone() const;
+
+
 };
 
