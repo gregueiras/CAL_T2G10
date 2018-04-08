@@ -88,5 +88,7 @@ public:
 	bool writeToFile(ofstream *output);
 
 
+	std::list<Vertex<T>*> getPath() const;
+
 };
 

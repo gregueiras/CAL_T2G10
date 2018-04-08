@@ -334,4 +334,10 @@ void Driver<T>::printPath()
 	Utili<T>::printPath(path);
 }
 
+template<class T>
+std::list<Vertex<T>*> Driver<T>::getPath() const
+{
+	return path;
+}
+
 template class Driver<int> ;

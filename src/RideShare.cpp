@@ -115,7 +115,7 @@ void RideShare<T>::checkSelectedMapConnectivity()
 
 template<class T>
 void RideShare<T>::graphInit() {
-	GraphViewer *gv = new GraphViewer(600, 600, false);
+	GraphViewer* gv = new GraphViewer(600, 600, false);
 
 	gv->setBackground("background.jpg");
 
@@ -129,6 +129,55 @@ void RideShare<T>::graphInit() {
 
 	gv->rearrange();
 }
+
+template<class T>
+void RideShare<T>::SetDriverPathColour(string name, int age)
+{
+	GraphViewer *gv = new GraphViewer(600, 600, false);
+	gv->setBackground("background.jpg");
+	gv->createWindow(600, 600);
+	gv->defineVertexColor("blue");
+	gv->defineEdgeColor("black");
+	graph.addGraphToViewer(gv);
+
+	for (auto i = this->drivers.begin(); i != this->drivers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			list<Vertex<T>*> list = (*i)->getPath();
+			for (auto j = list.begin(); j != list.end(); j++) {
+					gv->setVertexColor((*j)->getInfo(), "magenta");
+			}
+			return;
+		}
+	}
+}
+
+
+template<class T>
+void RideShare<T>::SetPassengerPathColour(string name, int age)
+{
+	GraphViewer *gv = new GraphViewer(600, 600, false);
+	gv->setBackground("background.jpg");
+	gv->createWindow(600, 600);
+	gv->defineVertexColor("blue");
+	gv->defineEdgeColor("black");
+	graph.addGraphToViewer(gv);
+
+	for (auto i = this->passengers.begin(); i != this->passengers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			list<Vertex<T>*> list = (*i)->getPath();
+			for (auto j = list.begin(); j != list.end(); j++) {
+					gv->setVertexColor((*j)->getInfo(), "green");
+			}
+			return;
+		}
+	}
+}
+
+
 
 template<class T>
 bool RideShare<T>::PrintPassengerInfo(string name, int age)

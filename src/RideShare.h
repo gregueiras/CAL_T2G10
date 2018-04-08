@@ -29,6 +29,9 @@ public:
 	bool PrintDriverInfo(string name, int age);
 	void PrintAllDriversInfo();
 
+	void SetDriverPathColour(string name, int age);
+	void SetPassengerPathColour(string name,int age);
+
 private:
 	unordered_set<Passenger<T>*> passengers;
 	unordered_set<Driver<T>*> drivers;
