@@ -106,5 +106,28 @@ bool RideShare<T>::addVertex(const T &in, unsigned long x, unsigned long y)
 }
 
 
+template<class T>
+void RideShare<T>::checkSelectedMapConnectivity()
+{
+	graph.updateGraphConnectivity();
+	graph.printNotConnected();
+}
+
+template<class T>
+void RideShare<T>::graphInit() {
+	GraphViewer *gv = new GraphViewer(600, 600, false);
+
+	gv->setBackground("background.jpg");
+
+	gv->createWindow(600, 600);
+
+
+	gv->defineVertexColor("blue");
+	gv->defineEdgeColor("black");
+
+	graph.addGraphToViewer(gv);
+
+	gv->rearrange();
+}
 
 template class RideShare<int>;

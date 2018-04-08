@@ -497,18 +497,17 @@ int main(void) {
 
 	//testDijkstraPeopleMultipleDrivers(myGraph, drivers);
 	RideShare<int> rs = RideShare<int>(passengers, drivers, myGraph);
-	rs.DijkstraPeopleMultipleDrivers();
+//	rs.DijkstraPeopleMultipleDrivers();
+//
+//	cout << "writeGraphToFile-before\n";
+//
+//	myGraph.writeGraphToFile("myGraph");
+//
+//	cout << "writeGraphToFile-after\n";
+//
+//	graphInit(myGraph);
 
-	cout << "writeGraphToFile-before\n";
-
-	myGraph.writeGraphToFile("myGraph");
-
-	cout << "writeGraphToFile-after\n";
-
-	graphInit(myGraph);
-
-	//FirstMenu(rs);
-
+	FirstMenu(rs);
 
 
 	getchar(); 	return 0;

@@ -42,9 +42,9 @@ int getInt()
 
 	if (cin.fail() || num < 0)
 	{
-		cin.clear();
-		cin.ignore(1000, '\n');
 		cout << "Invalid Input!\n";
+		cin.clear();
+		//cin.ignore(1000, '\n');
 		return -1;
 	}
 	return num;
@@ -109,17 +109,43 @@ void SelectMapMenu(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 3))
 	{
 	case 1:
-		//escolhe
-		AddVertexMenu(rideShare);
+		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	case 2:
-		//escolhe
-		AddVertexMenu(rideShare);
+		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	case 3:
 		FirstMenu(rideShare);
 		break;
 	}
+}
+
+void checkConnectivityandViewGraphMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- View Map/Graph" << endl
+	<< "2- Check Map/Graph's connectivity" << endl
+	<< "3- Skip" << endl
+	<< "4- Go back"<< endl
+	<< "Select one" << endl;
+switch (getIntInInterval(1, 4))
+	{
+	case 1:
+		rideShare.graphInit();
+		AddVertexMenu(rideShare);
+		break;
+	case 2:
+		rideShare.checkSelectedMapConnectivity();
+		AddVertexMenu(rideShare);
+		break;
+	case 3:
+		AddVertexMenu(rideShare);
+		break;
+	case 4:
+		SelectMapMenu(rideShare);
+		break;
+	}
+
 }
 
 void AddVertexMenu(RideShare<int> &rideShare)
@@ -138,7 +164,7 @@ void AddVertexMenu(RideShare<int> &rideShare)
 		AddEdgeMenu(rideShare);
 		break;
 	case 3:
-		SelectMapMenu(rideShare);
+		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	}
 }
@@ -218,14 +244,62 @@ void GenerateRoutesMenu(RideShare<int> &rideShare)
 	{
 	case 1:
 		rideShare.DijkstraPeopleMultipleDrivers();
+		PrintRouteInformations(rideShare);
 		break;
 	case 2:
 		AddDriverMenu(rideShare);
 		break;
 	}
-	return;
 }
 
+void PrintRouteInformations(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- All drivers routes information" << endl
+	<< "2- Select Driver" << endl
+	<< "3- Select Passenger" << endl
+	<< "4- Quit" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 4))
+	{
+	case 1:
+		//PRINT STUFF
+		break;
+	case 2:
+		SelectDriverMenu(rideShare);
+		break;
+	case 3:
+		SelectPassengerMenu(rideShare);
+		break;
+	case 4:
+		return;
+		break;
+	}
+
+}
+
+bool PersonSignUpMenu(string &name, int& age, int&src, int&dest, int&hour, int&minutes, int&timeLimit)
+{
+	cout << "Name? (first and last) " << endl;
+	getline(cin, name);
+	cout << "Age? " << endl;
+	age = getIntInInterval(18,70);
+	cout << "Starting location? " << endl;
+	src = getInt();
+	if (src == -1) return false;
+	cout << "Destination? " << endl;
+	dest = getInt();
+	if (dest == -1) return false;
+	cout << "Starting hour: " << endl;
+	cout << "Hour?  ";
+	hour = getIntInInterval(0,23);
+	cout << "Minutes?  ";
+	minutes = getIntInInterval(0,59);
+	cout << "Time limit for the itinerary?" << endl;
+	timeLimit = getInt();
+	if (timeLimit == -1) return false;
+	return true;
+}
 
 
 void DriverSignUpMenu(RideShare<int> &rideShare)
@@ -237,27 +311,10 @@ void DriverSignUpMenu(RideShare<int> &rideShare)
 	int src, dest;
 	int hour, minutes;
 	cleanfunction();
-	cout << "Name? (first and last) " << endl;
-	getline(cin, name);
-	cout << "Age? " << endl;
-	age = getIntInInterval(18,70);
-	cout << "Starting location? " << endl;
-	src = getInt();
-	if (src == -1) return;
-	cout << "Destination? " << endl;
-	dest = getInt();
-	if (dest == -1) return;
-	cout << "Starting hour: " << endl;
-	cout << "Hour?  ";
-	hour = getIntInInterval(0,23);
-	cout << "Minutes?  ";
-	minutes = getIntInInterval(0,59);
-	cout << "Time limit for the itinerary?" << endl;
-	timeLimit = getInt();
-	if (timeLimit == -1) return;
+	if (!PersonSignUpMenu(name,age,src,dest,hour,minutes,timeLimit)) return AddDriverMenu(rideShare);
 	cout << "Vehicle capacity? " << endl;
 	capacity = getInt();
-	if (capacity == -1) return;
+	if (capacity == -1) return AddDriverMenu(rideShare);
 	Driver<int> *driver = new Driver<int>(src,dest,capacity,timeLimit,name,age,Time(hour,minutes));
 	rideShare.addDriver(driver);
 	GenerateRoutesMenu(rideShare);
@@ -274,27 +331,10 @@ void PassengerSignUpMenu(RideShare<int> &rideShare)
 	int src, dest;
 	int hour, minutes;
 	cleanfunction();
-	cout << "Name? (first and last) " << endl;
-	getline(cin, name);
-	cout << "Age? " << endl;
-	age = getIntInInterval(18,70);
-	cout << "Starting location? " << endl;
-	src = getInt();
-	if (src == -1) return;
-	cout << "Destination? " << endl;
-	dest = getInt();
-	if (dest == -1) return;
-	cout << "Starting hour: " << endl;
-	cout << "Hour?  ";
-	hour = getIntInInterval(0,23);
-	cout << "Minutes?  ";
-	minutes = getIntInInterval(0,59);
-	cout << "Time limit for the itinerary?" << endl;
-	timeLimit = getInt();
-	if (timeLimit == -1) return;
+	if (!PersonSignUpMenu(name,age,src,dest,hour,minutes,timeLimit)) return AddPassengerMenu(rideShare);
 	cout << "Number of people traveling? " << endl;
 	numberPeople = getInt();
-	if (numberPeople == -1) return;
+	if (numberPeople == -1) return AddPassengerMenu(rideShare);
 	Passenger<int> *passenger = new Passenger<int>(name,age,numberPeople, timeLimit,Time(hour,minutes),src,dest);
 	rideShare.addPassenger(passenger);
 	AddDriverMenu(rideShare);
@@ -342,4 +382,27 @@ void AddEdgeSubMenu(RideShare<int> &rideShare)
 }
 
 
+void SelectPersonMenu(string&name, int&age)
+{
+	cout << "Name? (first and last) " << endl;
+	getline(cin, name);
+	cout << "Age? " << endl;
+	age = getIntInInterval(18,70);
+}
+
+void SelectDriverMenu(RideShare<int> &rideShare)
+{
+	string name;
+	int age;
+	SelectPersonMenu(name,age);
+	//PRINT INFORMATION
+}
+
+void SelectPassengerMenu(RideShare<int> &rideShare)
+{
+	string name;
+	int age;
+	SelectPersonMenu(name,age);
+	//PRINT INFORMATION
+}
 

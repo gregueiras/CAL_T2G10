@@ -2,6 +2,7 @@
 
 #include "Passenger.h"
 #include "Driver.h"
+#include "graphviewer.h"
 
 #include <unordered_set>
 
@@ -21,6 +22,8 @@ public:
 
 	bool addEdge(const T &sourc, const T &dest, double w);
 	bool addVertex(const T &in, unsigned long x, unsigned long y);
+	void checkSelectedMapConnectivity();
+	void graphInit();
 
 private:
 	unordered_set<Passenger<T>*> passengers;
