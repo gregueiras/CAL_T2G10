@@ -158,12 +158,24 @@ void RideShare<T>::SetDriverPathColour(string name, int age)
 		{
 			list<Vertex<T>*> list = (*i)->getPath();
 			for (auto j = list.begin(); j != list.end(); j++) {
+				auto next = ++j;
+				--j;
 				gv->setVertexColor((*j)->getInfo(), "magenta");
+				if (next == list.end())
+					break;
+				else
+				{
+					for (unsigned int k = 0; k < (*j)->getAdj().size(); k++)
+					{
+						if ( (*j)->getAdj().at(k).getVertexName() == to_string((*next)->getInfo()))
+							gv->setEdgeColor((*j)->getAdj().at(k).getEdgeId(), "magenta");
+					}
+				}
 			}
+			gv->rearrange();
 			return;
 		}
 	}
-	gv->rearrange();
 }
 
 
@@ -183,13 +195,25 @@ void RideShare<T>::SetPassengerPathColour(string name, int age)
 		{
 			list<Vertex<T>*> list = (*i)->getPath();
 			for (auto j = list.begin(); j != list.end(); j++) {
+				auto next = ++j;
+				--j;
 				gv->setVertexColor((*j)->getInfo(), "green");
+				if (next == list.end())
+					break;
+				else
+				{
+					for (unsigned int k = 0; k < (*j)->getAdj().size(); k++)
+					{
+						if ( (*j)->getAdj().at(k).getVertexName() == to_string((*next)->getInfo()))
+							gv->setEdgeColor((*j)->getAdj().at(k).getEdgeId(), "green");
+					}
+				}
 			}
+			gv->rearrange();
 			return;
 		}
 	}
 
-	gv->rearrange();
 }
 
 

@@ -128,6 +128,7 @@ class Edge {
 	double weight = 0;         // edge weight
 	int numP;
 	vector<Passenger<T>*> waiting;
+	int edgeId;
 public:
 	Edge();
 	Edge(Vertex<T> *d, double w);
@@ -153,12 +154,26 @@ public:
 		return weight;
 	}
 
+	int getEdgeId() const
+	{
+		return edgeId;
+	}
+
+	void setEdgeId(int ei)
+	{
+		edgeId = ei;
+	}
+
 	vector<Passenger<T>*> getWaiting() {
 		return waiting;
 	}
 
 	bool operator<(const Edge<T>& e) const {
 		return this->numP < e.getNumPeople();
+	}
+
+	bool operator==(const Edge<T>& e) const{
+		return this->edgeId == e.getEdgeId();
 	}
 
 	friend class Graph<T> ;
@@ -233,18 +248,18 @@ Vertex<T>::Vertex(T in, unsigned long x, unsigned long y) : info(in) {
 
 template<class T>
 Edge<T>::Edge() :
-dest(nullptr), weight(-1), numP(-1), waiting(vector<Passenger<T>*> { }) {
+dest(nullptr), weight(-1), numP(-1), waiting(vector<Passenger<T>*> { }), edgeId(0) {
 }
 
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w) :
-dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }) {
+dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }), edgeId(0) {
 }
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w, int p) :
-dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }) {
+dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }), edgeId(0){
 }
 
 template<class T>
@@ -1441,6 +1456,7 @@ void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 		gv->addNode((*it1)->info, (*it1)->x, (*it1)->y);
 
 		for(auto it2 = (*it1)->adj.begin(); it2 != (*it1)->adj.end(); ++it2) {
+			(*it2).setEdgeId(edgeId);
 			gv->addEdge(edgeId, (*it1)->info, (*it2).dest->info, EdgeType::DIRECTED);
 
 			stringstream stream;

@@ -431,7 +431,7 @@ void graphInit(const Graph<T> &g) {
 }
 
 int main(void) {
-	bool read = true;
+	bool read = false;
 	RideShare<int> rs;
 	if(read) {
 		rs.setFromFile("rs");
@@ -538,10 +538,14 @@ int main(void) {
 
 	cout << endl;
 
-	rs.writeToFile();
 	FirstMenu(rs);
 	rs.writeToFile();
 
 	getchar(); 	return 0;
+
+
+	//getchar();
+
+	return 0;
 
 }
