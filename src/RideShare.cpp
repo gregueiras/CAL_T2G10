@@ -11,6 +11,13 @@ RideShare<T>::RideShare(string n)
 	this->readFromFile();
 }
 
+template <class T>
+void RideShare<T>::setFromFile(string name)
+{
+	this->name = name;
+	this->readFromFile();
+}
+
 template<class T>
 RideShare<T>::RideShare(string n, unordered_set<Passenger<T>*> passengers, unordered_set<Driver<T>*> drivers, Graph<T> graph)
 {
@@ -23,12 +30,16 @@ RideShare<T>::RideShare(string n, unordered_set<Passenger<T>*> passengers, unord
 template <class T>
 RideShare<T>::~RideShare()
 {
+	this->deletePassengers();
+	this->deleteDrivers();
 }
 
 template<class T>
 void RideShare<T>::addPassenger(Passenger<T>* passenger)
 {
 	this->passengers.insert(passenger);
+	this->graph.addPassenger(passenger);
+
 }
 
 
@@ -53,12 +64,6 @@ void RideShare<T>::setGraph(Graph<T> graph)
 }
 
 template<class T>
-Graph<T> RideShare<T>::copyGraph()
-{
-	return this->graph;
-}
-
-template<class T>
 void RideShare<T>::resetPassengers()
 {
 	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
@@ -67,12 +72,6 @@ void RideShare<T>::resetPassengers()
 		(*i)->setPos((*i)->getSource());
 		(*i)->setCurrentTime((*i)->getStartTime());
 	}
-}
-
-template<class T>
-unordered_set<Passenger<T>*> RideShare<T>::copyPassengers()
-{
-	return this->passengers;
 }
 
 template<class T>
@@ -282,6 +281,7 @@ bool RideShare<T>::writeToFile() {
 
 template<class T>
 bool RideShare<T>::readPassengersFromFile() {
+	unordered_set <Passenger<T>> passengers;
 	string fileName = name + "Passenger.txt";
 	ifstream input;
 	istringstream lineStream;
@@ -307,19 +307,23 @@ bool RideShare<T>::readPassengersFromFile() {
 			lineStream.str(line);
 			lineStream >> source;
 			lineStream >> destination;
-			Passenger<T> *p = new  Passenger<T>(name, age, num, tl, Time(h,m));
+			Passenger<T> p = Passenger<T>(name, age, num, tl, Time(h,m), source, destination);
 			/*cout << "Passenger read: *" << name << "* " << age << " " << num << " " << tl << " " << h << " " << m << " " <<
 					source << " " << destination << endl;*/
-			this->addPassenger(source, destination, p);
+			/*this->addPassenger(source, destination, p);*/
+			passengers.insert(p);
+
 		}
 	} else
 		return false;
 	input.close();
+	this->setPassengers(passengers);
 	return true;
 }
 
 template<class T>
 bool RideShare<T>::readDriversFromFile() {
+	unordered_set <Driver<T>> drivers;
 	string fileName = name + "Driver.txt";
 	ifstream input;
 	istringstream lineStream;
@@ -345,14 +349,16 @@ bool RideShare<T>::readDriversFromFile() {
 			lineStream.str(line);
 			lineStream >> source;
 			lineStream >> destination;
-			Driver<T>*  d = new Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
+			Driver<T> d = Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
 			/*cout << "Driver read: *" << name << "* " << age << " " << cap << " " << tl << " " << h << " " << m << " " <<
 					source << " " << destination << endl;*/
-			this->addDriver(d);
+			//this->addDriver(d);
+			drivers.insert(d);
 		}
 	} else
 		return false;
 	input.close();
+	this->setDrivers(drivers);
 	return true;
 }
 
@@ -361,4 +367,52 @@ bool RideShare<T>::readFromFile() {
 	return this->graph.readFromFile(name) && this->readPassengersFromFile() && this->readDriversFromFile();
 }
 
+
+template<class T>
+void RideShare<T>::deletePassengers()
+{
+	for (auto i = this->passengers.begin(); i != this->passengers.end(); ++i) {
+		delete (*i);
+		
+	}
+}
+
+template<class T>
+void RideShare<T>::deleteDrivers()
+{
+	for (auto i = this->drivers.begin(); i != this->drivers.end(); ++i) {
+		delete (*i);
+
+	}
+}
+
+template<class T>
+void RideShare<T>::setPassengers(unordered_set<Passenger<T>> passengers)
+{
+	if (!this->passengers.empty())
+		this->graph.removePeople(vector <Passenger<T>*>(this->passengers.begin(), this->passengers.end()));
+	
+	for (auto i = passengers.begin(); i != passengers.end(); ++i) {
+		this->addPassenger((*i).clone());
+
+	}
+	
+//this->graph.addPeople(this->passengers);
+	
+}
+
+template<class T>
+void RideShare<T>::setDrivers(unordered_set<Driver<T>> drivers)
+{
+	for (auto i = drivers.begin(); i != drivers.end(); ++i) {
+
+		this->addDriver((*i).clone());
+
+	}
+}
+
+template<class T>
+void RideShare<T>::setName(std::string name) {
+	this->name = name;
+}
 template class RideShare<int>;

@@ -203,13 +203,16 @@ public:
 	int getPositionOnPath(T source, list<Vertex<T>*> path);
 	double getTravelTime(T source, T destination, list<Vertex<T>*> path);
 
-	vector<Passenger<T>*> secondTry(list<Vertex<T>*> path, Driver<T>* driver);
 	void addGraphToViewer(GraphViewer *gv) const;
 	void updateGraphConnectivity();
 	void printNotConnected();
 
 	bool writeToFile(string companyName);
 	bool readFromFile(string companyName);
+
+
+	bool addPassenger(Passenger<T>* passenger);
+	bool addPeople(unordered_set<Passenger<T>*> passengers);
 
 };
 
@@ -1524,6 +1527,26 @@ void Utili<T>::printPath(const list<Vertex<T> *> path) {
 		cout << (*i)->getInfo() << " ";
 	}
 	cout << endl;
+}
+
+
+template <class T>
+bool Graph<T>::addPassenger(Passenger<T>* passenger)
+{
+	if (passenger->getInfoSource() == -1 || passenger->getInfoDestination() == -1)
+		return false;
+
+	return  addPeople(passenger->getInfoSource(), passenger->getInfoDestination(), passenger);
+}
+
+template <class T>
+bool Graph<T>::addPeople(unordered_set<Passenger<T>*> passengers)
+{
+	for (auto i = passengers.begin(); i != passengers.end(); ++i)
+		if (!this->addPassenger((*i)))
+			return false;
+
+	return true;
 }
 
 #endif /* GRAPH_H_ */

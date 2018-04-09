@@ -93,3 +93,16 @@ public:
 
 };
 
+namespace std
+{
+	template<class T>
+	struct hash<Driver<T>>
+	{
+		size_t
+			operator()(const Driver<T> & obj) const
+		{
+			return hash<std::string>()(obj.getName());
+		}
+	};
+}
+

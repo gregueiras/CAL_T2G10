@@ -17,6 +17,8 @@ Passenger<T>::Passenger() : Person() {
 	this->dropped = false;
 	this->picked = false;
 	this->prevPos = NULL;
+	this->infoSource = -1;
+	this->infoDestination = -1;
 }
 
 template<class T>
@@ -29,6 +31,8 @@ Passenger<T>::Passenger(int numP) : Person() {
 	this->dropped = false;
 	this->picked = false;
 	this->prevPos = NULL;
+	this->infoSource = -1;
+	this->infoDestination = -1;
 }
 
 template<class T>
@@ -41,6 +45,8 @@ Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) : P
 	this->dropped = false;
 	this->picked = false;
 	this->prevPos = NULL;
+	this->infoSource = source->getInfo();
+	this->infoDestination = destination->getInfo();
 }
 
 template<class T>
@@ -53,6 +59,8 @@ Passenger<T>::Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destinat
 	this->dropped = false;
 	this->picked = false;
 	this->prevPos = NULL;
+	this->infoSource = source->getInfo();
+	this->infoDestination = destination->getInfo();
 }
 
 template<class T>
@@ -96,25 +104,29 @@ Passenger<T>::~Passenger() {
 template<class T>
 Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
 	this->numPassengers = numP;
-	this->source = source;
+	this->source = nullptr;
 	this->pos = NULL;
-	this->destination = destination;
+	this->destination = nullptr;
 	this->picked = false;
 	this->dropped = false;
 	this->timeLimit = 0;
 	this->prevPos = nullptr;
+	this->infoSource = -1;
+	this->infoDestination = -1;
 }
 
 template<class T>
 Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, age,tl,Time(0,0)) {
 	this->numPassengers = numP;
-	this->source = source;
+	this->source = nullptr;
 	this->pos = NULL;
-	this->destination = destination;
+	this->destination = nullptr;
 	this->picked = false;
 	this->dropped = false;
 	this->timeLimit = 0;
 	this->prevPos = nullptr;
+	this->infoSource = -1;
+	this->infoDestination = -1;
 }
 
 template<class T>
@@ -134,13 +146,15 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime, 
 template<class T>
 Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) : Person(name, age,tl, startTime) {
 	this->numPassengers = numP;
-	this->source = source;
+	this->source = nullptr;
 	this->pos = NULL;
-	this->destination = destination;
+	this->destination = nullptr;
 	this->picked = false;
 	this->dropped = false;
 	this->timeLimit = 0;
 	this->prevPos = nullptr;
+	this->infoSource = -1;
+	this->infoDestination = -1;
 }
 
 template<class T>

@@ -14,8 +14,6 @@ class RideShare
 	unordered_set<Driver<T>*> drivers;
 	Graph<T> graph;
 
-	unordered_set<Passenger<T>*> copyPassengers();
-	Graph<T> copyGraph();
 	void resetPassengers();
 
 	bool readPassengersFromFile();
@@ -23,6 +21,9 @@ class RideShare
 
 	bool writePassengersToFile();
 	bool writeDriversToFile();
+
+	void deletePassengers();
+	void deleteDrivers();
 public:
 	RideShare();
 	RideShare(string n);
@@ -32,7 +33,6 @@ public:
 	void addPassenger(Passenger<T>* passenger);
 	void addPassenger(T source, T destination, Passenger<T>* passenger);
 	void addDriver(Driver<T>* driver);
-	void setGraph(Graph<T> graph);
 
 	void DijkstraPeopleMultipleDrivers();
 
@@ -49,8 +49,14 @@ public:
 	void SetPassengerPathColour(string name,int age);
 
 	bool writeToFile();
-
 	bool readFromFile();
+
+	void setPassengers(unordered_set<Passenger<T>> passengers);
+	void setDrivers(unordered_set<Driver<T>> drivers);
+	void setGraph(Graph<T> graph);
+	void setName(std::string name);
+
+	void setFromFile(std::string name);
 
 };
 

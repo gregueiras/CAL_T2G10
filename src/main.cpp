@@ -434,41 +434,55 @@ int main(void) {
 	bool read = true;
 	RideShare<int> rs;
 	if(read) {
-	rs = RideShare<int>("rs");
+	//rs = RideShare<int>("rs");
+		rs.setFromFile("rs");
 	} else {
-		unordered_set<Driver<int>*> drivers;
+		unordered_set<Driver<int>> drivers;
 
-		Driver<int>* bieira = new Driver<int>(0,3,20, 40, "bieira", 20, Time(12, 12));
-		Driver<int>*  gregueiras = new Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 45));
-		Driver<int>*  susy = new Driver<int>(0,7,20, 40, "susy", 22, Time(12, 12));
+		Driver<int> bieira = Driver<int>(0,3,20, 40, "bieira", 20, Time(12, 12));
+		Driver<int> gregueiras = Driver<int>(3,7,20, 40, "gregueiras", 22, Time(12, 45));
+		Driver<int> susy = Driver<int>(0,7,20, 40, "susy", 22, Time(12, 12));
 		drivers.insert(bieira);
 		drivers.insert(gregueiras);
 		drivers.insert(susy);
 
-		unordered_set<Passenger<int>*> passengers;
-		passengers.clear();
+		unordered_set<Passenger<int>> passengers;
 
 		Graph<int> myGraph = create_MyGraphNoPassengers();
 
-		rs = RideShare<int>("rs", passengers, drivers, myGraph);
 
 	//	Graph<int> myGraph = create_MyGraph();
 
 		//Graph<int> myGraph = create_MyGraph();
 		Time t(12, 12);
-		Passenger<int>* p1 = new Passenger<int>("Jay", 20, 101, 20, t, 2, 3);
-		Passenger<int>* p0 = new Passenger<int>("John", 20, 7, 20, t, 2, 3);
-		Passenger<int>* p2 = new Passenger<int>("Ada", 22, 2, 20, Time(12, 10), 0, 3);
-		Passenger<int>* p3 = new Passenger<int>("Mary", 30, 1, 20, Time(12, 40), 3, 5);
-		/*PPassenger<int>* p5 = new Passenger<int>("Bane", 20, 17, 20, Time(12, 42), 5, 7);
-		Passenger<int>* p6 = new Passenger<int>("Kate", 20, 3, 20, t, 2, 5);
-		Passenger<int>* p7 = new Passenger<int>("Nina", 20, 3, 20, t, 0, 2);
-		Passenger<int>* p8 = new Passenger<int>("Adam", 20, 19, 50, t, 3, 7);*/
+		Passenger<int> p0 = Passenger<int>("John", 20, 7, 20, t, 2, 3);
+		Passenger<int> p1 = Passenger<int>("Jay", 20, 101, 20, t, 2, 3);
+		Passenger<int> p2 = Passenger<int>("Ada", 22, 2, 20, Time(12, 10), 0, 3);
+		Passenger<int> p3 = Passenger<int>("Mary", 30, 1, 20, Time(12, 40), 3, 5);
+		Passenger<int> p5 = Passenger<int>("Bane", 20, 17, 20, Time(12, 42), 5, 7);
+		Passenger<int> p6 = Passenger<int>("Kate", 20, 3, 20, t, 2, 5);
+		Passenger<int> p7 = Passenger<int>("Nina", 20, 3, 20, t, 0, 2);
+		Passenger<int> p8 = Passenger<int>("Adam", 20, 19, 50, t, 3, 7);
 
-		rs.addPassenger(2, 3, p1);
-		rs.addPassenger(0, 3, p2);
-		rs.addPassenger(3, 5, p3);
-		rs.addPassenger(2, 3, p0);
+		passengers.insert(p0);
+		passengers.insert(p1);
+		passengers.insert(p2);
+		passengers.insert(p3);
+		passengers.insert(p5);
+		passengers.insert(p6);
+		passengers.insert(p7);
+		passengers.insert(p8);
+
+		//rs.addPassenger(2, 3, p1);
+		//rs.addPassenger(0, 3, p2);
+		//rs.addPassenger(3, 5, p3);
+		//rs.addPassenger(2, 3, p0);
+
+		//rs = RideShare<int>("rs", passengers, drivers, myGraph);
+		rs.setName("rs");
+		rs.setGraph(myGraph);
+		rs.setPassengers(passengers);
+		rs.setDrivers(drivers);
 
 	}
 
@@ -526,7 +540,7 @@ int main(void) {
 	cout << endl;
 
 	rs.writeToFile();
-	//FirstMenu(rs);
+	FirstMenu(rs);
 
 
 	getchar(); 	return 0;
