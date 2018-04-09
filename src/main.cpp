@@ -434,7 +434,6 @@ int main(void) {
 	bool read = true;
 	RideShare<int> rs;
 	if(read) {
-	//rs = RideShare<int>("rs");
 		rs.setFromFile("rs");
 	} else {
 		unordered_set<Driver<int>> drivers;
@@ -541,7 +540,7 @@ int main(void) {
 
 	rs.writeToFile();
 	FirstMenu(rs);
-
+	rs.writeToFile();
 
 	getchar(); 	return 0;
 

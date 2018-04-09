@@ -1395,7 +1395,7 @@ bool Graph<T>::readFromFile(string companyName) {
 			lineStream.clear();
 			lineStream.str(line);
 			lineStream >> type;
-			if(type == '\t')
+			if(type == 'E')
 				continue;
 			T info;
 			unsigned long x, y;
