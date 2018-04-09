@@ -104,16 +104,18 @@ void FirstMenu(RideShare<int> &rideShare)
 void SelectMapMenu(RideShare<int> &rideShare)
 {
 	cout
-	<< "1- Nome do primeiro mapa" << endl
-	<< "2- se existirem outros mapas" << endl
+	<< "1- Our Custom Map" << endl
+	<< "2- 10x10 Map 6D 12P" << endl
 	<< "3- Quit" << endl
 	<< "Select one" << endl;
 	switch (getIntInInterval(1, 3))
 	{
 	case 1:
+		rideShare.setFromFile("rs");
 		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	case 2:
+		rideShare.setFromFile("10x10");
 		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	case 3:

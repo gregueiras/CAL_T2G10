@@ -431,10 +431,10 @@ void graphInit(const Graph<T> &g) {
 }
 
 int main(void) {
-	bool read = false;
+	bool read = true;
 	RideShare<int> rs;
 	if(read) {
-		rs.setFromFile("rs");
+		//rs.setFromFile("rs");
 	} else {
 		unordered_set<Driver<int>> drivers;
 
