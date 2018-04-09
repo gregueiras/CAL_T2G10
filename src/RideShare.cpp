@@ -143,7 +143,7 @@ void RideShare<T>::graphInit() {
 }
 
 template<class T>
-void RideShare<T>::SetDriverPathColour(string name, int age)
+bool RideShare<T>::SetDriverPathColour(string name, int age)
 {
 	GraphViewer *gv = new GraphViewer(600, 600, false);
 	gv->setBackground("background.jpg");
@@ -160,7 +160,7 @@ void RideShare<T>::SetDriverPathColour(string name, int age)
 			for (auto j = list.begin(); j != list.end(); j++) {
 				auto next = ++j;
 				--j;
-				gv->setVertexColor((*j)->getInfo(), "magenta");
+				gv->setVertexColor((*j)->getVertexId(), "magenta");
 				if (next == list.end())
 					break;
 				else
@@ -173,14 +173,15 @@ void RideShare<T>::SetDriverPathColour(string name, int age)
 				}
 			}
 			gv->rearrange();
-			return;
+			return true;
 		}
 	}
+	return false;
 }
 
 
 template<class T>
-void RideShare<T>::SetPassengerPathColour(string name, int age)
+bool RideShare<T>::SetPassengerPathColour(string name, int age)
 {
 	GraphViewer *gv = new GraphViewer(600, 600, false);
 	gv->setBackground("background.jpg");
@@ -197,7 +198,7 @@ void RideShare<T>::SetPassengerPathColour(string name, int age)
 			for (auto j = list.begin(); j != list.end(); j++) {
 				auto next = ++j;
 				--j;
-				gv->setVertexColor((*j)->getInfo(), "green");
+				gv->setVertexColor((*j)->getVertexId(), "green");
 				if (next == list.end())
 					break;
 				else
@@ -210,10 +211,10 @@ void RideShare<T>::SetPassengerPathColour(string name, int age)
 				}
 			}
 			gv->rearrange();
-			return;
+			return true;
 		}
 	}
-
+	return false;
 }
 
 

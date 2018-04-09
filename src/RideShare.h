@@ -45,8 +45,8 @@ public:
 	bool PrintDriverInfo(string name, int age);
 	void PrintAllDriversInfo();
 
-	void SetDriverPathColour(string name, int age);
-	void SetPassengerPathColour(string name,int age);
+	bool SetDriverPathColour(string name, int age);
+	bool SetPassengerPathColour(string name,int age);
 
 	bool writeToFile();
 	bool readFromFile();

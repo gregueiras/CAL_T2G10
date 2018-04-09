@@ -426,11 +426,17 @@ void DriverOptionsMenu(RideShare<int> &rideShare, string name, int age)
 		{
 			cout << "Invalid driver..." << endl;
 			PrintRouteInformations(rideShare);
+			break;
 		}
 		DriverOptionsMenu(rideShare,name,age);
 		break;
 	case 2:
-		rideShare.SetDriverPathColour(name,age);
+		if (!rideShare.SetDriverPathColour(name,age))
+		{
+			cout << "Invalid driver..." << endl;
+			PrintRouteInformations(rideShare);
+			break;
+		}
 		DriverOptionsMenu(rideShare,name,age);
 		break;
 	case 3:
@@ -454,11 +460,17 @@ void PassengerOptionsMenu(RideShare<int> &rideShare, string name, int age)
 		{
 			cout << "Invalid passenger..." << endl;
 			PrintRouteInformations(rideShare);
+			break;
 		}
 		PassengerOptionsMenu(rideShare,name,age);
 		break;
 	case 2:
-		rideShare.SetPassengerPathColour(name,age);
+		if (!rideShare.SetPassengerPathColour(name,age))
+		{
+			cout << "Invalid passenger..." << endl;
+			PrintRouteInformations(rideShare);
+			break;
+		}
 		PassengerOptionsMenu(rideShare,name,age);
 		break;
 	case 3:

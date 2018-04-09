@@ -61,6 +61,8 @@ template class VertexPtr<int> ;
 
 template<class T>
 class Vertex {
+	int vertexId;
+	static int lastVertexId;
 	T info;                // contents
 	unsigned long x;		//coordinate
 	unsigned long y;		//coordinate
@@ -92,6 +94,7 @@ public:
 	friend class MutablePriorityQueue<Vertex<T>>;
 
 	T getInfo();
+	int getVertexId();
 	unsigned long getX();
 	unsigned long getY();
 	vector<Edge<T>> getAdj();
@@ -102,15 +105,19 @@ public:
 	bool operator<(const Vertex<T>& b) const {
 		return this->distance < b.distance;
 	}
+
 	bool operator==(const Vertex<T>& b) const {
-		return this->info == b.info;
-	}
+			return this->info == b.info;
+		}
 	bool operator!=(const Vertex<T>& b) const {
 		return !(this == b);
 	}
 
 	friend class VertexPtr<T> ;
 };
+
+template<class T>
+int Vertex<T>::lastVertexId = 0;
 
 template<class T>
 class Utili {
@@ -235,7 +242,7 @@ public:
 /****************** Provided constructors and functions ********************/
 
 template<class T>
-Vertex<T>::Vertex(T in, unsigned long x, unsigned long y) : info(in) {
+Vertex<T>::Vertex(T in, unsigned long x, unsigned long y) : info(in) ,vertexId(++lastVertexId){
 	this->x = x;
 	this->y = y;
 	visited = false;
@@ -266,6 +273,7 @@ template<class T>
 int Graph<T>::getNumVertex() const {
 	return vertexSet.size();
 }
+
 
 /*
  * Auxiliary function to find a vertex with a given content.
@@ -1453,11 +1461,11 @@ template<class T>
 void Graph<T>::addGraphToViewer(GraphViewer *gv) const{
 	int edgeId = 0;
 	for(auto it1 = this->vertexSet.begin(); it1 != this->vertexSet.end(); ++it1) {
-		gv->addNode((*it1)->info, (*it1)->x, (*it1)->y);
+		gv->addNode((*it1)->getVertexId(), (*it1)->x, (*it1)->y);
 
 		for(auto it2 = (*it1)->adj.begin(); it2 != (*it1)->adj.end(); ++it2) {
 			(*it2).setEdgeId(edgeId);
-			gv->addEdge(edgeId, (*it1)->info, (*it2).dest->info, EdgeType::DIRECTED);
+			gv->addEdge(edgeId, (*it1)->getVertexId(), (*it2).dest->getVertexId(), EdgeType::DIRECTED);
 
 			stringstream stream;
 			stream << fixed << setprecision(2) << (*it2).weight;
@@ -1509,6 +1517,12 @@ void Vertex<T>::removePeopleFromEdge(Vertex<T>* vertex,
 template<class T>
 T Vertex<T>::getInfo() {
 	return this->info;
+}
+
+template<class T>
+int Vertex<T>::getVertexId()
+{
+	return vertexId;
 }
 
 template<class T>
