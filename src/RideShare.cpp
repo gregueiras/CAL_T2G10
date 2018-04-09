@@ -164,6 +164,7 @@ void RideShare<T>::SetDriverPathColour(string name, int age)
 			return;
 		}
 	}
+	gv->rearrange();
 }
 
 
@@ -188,6 +189,8 @@ void RideShare<T>::SetPassengerPathColour(string name, int age)
 			return;
 		}
 	}
+
+	gv->rearrange();
 }
 
 
