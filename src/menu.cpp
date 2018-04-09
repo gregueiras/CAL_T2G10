@@ -1,5 +1,6 @@
 
 #include "menu.h"
+#include <chrono>
 using namespace std;
 
 void cleanfunction()
@@ -245,9 +246,16 @@ void GenerateRoutesMenu(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 2))
 	{
 	case 1:
+	{
+		auto start = std::chrono::high_resolution_clock::now();
 		rideShare.DijkstraPeopleMultipleDrivers();
+		auto finish = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> elapsed = finish - start;
+
+		std::cout << "Elapsed time: " << elapsed.count() << " s\n";
 		PrintRouteInformations(rideShare);
 		break;
+	}
 	case 2:
 		AddDriverMenu(rideShare);
 		break;
