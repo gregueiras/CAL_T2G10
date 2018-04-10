@@ -251,7 +251,8 @@ bool RideShare<T>::PrintDriverInfo(string name, int age)
 			(*i)->printPassengersPickedAt();
 			cout << "Dropped:" << endl;
 			(*i)->printPassengersDroppedAt();
-			cout << endl;
+			cout << "Total number of transported passengers: " << (*i)->getTransportedPassengers() << endl << endl;
+			//cout << (*i)->getCurrentTime().getHour() << ":" << (*i)->getCurrentTime().getMinute() << endl;
 			return true;
 		}
 	}
@@ -271,6 +272,7 @@ void RideShare<T>::PrintAllDriversInfo()
 		(*i)->printPassengersPickedAt();
 		cout << "Dropped:" << endl;
 		(*i)->printPassengersDroppedAt();
+		cout << "Total number of transported passengers: " << (*i)->getTransportedPassengers() << endl;
 		cout << endl << endl;
 	}
 }
