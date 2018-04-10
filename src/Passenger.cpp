@@ -23,6 +23,8 @@ Passenger<T>::Passenger() : Person() {
 
 template<class T>
 Passenger<T>::Passenger(int numP) : Person() {
+	if (numP <= 0)
+		throw InvalidNumberPeopleException();
 	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->destination = NULL;
@@ -37,6 +39,8 @@ Passenger<T>::Passenger(int numP) : Person() {
 
 template<class T>
 Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) : Person() {
+	if (numP <= 0)
+		throw InvalidNumberPeopleException();
 	this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->source = source;
@@ -51,6 +55,10 @@ Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) : P
 
 template<class T>
 Passenger<T>::Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destination) : Person() {
+	if (tl <= 0)
+		throw InvalidTimeLimitException();
+	if (numP <= 0)
+		throw InvalidNumberPeopleException();
 	this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;
@@ -102,7 +110,12 @@ Passenger<T>::~Passenger() {
 }
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
+Passenger<T>::Passenger(string name, int age, int numP)
+try: Person(name, age)
+{
+	if (numP <= 0)
+		throw InvalidNumberPeopleException();
+
 	this->numPassengers = numP;
 	this->source = nullptr;
 	this->pos = NULL;
@@ -114,9 +127,18 @@ Passenger<T>::Passenger(string name, int age, int numP) : Person(name, age) {
 	this->infoSource = -1;
 	this->infoDestination = -1;
 }
+catch(InvalidAgeException &e)
+{
+	throw InvalidAgeException();
+}
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, age,tl,Time(0,0)) {
+Passenger<T>::Passenger(string name, int age, int numP, int tl)
+try : Person(name, age,tl,Time(0,0))
+{
+	if (numP <= 0)
+		throw InvalidNumberPeopleException();
+
 	this->numPassengers = numP;
 	this->source = nullptr;
 	this->pos = NULL;
@@ -128,9 +150,24 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl) : Person(name, a
 	this->infoSource = -1;
 	this->infoDestination = -1;
 }
+catch(InvalidAgeException &e)
+{
+	throw InvalidAgeException();
+}
+catch(InvalidTimeLimitException &t)
+{
+	throw InvalidTimeLimitException();
+}
+
+
 
 template<class T>
-Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime, T source, T destination) : Person(name, age, tl, startTime) {
+Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime, T source, T destination)
+try: Person(name, age, tl, startTime)
+{
+	if (numP <= 0)
+		throw InvalidNumberPeopleException();
+
 	this->numPassengers = numP;
 	this->pos = NULL;
 	this->picked = false;
@@ -141,6 +178,14 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime, 
 	this->prevPos = nullptr;
 	this->destination = nullptr;
 	this->source = nullptr;
+}
+catch(InvalidAgeException &e)
+{
+	throw InvalidAgeException();
+}
+catch(InvalidTimeLimitException &t)
+{
+	throw InvalidTimeLimitException();
 }
 
 template<class T>

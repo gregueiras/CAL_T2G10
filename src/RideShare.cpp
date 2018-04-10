@@ -313,6 +313,7 @@ bool RideShare<T>::readPassengersFromFile() {
 	input.open(fileName);
 	if (input.is_open()) {
 		while(!input.eof()) {
+			bool invalidP = false;
 			string line, name;
 			int age, num, tl, h, m;
 			T source, destination;
@@ -332,11 +333,28 @@ bool RideShare<T>::readPassengersFromFile() {
 			lineStream.str(line);
 			lineStream >> source;
 			lineStream >> destination;
-			Passenger<T> p = Passenger<T>(name, age, num, tl, Time(h,m), source, destination);
+			Passenger<T> p;
+			try
+			{
+				p = Passenger<T>(name, age, num, tl, Time(h,m), source, destination);
+			}
+			catch(InvalidAgeException &e)
+			{
+				invalidP = true;
+			}
+			catch(InvalidTimeLimitException &e)
+			{
+				invalidP = true;
+			}
+			catch(InvalidNumberPeopleException &e)
+			{
+				invalidP = true;
+			}
 			/*cout << "Passenger read: *" << name << "* " << age << " " << num << " " << tl << " " << h << " " << m << " " <<
 					source << " " << destination << endl;*/
 			/*this->addPassenger(source, destination, p);*/
-			passengers.insert(p);
+			if (!invalidP)
+				passengers.insert(p);
 
 		}
 	} else
@@ -355,6 +373,7 @@ bool RideShare<T>::readDriversFromFile() {
 	input.open(fileName);
 	if (input.is_open()) {
 		while(!input.eof()) {
+			bool invalidD = false;
 			string line, name;
 			int age, cap, tl, h, m;
 			T source, destination;
@@ -374,11 +393,28 @@ bool RideShare<T>::readDriversFromFile() {
 			lineStream.str(line);
 			lineStream >> source;
 			lineStream >> destination;
-			Driver<T> d = Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
+			Driver<T> d;
+			try
+			{
+				d = Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
+			}
+			catch(InvalidAgeException &e)
+			{
+				invalidD = true;
+			}
+			catch(InvalidTimeLimitException &e)
+			{
+				invalidD = true;
+			}
+			catch(InvalidCapacityException &e)
+			{
+				invalidD = true;
+			}
 			/*cout << "Driver read: *" << name << "* " << age << " " << cap << " " << tl << " " << h << " " << m << " " <<
 					source << " " << destination << endl;*/
 			//this->addDriver(d);
-			drivers.insert(d);
+			if (!invalidD)
+				drivers.insert(d);
 		}
 	} else
 		return false;

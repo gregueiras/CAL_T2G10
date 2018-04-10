@@ -7,6 +7,7 @@
 
 #include <string>
 #include "Time.h"
+#include "exceptions.h"
 using namespace std;
 
 class Person { //Shouldn't be abstract??

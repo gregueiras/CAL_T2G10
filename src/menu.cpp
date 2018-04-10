@@ -297,7 +297,7 @@ bool PersonSignUpMenu(string &name, int& age, int&src, int&dest, int&hour, int&m
 	cout << "Name? (first and last) " << endl;
 	getline(cin, name);
 	cout << "Age? " << endl;
-	age = getIntInInterval(18,70);
+	age = getInt();
 	cout << "Starting location? " << endl;
 	src = getInt();
 	if (src == -1) return false;
@@ -324,12 +324,33 @@ void DriverSignUpMenu(RideShare<int> &rideShare)
 	int capacity;
 	int src, dest;
 	int hour, minutes;
+	Driver<int> *driver;
 	cleanfunction();
 	if (!PersonSignUpMenu(name,age,src,dest,hour,minutes,timeLimit)) return AddDriverMenu(rideShare);
 	cout << "Vehicle capacity? " << endl;
 	capacity = getInt();
 	if (capacity == -1) return AddDriverMenu(rideShare);
-	Driver<int> *driver = new Driver<int>(src,dest,capacity,timeLimit,name,age,Time(hour,minutes));
+	try
+	{
+		driver = new Driver<int>(src,dest,capacity,timeLimit,name,age,Time(hour,minutes));
+	}
+	catch(InvalidAgeException &e)
+	{
+		cout << "Invalid age, the driver has to be at least 18 years old and and at maximum 70 years." << endl;
+		return AddDriverMenu(rideShare);
+
+	}
+	catch(InvalidTimeLimitException &e)
+	{
+		cout << "Invalid time limit" << endl;
+		return AddDriverMenu(rideShare);
+	}
+	catch(InvalidCapacityException &e)
+	{
+		cout << "Invalid capacity." << endl;
+		return AddDriverMenu(rideShare);
+	}
+
 	rideShare.addDriver(driver);
 	GenerateRoutesMenu(rideShare);
 }
@@ -344,12 +365,31 @@ void PassengerSignUpMenu(RideShare<int> &rideShare)
 	int numberPeople;
 	int src, dest;
 	int hour, minutes;
+	Passenger<int> *passenger;
 	cleanfunction();
 	if (!PersonSignUpMenu(name,age,src,dest,hour,minutes,timeLimit)) return AddPassengerMenu(rideShare);
 	cout << "Number of people traveling? " << endl;
 	numberPeople = getInt();
 	if (numberPeople == -1) return AddPassengerMenu(rideShare);
-	Passenger<int> *passenger = new Passenger<int>(name,age,numberPeople, timeLimit,Time(hour,minutes),src,dest);
+	try
+	{
+		passenger = new Passenger<int>(name,age,numberPeople, timeLimit,Time(hour,minutes),src,dest);
+	}
+	catch(InvalidAgeException &e)
+	{
+		cout << "Invalid age, the passenger has to be at least 18 years old and and at maximum 70 years." << endl;
+		return AddPassengerMenu(rideShare);
+	}
+	catch(InvalidTimeLimitException &e)
+	{
+		cout << "Invalid time limit" << endl;
+		return AddPassengerMenu(rideShare);
+	}
+	catch(InvalidNumberPeopleException &e)
+	{
+		cout << "Invalid number of people." << endl;
+		return AddPassengerMenu(rideShare);
+	}
 	rideShare.addPassenger(passenger);
 	AddDriverMenu(rideShare);
 }
