@@ -849,8 +849,6 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		//Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
 
-		set<Vertex<T>*> VertexFuturePath;
-
 		//cout << "A: " << endl;
 		//driver->printPassengersPickedAt(); cout << endl;
 
@@ -1182,57 +1180,22 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 		if (!existsAndHasEnoughTime(source, destination, driver,tpath))
 			return;
 
-//	cout << endl
-//			<< this->dijkstraPeopleDistancePath(source, destination, path,
-//					passen, driver) << endl;
-
 	dijkstraPeopleDistancePath(source, destination, path,passen, driver);
 
 	Utili<int>::setPassengersPath(passen, path);
 
 	driver->setPath(path);
-	//Utili<int>::printPath(path);
-	//
-	////	for (auto i = passen.begin(); i != passen.end(); i++)
-	////		cout << (*i)->getName() << " ";
-	//
+
 	cout << endl;
-	//this->removePeople(passen, path);
 	this->removePeople(passen);
 
 	driver->updateFreeSpace();
 
-//	cout << "\nPicked: \n";
-//	driver->printPassengersPickedAt();
-//
-//	cout << "Dropped: \n";
-//	driver->printPassengersDroppedAt();
-//
-//	cout << "Cap at Path: " << endl;
-//	driver->printCapacityAtPath();
-//
-//	cout << "\nPOSTPROCESSING START\n";
-
 	postProcessing(driver, path, passen);
-	//this->removePeople(passen, path);
-	this->removePeople(passen);
-//
-//	cout << "\nPOSTPROCESSING END\n";
-//	//	for (auto i = passen.begin(); i != passen.end(); i++)
-//	////		cout << (*i)->getName() << " ";
-//
-//	cout << "\nPicked: \n";
-//	driver->printPassengersPickedAt();
-//
-//	cout << "Dropped: \n";
-//	driver->printPassengersDroppedAt();
-//
-//	cout << "Cap at Path: " << endl;
-//	driver->printCapacityAtPath();
-//
-//	cout << "PATH: ";
-//	Utili<int>::printPath(path);
 
+	this->removePeople(passen);
+
+	driver->setPassengersDrivedBy();
 	passen.clear();
 	path.clear();
 }

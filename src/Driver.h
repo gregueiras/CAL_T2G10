@@ -89,6 +89,7 @@ public:
 
 	virtual Driver<T>* clone() const;
 
+	void setPassengersDrivedBy();
 	std::list<Vertex<T>*> getPath() const;
 
 };

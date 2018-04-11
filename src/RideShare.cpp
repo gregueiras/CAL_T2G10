@@ -2,6 +2,7 @@
 
 using namespace std;
 template <class T>
+
 RideShare<T>::RideShare(){}
 
 template <class T>
@@ -161,6 +162,7 @@ bool RideShare<T>::SetDriverPathColour(string name, int age)
 				auto next = ++j;
 				--j;
 				gv->setVertexColor((*j)->getVertexId(), "magenta");
+
 				if (next == list.end())
 					break;
 				else
@@ -227,9 +229,13 @@ bool RideShare<T>::PrintPassengerInfo(string name, int age)
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
 			cout <<"Passenger: " << name << endl;
-			cout << "Traveling with: " << (*i)->getNum() -1 << endl;
-			cout << "Route : " ;
+			cout <<"Traveling with " << (*i)->getNum() -1 << " more passengers" << endl;
+			cout <<"Route : " ;
 			Utili<T>::printPath((*i)->getPath());
+
+			for (auto j : (*i)->getDrivedBy())
+				cout << "Travel from " << std::get<1>(j)->getInfo() << " to " << std::get<2>(j)->getInfo()
+				<< " with " << std::get<0>(j)->getName() << endl;
 			return true;
 		}
 	}
@@ -272,7 +278,6 @@ void RideShare<T>::PrintAllDriversInfo()
 		(*i)->printPassengersPickedAt();
 		cout << "Dropped:" << endl;
 		(*i)->printPassengersDroppedAt();
-		cout << "Total number of transported passengers: " << (*i)->getTransportedPassengers() << endl;
 		cout << endl << endl;
 	}
 }

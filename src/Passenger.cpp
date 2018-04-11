@@ -238,4 +238,9 @@ Passenger<T>* Passenger<T>::clone() const
   return(new Passenger<T>(*this));
 };
 
+template<class T>
+void Passenger<T>::addToDrivedBy(Vertex<T>* source, Vertex<T>* destination, Driver<T>* driver) {
+	this->drivedBy.push_back(std::make_tuple(driver, source, destination));
+}
+
 template class Passenger<int> ;

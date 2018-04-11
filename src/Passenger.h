@@ -11,6 +11,7 @@
 
 #include "Person.h"
 #include "Graph.h"
+#include "Driver.h"
 
 template<class T> class Vertex;
 
@@ -27,6 +28,7 @@ class Passenger: public Person {
 	bool picked;
 	T infoSource;
 	T infoDestination;
+	vector<std::tuple<Driver<T>*, Vertex<T>*, Vertex<T>*>> drivedBy;
 public:
 	Passenger();
 	Passenger(int numP, Vertex<T>* source, Vertex<T>* destination);
@@ -40,7 +42,7 @@ public:
 	void addPassengers(int num);
 	int getNum();
 	bool writeToFile(ofstream *output);
-
+	void addToDrivedBy(Vertex<T>* source, Vertex<T>* destination, Driver<T>* driver);
 //	virtual ~Passenger();
 	Vertex<T>* getPos();
 	void setPos(Vertex<T>* pos);
@@ -91,6 +93,10 @@ public:
 	}
 
 	Passenger<T>* clone() const;
+
+	vector<std::tuple<Driver<T>*, Vertex<T>*, Vertex<T>*>> getDrivedBy() {
+		return this->drivedBy;
+	}
 };
 
 namespace std

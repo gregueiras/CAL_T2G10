@@ -378,4 +378,24 @@ Driver<T>* Driver<T>::clone() const
   return(new Driver<T>(*this));
 }
 
+template<class T>
+void Driver<T>::setPassengersDrivedBy() {
+	map<Passenger<T>*, Vertex<T>*> picked;
+	map<Passenger<T>*, Vertex<T>*> dropped;
+
+	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i) {
+		for (auto j : i->second)
+			picked.insert(std::make_pair(j, i->first));
+	}
+
+	for (auto i = this->passengersDroppedAt.cbegin(); i != this->passengersDroppedAt.cend(); ++i) {
+		for (auto j : i->second)
+			dropped.insert(std::make_pair(j, i->first));
+	}
+
+	for (auto i = picked.begin(); i != picked.end(); ++i) {
+		i->first->addToDrivedBy(i->second, dropped.find(i->first)->second, this);
+	}
+}
+
 template class Driver<int> ;
