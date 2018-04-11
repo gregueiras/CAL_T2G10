@@ -9,7 +9,7 @@
 
 template<class T>
 Passenger<T>::Passenger() : Person() {
-	this->timeLimit = 0;
+	//this->timeLimit = 0;
 	this->destination = NULL;
 	this->numPassengers = 0;
 	this->source = NULL;
@@ -25,7 +25,7 @@ template<class T>
 Passenger<T>::Passenger(int numP) : Person() {
 	if (numP <= 0)
 		throw InvalidNumberPeopleException();
-	this->timeLimit = INT_MAX;
+	//this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->destination = NULL;
 	this->source = NULL;
@@ -41,7 +41,7 @@ template<class T>
 Passenger<T>::Passenger(int numP, Vertex<T>* source, Vertex<T>* destination) : Person() {
 	if (numP <= 0)
 		throw InvalidNumberPeopleException();
-	this->timeLimit = INT_MAX;
+	//this->timeLimit = INT_MAX;
 	this->numPassengers = numP;
 	this->source = source;
 	this->destination = destination;
@@ -59,7 +59,7 @@ Passenger<T>::Passenger(int numP, int tl, Vertex<T>* source, Vertex<T>* destinat
 		throw InvalidTimeLimitException();
 	if (numP <= 0)
 		throw InvalidNumberPeopleException();
-	this->timeLimit = tl;
+	//this->timeLimit = tl;
 	this->numPassengers = numP;
 	this->source = source;
 	this->destination = destination;
@@ -122,7 +122,7 @@ try: Person(name, age)
 	this->destination = nullptr;
 	this->picked = false;
 	this->dropped = false;
-	this->timeLimit = 0;
+	//this->timeLimit = 0;
 	this->prevPos = nullptr;
 	this->infoSource = -1;
 	this->infoDestination = -1;
@@ -145,7 +145,7 @@ try : Person(name, age,tl,Time(0,0))
 	this->destination = nullptr;
 	this->picked = false;
 	this->dropped = false;
-	this->timeLimit = 0;
+	//this->timeLimit = 0;
 	this->prevPos = nullptr;
 	this->infoSource = -1;
 	this->infoDestination = -1;
@@ -174,7 +174,7 @@ try: Person(name, age, tl, startTime)
 	this->dropped = false;
 	this->infoSource = source;
 	this->infoDestination = destination;
-	this->timeLimit = tl;
+	//this->timeLimit = tl;
 	this->prevPos = nullptr;
 	this->destination = nullptr;
 	this->source = nullptr;
@@ -196,7 +196,7 @@ Passenger<T>::Passenger(string name, int age, int numP, int tl, Time startTime) 
 	this->destination = nullptr;
 	this->picked = false;
 	this->dropped = false;
-	this->timeLimit = 0;
+	//this->timeLimit = 0;
 	this->prevPos = nullptr;
 	this->infoSource = -1;
 	this->infoDestination = -1;

@@ -17,7 +17,7 @@ template<class T> class Vertex;
 template<class T>
 class Passenger: public Person {
 	int numPassengers;
-	int timeLimit; //only being considered if route is deviated from the best found thru Dijsktra
+	//int timeLimit; //only being considered if route is deviated from the best found thru Dijsktra
 	list<Vertex<T>*> path;
 	Vertex<T>* source;
 	Vertex<T>* pos;

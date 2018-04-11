@@ -539,13 +539,9 @@ int main(void) {
 	cout << endl;
 
 	FirstMenu(rs);
-	rs.writeToFile();
+	//rs.writeToFile(); guarda nos menus antes de calcular o caminho
 
-	getchar(); 	return 0;
-
-
-	//getchar();
-
+	getchar();
 	return 0;
 
 }
