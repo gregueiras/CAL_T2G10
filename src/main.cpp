@@ -479,5 +479,7 @@ int main(void) {
 
 	FirstMenu(rs);
 
-	getchar(); 	return 0;
+	getchar();
+	return 0;
+
 }

@@ -246,6 +246,9 @@ void AddDriverMenu(RideShare<int> &rideShare)
 
 }
 
+
+
+
 void GenerateRoutesMenu(RideShare<int> &rideShare)
 {
 	if (rideShareChanges) {
@@ -284,6 +287,7 @@ void SaveFileMenu(RideShare<int> &rideShare) {
 	{
 	case 1:
 		rideShare.writeToFile();
+		break;
 	case 2:
 		rideShareChanges = false;
 		return GenerateRoutesMenu(rideShare);
