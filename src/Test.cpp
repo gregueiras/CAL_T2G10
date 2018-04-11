@@ -14,7 +14,7 @@
 #include <sstream>
 #include <chrono>
 
-using namespace std;
+using namespace std; //usada apenas para fins estatísticos
 //int main() {
 //	
 //	ofstream myfile;
@@ -24,7 +24,7 @@ using namespace std;
 //	vector<double> times10;
 //	vector<double> times20;
 //
-//	for (auto i = 0; i < 1000; i++) {
+//	for (auto i = 0; i < 500; i++) {
 //		RideShare<int> rideShare;
 //		rideShare.setFromFile("10x10");
 //
@@ -36,7 +36,7 @@ using namespace std;
 //		times10.push_back(elapsed.count());
 //	}
 //	
-//	for (auto i = 0; i < 1000; i++) {
+//	for (auto i = 0; i < 500; i++) {
 //		RideShare<int> rideShare;
 //		rideShare.setFromFile("rs");
 //
@@ -48,8 +48,8 @@ using namespace std;
 //		times3.push_back(elapsed.count());
 //	}
 //
-//	myfile << "3x3,10x10,20x20" << endl;
-//	for (auto i = 0; i < 1000; i++) {
+//	myfile << "3x3,10x10" << endl;
+//	for (auto i = 0; i < 5000; i++) {
 //		myfile << times3[i] << "," << times10[i] << endl;
 //	}
 //	myfile.close();
