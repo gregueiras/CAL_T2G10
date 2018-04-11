@@ -47,7 +47,6 @@ int getInt()
 	{
 		cout << "Invalid Input!\n";
 		cin.clear();
-		//cin.ignore(1000, '\n');
 		return -1;
 	}
 	return num;
@@ -246,9 +245,6 @@ void AddDriverMenu(RideShare<int> &rideShare)
 
 }
 
-
-
-
 void GenerateRoutesMenu(RideShare<int> &rideShare)
 {
 	if (rideShareChanges) {
@@ -287,7 +283,6 @@ void SaveFileMenu(RideShare<int> &rideShare) {
 	{
 	case 1:
 		rideShare.writeToFile();
-		break;
 	case 2:
 		rideShareChanges = false;
 		return GenerateRoutesMenu(rideShare);

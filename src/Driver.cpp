@@ -1,10 +1,3 @@
-/*
- * Driver.cpp
- *
- *  Created on: Mar 22, 2018
- *      Author: gregu
- */
-
 #include "Driver.h"
 #include <iostream>
 
@@ -16,7 +9,6 @@ Driver<T>::Driver() {
 
 template<class T>
 Driver<T>::~Driver() {
-	// TODO Auto-generated destructor stub
 }
 
 template<class T>
@@ -49,7 +41,7 @@ void Driver<T>::addPassengersPickedAt(Vertex<T>* v,
 template<class T>
 void Driver<T>::addNewPassengersPickedAt(Vertex<T>* v,
 		vector<Passenger<T>*> passengers) {
-	//	auto ret = this->passengersPickedAt[v] = passengers;
+
 	auto it = this->passengersPickedAt.find(v);
 	if (it != this->passengersPickedAt.end()) {
 		passengers.insert(passengers.begin(), it->second.begin(),
@@ -80,58 +72,26 @@ void Driver<T>::addNewPassengersDroppedAt(Vertex<T>* v,
 }
 
 template<class T>
-Driver<T>::Driver(int cap, int lim)
-try: Person("Anonymous",18,lim, Time(0,0)){
-	if (cap <= 0)
-		throw InvalidCapacityException();
+Driver<T>::Driver(int cap, int lim) : Person("",0,lim, Time(0,0)){
 	this->capacity = cap;
 	this->transportedPassengers = 0;
 }
-catch(InvalidAgeException &e)
-{
-	throw InvalidAgeException();
-}
-catch(InvalidTimeLimitException &t)
-{
-	throw InvalidTimeLimitException();
+
+template<class T>
+Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime) :
+Person(name, age,lim, startTime) {
+	this->capacity = cap;
+	this->transportedPassengers = 0;
 }
 
 
 template<class T>
-Driver<T>::Driver(int cap, int lim, string name, int age, Time startTime)
-try : Person(name, age,lim, startTime) {
-	if (cap <= 0)
-		throw InvalidCapacityException();
-	this->capacity = cap;
-	this->transportedPassengers = 0;
-}
-catch(InvalidAgeException &e)
-{
-	throw InvalidAgeException();
-}
-catch(InvalidTimeLimitException &t)
-{
-	throw InvalidTimeLimitException();
-}
-
-
-template<class T>
-Driver<T>::Driver(T src, T dest, int cap, int lim, string name, int age, Time startTime)
-try :Person(name, age, lim, startTime) {
-	if (cap <= 0)
-		throw InvalidCapacityException();
+Driver<T>::Driver(T src, T dest, int cap, int lim, string name, int age, Time startTime) :
+Person(name, age, lim, startTime) {
 	this->capacity = cap;
 	this->source = src;
 	this->destination = dest;
 	this->transportedPassengers = 0;
-}
-catch(InvalidAgeException &e)
-{
-	throw InvalidAgeException();
-}
-catch(InvalidTimeLimitException &t)
-{
-	throw InvalidTimeLimitException();
 }
 
 template<class T>

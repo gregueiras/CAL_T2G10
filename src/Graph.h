@@ -1,6 +1,3 @@
-/*
- * Graph.h
- */
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
@@ -67,9 +64,6 @@ class Vertex {
 	unsigned long x;		//coordinate
 	unsigned long y;		//coordinate
 	vector<Edge<T> > adj;  // list of outgoing edges
-	bool visited;          // auxiliary field used by dfs and bfs
-	int indegree;          // auxiliary field used by topsort
-	bool processing;       // auxiliary field used by isDAG
 	set<VertexPtr<T>> notConected;// non-connected vertexes
 	double distance;
 	double time;
@@ -191,8 +185,6 @@ template<class T>
 class Graph {
 	vector<Vertex<T> *> vertexSet;    // vertex set
 
-	void dfsVisit(Vertex<T> *v, vector<T> & res) const;
-	bool dfsIsDAG(Vertex<T> *v) const;
 public:
 	Vertex<T> *findVertex(const T &in) const;
 	int getNumVertex() const;
@@ -201,11 +193,6 @@ public:
 	bool addEdge(const T &sourc, const T &dest, double w);
 	bool addEdge(const T &sourc, const T &dest, double w, int p);
 	bool removeEdge(const T &sourc, const T &dest);
-	vector<T> dfs() const;
-	vector<T> bfs(const T &source) const;
-	vector<T> topsort() const;
-	int maxNewChildren(const T &source, T &inf) const;
-	bool isDAG() const;
 	double dijkstraDistance(T source, T destination);
 	double dijkstraPath(T source, T destination, list<Vertex<T>*> &retPath);
 	int dijkstraPeopleDistancePath(T source, T destination,
@@ -245,9 +232,6 @@ template<class T>
 Vertex<T>::Vertex(T in, unsigned long x, unsigned long y) : info(in) ,vertexId(++lastVertexId){
 	this->x = x;
 	this->y = y;
-	visited = false;
-	indegree = 0;
-	processing = false;
 	distance = 0;
 	time = 0;
 	previous = NULL;
@@ -458,237 +442,6 @@ bool Graph<T>::removeVertex(const T &in) {
 	return res;
 }
 
-/****************** 2a) dfs ********************/
-
-/*
- * Performs a depth-first search (dfs) in a graph (this).
- * Returns a vector with the contents of the vertices by dfs order.
- * Follows the algorithm described in theoretical classes.
- */
-template<class T>
-vector<T> Graph<T>::dfs() const {
-	// TODO (7 lines)
-	vector<T> res;
-
-	for (auto i : this->vertexSet)
-		i->visited = false;
-
-	for (auto i : this->vertexSet) {
-		if (i->visited == false)
-			dfsVisit(i, res);
-	}
-	return res;
-}
-
-/*
- * Auxiliary function that visits a vertex (v) and its adjacent not yet visited, recursively.
- * Updates a parameter with the list of visited node contents.
- */
-template<class T>
-void Graph<T>::dfsVisit(Vertex<T> *v, vector<T> & res) const {
-	// TODO (7 lines)
-	v->visited = true;
-	res.push_back(v->info);
-
-	for (auto i : v->adj)
-		if (!i.dest->visited)
-			dfsVisit(i.dest, res);
-}
-
-/****************** 2b) bfs ********************/
-
-/*
- * Performs a breadth-first search (bfs) in a graph (this), starting
- * from the vertex with the given source contents (source).
- * Returns a vector with the contents of the vertices by dfs order.
- * Follows the algorithm described in theoretical classes.
- */
-template<class T>
-vector<T> Graph<T>::bfs(const T & source) const {
-	// TODO (22 lines)
-	// HINT: Use the flag "visited" to mark newly discovered vertices .
-	// HINT: Use the "queue<>" class to temporarily store the vertices.
-	vector<T> res;
-
-	Vertex<T>* src = findVertex(source);
-	//	if (src == nullptr)
-	//		return nullptr;
-
-	for (auto i : this->vertexSet)
-		i->visited = false;
-
-	queue<Vertex<T> *> tempQ;
-
-	tempQ.push(src);
-
-	while (!tempQ.empty()) {
-		Vertex<T>* temp = tempQ.front();
-		tempQ.pop();
-
-		res.push_back(temp->info);
-
-		for (auto i : temp->adj) {
-			if (!i.dest->visited) {
-				tempQ.push(i.dest);
-				i.dest->visited = true;
-			}
-		}
-	}
-	return res;
-}
-
-/****************** 2c) toposort ********************/
-
-/*
- * Performs a topological sorting of the vertices of a graph (this).
- * Returns a vector with the contents of the vertices by topological order.
- * If the graph has cycles, returns an empty vector.
- * Follows the algorithm described in theoretical classes.
- */
-
-template<class T>
-vector<T> Graph<T>::topsort() const {
-	// TODO (26 lines)
-	vector<T> res;
-
-	for (auto i : this->vertexSet)
-		i->indegree = 0;
-
-	for (auto i : this->vertexSet)
-		for (auto j : i->adj)
-			j.dest->indegree++;
-
-	queue<Vertex<T> *> C;
-
-	for (auto i : this->vertexSet)
-		if (i->indegree == 0)
-			C.push(i);
-
-	while (!C.empty()) {
-		Vertex<T> * temp = C.front();
-		C.pop();
-
-		res.push_back(temp->info);
-
-		for (auto i : temp->adj) {
-			i.dest->indegree--;
-			if (i.dest->indegree == 0)
-				C.push(i.dest);
-		}
-
-		//		if (res.size() != this->getNumVertex())
-		//			return vector<T> {};
-
-	}
-
-	return res;
-}
-
-/****************** 3a) maxNewChildren (HOME WORK)  ********************/
-
-/*
- * Performs a breadth-first search in a graph (this), starting
- * from the vertex with the given source contents (source).
- * During the search, determines the vertex that has a maximum number
- * of new children (adjacent not previously visited), and returns the
- * contents of that vertex (inf) and the number of new children (return value).
- */
-
-template<class T>
-int Graph<T>::maxNewChildren(const T & source, T &inf) const {
-	// TODO (28 lines, mostly reused)
-
-	int max = { 0 };
-	Vertex<T>* src = findVertex(source);
-	if (src == nullptr)
-		return nullptr;
-
-	for (auto i : this->vertexSet)
-		i->visited = false;
-
-	queue<Vertex<T> *> tempQ;
-
-	tempQ.push(src);
-
-	while (!tempQ.empty()) {
-		Vertex<T>* temp = tempQ.front();
-		tempQ.pop();
-
-		int tempM = { 0 };
-
-		for (auto i : temp->adj) {
-			if (!i.dest->visited) {
-				tempQ.push(i.dest);
-				i.dest->visited = true;
-				tempM++;
-			}
-		}
-
-		if (tempM > max) {
-			max = tempM;
-			inf = temp->info;
-		}
-	}
-	return max;
-}
-
-/****************** 3b) isDAG   (HOME WORK)  ********************/
-
-/*
- * Performs a depth-first search in a graph (this), to determine if the graph
- * is acyclic (acyclic directed graph or DAG).
- * During the search, a cycle is found if an edge connects to a vertex
- * that is being processed in the the stack of recursive calls (see theoretical classes).
- * Returns true if the graph is acyclic, and false otherwise.
- */
-
-template<class T>
-bool Graph<T>::isDAG() const {
-	// TODO (9 lines, mostly reused)
-	// HINT: use the auxiliary field "processing" to mark the vertices in the stack.
-
-	for (auto i : this->vertexSet)
-		i->visited = false;
-
-	for (auto i : this->vertexSet) {
-		if (i->visited == false) {
-			if (!dfsIsDAG(i))
-				return false;
-
-		}
-
-	}
-
-	return true;
-}
-
-/**
- * Auxiliary function that visits a vertex (v) and its adjacent not yet visited, recursively.
- * Returns false (not acyclic) if an edge to a vertex in the stack is found.
- */
-template<class T>
-bool Graph<T>::dfsIsDAG(Vertex<T> *v) const {
-	// TODO (12 lines, mostly reused)
-	if (v->processing)
-		return false;
-
-	if (!v->visited) {
-		v->processing = true;
-
-		for (auto i : v->adj) {
-			//			if (!i.dest->visited)
-			if (dfsIsDAG(i.dest) == false)
-				return false;
-		}
-
-		v->visited = true;
-		v->processing = false;
-
-	}
-
-	return true;
-}
-
 template<class T>
 Vertex<T>* Utili<T>::remMin(vector<Vertex<T> *>& Q) {
 	Vertex<T>* temp = Q.front();
@@ -776,10 +529,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 	driver->resetTravel();
 
-	//Vertex<T> * start = nullptr;
 	Vertex<T> * ending = nullptr;
 
-	//vector<Vertex<T>*> Q;
 	MutablePriorityQueue<Vertex<T>> Q;
 
 
@@ -790,14 +541,12 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 		this->vertexSet[i]->previous = nullptr;
 		this->vertexSet[i]->pickedUp.clear();
 		if (this->vertexSet[i]->info == source) {
-			//start = this->vertexSet[i];
 			this->vertexSet[i]->distance = 0;
 			this->vertexSet[i]->time = 0;
 		}
 		if (this->vertexSet[i]->info == destination) {
 			ending = this->vertexSet[i];
 		}
-		//Q.push_back(this->vertexSet[i]);
 		Q.insert(vertexSet[i]);
 	}
 
@@ -806,15 +555,14 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 	list<Vertex<T> *> path;
 	while (!Q.empty()) {
-		//Vertex<T>* temp = Utili<T>::remMin(Q);
 		Vertex<T>* temp = Q.extractMin();
 
 		int peopleT = 0;
 		if (temp->info == ending->info) { //fim do algoritmo, chegamos ao destino
-			//cout << endl << "Distance: " << temp->distance << endl; //distancia final (pesada com os passageiros transportados)
+			//distancia final (pesada com os passageiros transportados)
 
-			while (temp->previous != nullptr) { //percorre o caminho por ordem reversa
-				//cout << temp->time << "  ";
+			while (temp->previous != nullptr) 
+			{ //percorre o caminho por ordem reversa
 				path.push_front(temp);
 
 				vector<Passenger<T>*> tempPass;
@@ -837,7 +585,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				}
 
 				temp = temp->previous;
-			}
+		}
 
 			path.push_front(temp);
 			rePath = path;
@@ -846,11 +594,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 		}
 
-		//Vertex<T>* temp1 = temp;
 		int alreadyPicked = 0;
-
-		//cout << "A: " << endl;
-		//driver->printPassengersPickedAt(); cout << endl;
 
 		auto pickedTemp = driver->getPassengersPickedAt();
 		for (auto i = pickedTemp.cbegin(); i != pickedTemp.cend(); ++i)
@@ -859,9 +603,6 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				if (j->getDestination() != j->getPos() && j->getDestination() != temp)
 					alreadyPicked += j->getNum();
 		}
-
-		//cout << "ALREADY PICKED \n";
-		//cout << temp->getInfo() << " cap " << alreadyPicked << endl;
 
 		for (unsigned int i = 0; i < temp->adj.size(); i++) {
 
@@ -890,9 +631,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 					+ temp->adj[i].weight / (pow(numPicked, 2) + 1));
 			double time = temp->time + temp->adj[i].weight;
 
-			//cout << "Time " << time << "  " << driver->getMinLimit() << endl;
 			if (alreadyPicked <= capacity && time <= driver->getTimeLimit()
-					&& alt < temp->adj[i].dest->distance) { //TODO Pensar melhor no alt, em por um OR em vez do AND, caso o caminho n melhore, mas temos que cumprir o tempo
+					&& alt < temp->adj[i].dest->distance) {
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->time = time;
 				temp->adj[i].dest->previous = temp;
@@ -944,7 +684,6 @@ double Graph<T>::dijkstraPath(T source, T destination,
 		} else if (this->vertexSet[i]->info == destination) {
 			ending = this->vertexSet[i];
 		}
-		//Q.push_back(this->vertexSet[i]);
 		Q.insert(vertexSet[i]);
 
 	}
@@ -960,7 +699,6 @@ double Graph<T>::dijkstraPath(T source, T destination,
 
 
 	while (!Q.empty()) {
-		//Vertex<T>* temp = Utili<T>::remMin(Q);
 		Vertex<T>* temp = Q.extractMin();
 
 		if (temp->info == ending->info) {
@@ -1072,27 +810,6 @@ bool Graph<T>::addPeople(T source, T destination, Passenger<T>* passenger) {
 	return result;
 }
 
-//template<class T>
-//bool Graph<T>::removePeople(vector<Passenger<T>*> passengers,
-//		list<Vertex<T>*> path) {
-//
-//	bool result = false;
-//
-//	for (auto i = path.begin(); i != path.end(); i++) {
-//		auto j = i;
-//		auto next = ++j;
-//
-//		if (next == path.end())
-//			break;
-//
-//		(*i)->removePeopleFromEdge((*next), passengers);
-//
-//		result = true;
-//	}
-//
-//	return result;
-//}
-
 template<class T>
 void Graph<T>::removePeople(vector<Passenger<T>*> passengers)
 {
@@ -1152,19 +869,6 @@ bool Graph<T>::calculatePath(T source, T destination, Driver<T>* driver)
 	this->dijkstraPeopleDistancePath(source, destination, path,
 			passen, driver);
 
-	//driver->setPath(path);
-	//Utili<int>::setPassengersPath(passen, path);
-	///*this->removePeople(passen, path);*/
-	//this->removePeople(passen);
-
-	//driver->updateFreeSpace();
-
-	//postProcessing(driver, path, passen);
-	////this->removePeople(passen, path);
-	//this->removePeople(passen);
-
-	//passen.clear();
-	//path.clear();
 	return true;
 }
 
@@ -1463,7 +1167,6 @@ void Vertex<T>::removePeopleFromEdge(Vertex<T>* vertex,
 	for (unsigned int j = 0; j < this->adj.size(); j++) {
 
 		if (this->adj.at(j).dest->getInfo() == vertex->getInfo()) {
-			//this->adj.at(j).removePeople(passengers.at(k)->getNum());
 
 			if (passenger->getName() == "Adam")
 			{

@@ -1,10 +1,3 @@
-/*
- * Passenger.h
- *
- *  Created on: Mar 22, 2018
- *      Author: gregu
- */
-
 #pragma once
 
 #include <fstream>
@@ -18,7 +11,7 @@ template<class T> class Vertex;
 template<class T>
 class Passenger: public Person {
 	int numPassengers;
-	//int timeLimit; //only being considered if route is deviated from the best found thru Dijsktra
+	int timeLimit; //only being considered if route is deviated from the best found thru Dijsktra
 	list<Vertex<T>*> path;
 	Vertex<T>* source;
 	Vertex<T>* pos;
@@ -43,7 +36,6 @@ public:
 	int getNum();
 	bool writeToFile(ofstream *output);
 	void addToDrivedBy(Vertex<T>* source, Vertex<T>* destination, Driver<T>* driver);
-//	virtual ~Passenger();
 	Vertex<T>* getPos();
 	void setPos(Vertex<T>* pos);
 

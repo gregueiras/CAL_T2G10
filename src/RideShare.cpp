@@ -88,21 +88,16 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 	multimap<T, Driver<T>*, p_less<T>> ordered_drivers;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
-		//cout << "1. " << (*i)->getName() << endl;
 		if (this->graph.calculatePath((*i)->getSource(), (*i)->getDestination(), (*i)))
 			ordered_drivers.insert(pair<int, Driver<int>*>((*i)->getTransportedPassengers(), (*i)));
-		//cout << endl << endl;
 
 		this->resetPassengers();
 
 	}
 	for (auto i = ordered_drivers.begin(); i != ordered_drivers.end(); i++)
 	{
-
-		//cout << "2." << i->second->getName() << endl;
 		i->second->resetValues();
 		this->graph.calculateAndPrintPath(i->second->getSource(), i->second->getDestination(), i->second, true);
-		//cout << endl;
 	}
 }
 
@@ -257,8 +252,7 @@ bool RideShare<T>::PrintDriverInfo(string name, int age)
 			(*i)->printPassengersPickedAt();
 			cout << "Dropped:" << endl;
 			(*i)->printPassengersDroppedAt();
-			cout << "Total number of transported passengers: " << (*i)->getTransportedPassengers() << endl << endl;
-			//cout << (*i)->getCurrentTime().getHour() << ":" << (*i)->getCurrentTime().getMinute() << endl;
+			cout << endl;
 			return true;
 		}
 	}
@@ -320,7 +314,6 @@ bool RideShare<T>::readPassengersFromFile() {
 	input.open(fileName);
 	if (input.is_open()) {
 		while(!input.eof()) {
-			bool invalidP = false;
 			string line, name;
 			int age, num, tl, h, m;
 			T source, destination;
@@ -340,28 +333,8 @@ bool RideShare<T>::readPassengersFromFile() {
 			lineStream.str(line);
 			lineStream >> source;
 			lineStream >> destination;
-			Passenger<T> p;
-			try
-			{
-				p = Passenger<T>(name, age, num, tl, Time(h,m), source, destination);
-			}
-			catch(InvalidAgeException &e)
-			{
-				invalidP = true;
-			}
-			catch(InvalidTimeLimitException &e)
-			{
-				invalidP = true;
-			}
-			catch(InvalidNumberPeopleException &e)
-			{
-				invalidP = true;
-			}
-			/*cout << "Passenger read: *" << name << "* " << age << " " << num << " " << tl << " " << h << " " << m << " " <<
-					source << " " << destination << endl;*/
-			/*this->addPassenger(source, destination, p);*/
-			if (!invalidP)
-				passengers.insert(p);
+			Passenger<T> p = Passenger<T>(name, age, num, tl, Time(h,m), source, destination);
+			passengers.insert(p);
 
 		}
 	} else
@@ -380,7 +353,6 @@ bool RideShare<T>::readDriversFromFile() {
 	input.open(fileName);
 	if (input.is_open()) {
 		while(!input.eof()) {
-			bool invalidD = false;
 			string line, name;
 			int age, cap, tl, h, m;
 			T source, destination;
@@ -400,28 +372,8 @@ bool RideShare<T>::readDriversFromFile() {
 			lineStream.str(line);
 			lineStream >> source;
 			lineStream >> destination;
-			Driver<T> d;
-			try
-			{
-				d = Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
-			}
-			catch(InvalidAgeException &e)
-			{
-				invalidD = true;
-			}
-			catch(InvalidTimeLimitException &e)
-			{
-				invalidD = true;
-			}
-			catch(InvalidCapacityException &e)
-			{
-				invalidD = true;
-			}
-			/*cout << "Driver read: *" << name << "* " << age << " " << cap << " " << tl << " " << h << " " << m << " " <<
-					source << " " << destination << endl;*/
-			//this->addDriver(d);
-			if (!invalidD)
-				drivers.insert(d);
+			Driver<T> d = Driver<T>(source, destination, cap, tl, name, age, Time(h, m));
+			drivers.insert(d);
 		}
 	} else
 		return false;
@@ -464,9 +416,7 @@ void RideShare<T>::setPassengers(unordered_set<Passenger<T>> passengers)
 		this->addPassenger((*i).clone());
 
 	}
-	
-//this->graph.addPeople(this->passengers);
-	
+
 }
 
 template<class T>

@@ -1,17 +1,8 @@
-/*
- * Person.cpp
- */
-
 #include "Person.h"
 
-
-Person::Person(string n, int a): name(n) {
+Person::Person(string n, int a): name(n), age(a) {
 	startTime = Time(0,0);
 	timeLimit = 0;
-	if (a < 18 || a > 70)
-		throw InvalidAgeException();
-	else
-		age = a;
 }
 
 Person::Person(){
@@ -20,14 +11,8 @@ Person::Person(){
 }
 
 Person::Person(string n, int a, int tl, Time st): name(n), startTime(st), currentTime(st){
-	if (tl <= 0)
-		throw InvalidTimeLimitException();
-	else
-		timeLimit = tl;
-	if (a < 18 || a > 70)
-		throw InvalidAgeException();
-	else
-		age = a;
+	timeLimit = tl;
+	age = a;
 }
 
 string Person::getName() const {

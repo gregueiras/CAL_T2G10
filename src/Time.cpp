@@ -1,10 +1,3 @@
-/*
- * Time.cpp
- *
- *  Created on: Mar 25, 2018
- *      Author: gregu
- */
-
 #include "Time.h"
 #include <cmath>
 
@@ -41,7 +34,6 @@ void Time::addMinutes(int minutes)
 }
 
 Time::~Time() {
-	// TODO Auto-generated destructor stub
 }
 
 

@@ -1,10 +1,3 @@
-/*
- * Driver.h
- *
- *  Created on: Mar 22, 2018
- *      Author: gregu
- */
-
 #pragma once
 
 #include <list>

@@ -1,10 +1,3 @@
-/*
- * Time.h
- *
- *  Created on: Mar 25, 2018
- *      Author: gregu
- */
-
 #ifndef SRC_TIME_H_
 #define SRC_TIME_H_
 
