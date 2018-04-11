@@ -1,7 +1,9 @@
-
 #include "menu.h"
 #include <chrono>
 using namespace std;
+
+bool rideShareChanges = false;
+
 
 void cleanfunction()
 {
@@ -106,9 +108,10 @@ void SelectMapMenu(RideShare<int> &rideShare)
 	cout
 	<< "1- Our Custom Map" << endl
 	<< "2- 10x10 Map 6D 12P" << endl
-	<< "3- Quit" << endl
+	<< "3- 20x20 Map 20D 60P" << endl
+	<< "4- Quit" << endl
 	<< "Select one" << endl;
-	switch (getIntInInterval(1, 3))
+	switch (getIntInInterval(1, 4))
 	{
 	case 1:
 		rideShare.setFromFile("rs");
@@ -119,6 +122,10 @@ void SelectMapMenu(RideShare<int> &rideShare)
 		checkConnectivityandViewGraphMenu(rideShare);
 		break;
 	case 3:
+		rideShare.setFromFile("20x20");
+		checkConnectivityandViewGraphMenu(rideShare);
+		break;
+	case 4:
 		cout << "Closing..." << endl;
 		return;
 		break;
@@ -241,6 +248,9 @@ void AddDriverMenu(RideShare<int> &rideShare)
 
 void GenerateRoutesMenu(RideShare<int> &rideShare)
 {
+	if (rideShareChanges) {
+		return SaveFileMenu(rideShare);
+	} 
 	cout
 	<< "1- Calculate routes" << endl
 	<< "2- Go back" << endl
@@ -264,6 +274,21 @@ void GenerateRoutesMenu(RideShare<int> &rideShare)
 	}
 }
 
+void SaveFileMenu(RideShare<int> &rideShare) {
+	cout
+		<< "Do you want to save the changes made?" << endl
+		<< "1 - Yes" << endl
+		<< "2 - No" << endl;
+	
+	switch (getIntInInterval(1, 2))
+	{
+	case 1:
+		rideShare.writeToFile();
+	case 2:
+		rideShareChanges = false;
+		return GenerateRoutesMenu(rideShare);
+	}
+}
 void PrintRouteInformations(RideShare<int> &rideShare)
 {
 	cout
@@ -297,7 +322,7 @@ bool PersonSignUpMenu(string &name, int& age, int&src, int&dest, int&hour, int&m
 	cout << "Name? (first and last) " << endl;
 	getline(cin, name);
 	cout << "Age? " << endl;
-	age = getInt();
+	age = getIntInInterval(18,70);
 	cout << "Starting location? " << endl;
 	src = getInt();
 	if (src == -1) return false;
@@ -324,34 +349,14 @@ void DriverSignUpMenu(RideShare<int> &rideShare)
 	int capacity;
 	int src, dest;
 	int hour, minutes;
-	Driver<int> *driver;
 	cleanfunction();
 	if (!PersonSignUpMenu(name,age,src,dest,hour,minutes,timeLimit)) return AddDriverMenu(rideShare);
 	cout << "Vehicle capacity? " << endl;
 	capacity = getInt();
 	if (capacity == -1) return AddDriverMenu(rideShare);
-	try
-	{
-		driver = new Driver<int>(src,dest,capacity,timeLimit,name,age,Time(hour,minutes));
-	}
-	catch(InvalidAgeException &e)
-	{
-		cout << "Invalid age, the driver has to be at least 18 years old and and at maximum 70 years." << endl;
-		return AddDriverMenu(rideShare);
-
-	}
-	catch(InvalidTimeLimitException &e)
-	{
-		cout << "Invalid time limit" << endl;
-		return AddDriverMenu(rideShare);
-	}
-	catch(InvalidCapacityException &e)
-	{
-		cout << "Invalid capacity." << endl;
-		return AddDriverMenu(rideShare);
-	}
-
+	Driver<int> *driver = new Driver<int>(src,dest,capacity,timeLimit,name,age,Time(hour,minutes));
 	rideShare.addDriver(driver);
+	rideShareChanges = true;
 	GenerateRoutesMenu(rideShare);
 }
 
@@ -365,32 +370,14 @@ void PassengerSignUpMenu(RideShare<int> &rideShare)
 	int numberPeople;
 	int src, dest;
 	int hour, minutes;
-	Passenger<int> *passenger;
 	cleanfunction();
 	if (!PersonSignUpMenu(name,age,src,dest,hour,minutes,timeLimit)) return AddPassengerMenu(rideShare);
 	cout << "Number of people traveling? " << endl;
 	numberPeople = getInt();
 	if (numberPeople == -1) return AddPassengerMenu(rideShare);
-	try
-	{
-		passenger = new Passenger<int>(name,age,numberPeople, timeLimit,Time(hour,minutes),src,dest);
-	}
-	catch(InvalidAgeException &e)
-	{
-		cout << "Invalid age, the passenger has to be at least 18 years old and and at maximum 70 years." << endl;
-		return AddPassengerMenu(rideShare);
-	}
-	catch(InvalidTimeLimitException &e)
-	{
-		cout << "Invalid time limit" << endl;
-		return AddPassengerMenu(rideShare);
-	}
-	catch(InvalidNumberPeopleException &e)
-	{
-		cout << "Invalid number of people." << endl;
-		return AddPassengerMenu(rideShare);
-	}
+	Passenger<int> *passenger = new Passenger<int>(name,age,numberPeople, timeLimit,Time(hour,minutes),src,dest);
 	rideShare.addPassenger(passenger);
+	rideShareChanges = true;
 	AddDriverMenu(rideShare);
 }
 
@@ -413,6 +400,7 @@ void AddVertexSubMenu(RideShare<int> &rideShare)
 		cout << "Invalid location!" << endl;
 		return AddVertexMenu(rideShare);
 	}
+	rideShareChanges = true;
 	AddEdgeMenu(rideShare);
 }
 
@@ -432,6 +420,7 @@ void AddEdgeSubMenu(RideShare<int> &rideShare)
 		cout << "Invalid road!" << endl;
 		return AddEdgeMenu(rideShare);
 	}
+	rideShareChanges = true;
 	AddPassengerMenu(rideShare);
 }
 
