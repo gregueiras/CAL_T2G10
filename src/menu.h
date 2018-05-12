@@ -54,3 +54,11 @@ void DriverOptionsMenu(RideShare<int> &rideShare, string name, int age);
 void PassengerOptionsMenu(RideShare<int> &rideShare, string name, int age);
 
 void SaveFileMenu(RideShare<int> &rideShare);
+
+
+
+void findPatternMenu(RideShare<int> &rideShare);
+
+void findPersonMenu(RideShare<int> &rideShare);
+
+void findStreetMenu(RideShare<int> &rideShare);

@@ -433,4 +433,32 @@ template<class T>
 void RideShare<T>::setName(std::string name) {
 	this->name = name;
 }
+
+template<class T>
+int RideShare<T>::driverkmpMatcher(string name, int age, string pattern)
+{
+	int count;
+	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			count = (*i)->driverKmpMatcher(pattern);
+			break;
+		}
+	}
+	return count;
+}
+
+template<class T>
+void RideShare<T>::drivereditDistance(string name, int age,string pattern, map<string,int> &patternAndDistance)
+{
+	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			(*i)->drivereditDistance(pattern, patternAndDistance);
+			break;
+		}
+	}
+}
 template class RideShare<int>;

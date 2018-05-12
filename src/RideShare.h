@@ -58,6 +58,9 @@ public:
 
 	void setFromFile(std::string name);
 
+	int driverkmpMatcher(string name, int age, string pattern);
+	void drivereditDistance(string name, int age,string pattern,map<string,int> &patternAndDistance);
+
 };
 
 template<class T> struct p_less {

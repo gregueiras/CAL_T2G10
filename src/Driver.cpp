@@ -358,4 +358,35 @@ void Driver<T>::setPassengersDrivedBy() {
 	}
 }
 
+
+
+template<class T>
+int Driver<T>::driverKmpMatcher(string pattern)
+{
+	int count = 0;
+	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
+	{
+		for (auto j : i->second)
+		{
+			kmpMatcher((*j).getName(), pattern);
+			count++;
+		}
+	}
+	return count;
+}
+
+template<class T>
+void Driver<T>::drivereditDistance(string pattern,map<string, int> &patternAndDistance)
+{
+	int distance;
+	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
+	{
+		for (auto j : i->second)
+		{
+			distance = editDistance((*j).getName(), pattern);
+			patternAndDistance.insert(std::make_pair((*j).getName(), distance));
+		}
+	}
+}
+
 template class Driver<int> ;

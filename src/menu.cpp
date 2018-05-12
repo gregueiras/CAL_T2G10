@@ -517,3 +517,77 @@ void PassengerOptionsMenu(RideShare<int> &rideShare, string name, int age)
 	}
 }
 
+void findPatternMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Find passenger" << endl
+	<< "2- Find street" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		findPersonMenu(rideShare);
+		break;
+	case 2:
+		findStreetMenu(rideShare);
+		break;
+	case 3:
+		break;
+	}
+}
+
+
+void findPersonMenu(RideShare<int> &rideShare)
+{
+	map<string,int> patternAndDistance;
+	string pattern;
+	string name;
+	int age;
+	SelectPersonMenu(name,age);
+	cout
+	<< "1- Exact search" << endl
+	<< "2- Approximate search" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		rideShare.driverkmpMatcher(name, age, pattern);
+		break;
+	case 2:
+		rideShare.drivereditDistance(name, age, pattern,patternAndDistance );
+		//imprimir e tal
+		break;
+	case 3:
+		findPatternMenu(rideShare);
+		break;
+	}
+}
+
+void findStreetMenu(RideShare<int> &rideShare)
+{
+	string pattern;
+	string name;
+
+	cout
+	<< "1- Exact search" << endl
+	<< "2- Approximate search" << endl
+	<< "3- Go back" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		//rideShare.streetkmpMatcher(name, age, pattern);
+		break;
+	case 2:
+		//rideShare.streeteditDistance(name, age, pattern,patternAndDistance );
+		//imprimir e tal
+		break;
+	case 3:
+		findPatternMenu(rideShare);
+		break;
+	}
+
+}
+

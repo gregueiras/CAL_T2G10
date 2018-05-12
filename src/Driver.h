@@ -8,6 +8,7 @@
 
 #include "Passenger.h"
 #include "Graph.h"
+#include "matcher.h"
 
 template<class T> class Passenger;
 template<class T> class Vertex;
@@ -84,6 +85,9 @@ public:
 
 	void setPassengersDrivedBy();
 	std::list<Vertex<T>*> getPath() const;
+
+	int driverKmpMatcher(string pattern);
+	void drivereditDistance(string pattern, map<string, int> &patternAndDistance);
 
 };
 
