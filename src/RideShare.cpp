@@ -435,14 +435,14 @@ void RideShare<T>::setName(std::string name) {
 }
 
 template<class T>
-int RideShare<T>::driverkmpMatcher(string name, int age, string pattern)
+int RideShare<T>::driverPassengerkmpMatcher(string name, int age, string pattern)
 {
 	int count;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
-			count = (*i)->driverKmpMatcher(pattern);
+			count = (*i)->driverPassengerKmpMatcher(pattern);
 			break;
 		}
 	}
@@ -450,15 +450,29 @@ int RideShare<T>::driverkmpMatcher(string name, int age, string pattern)
 }
 
 template<class T>
-void RideShare<T>::drivereditDistance(string name, int age,string pattern, map<string,int> &patternAndDistance)
+void RideShare<T>::driverPassengerEditDistance(string name, int age,string pattern, map<string,int> &patternAndDistance)
 {
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
-			(*i)->drivereditDistance(pattern, patternAndDistance);
+			(*i)->driverPassengerEditDistance(pattern, patternAndDistance);
 			break;
 		}
 	}
 }
+
+template<class T>
+void RideShare<T>::getAndPrintDriverPassengerEditDistance(string name, int age, string pattern, int maximumEditDistance)
+{
+	 map<string,int> patternAndDistance;
+	 this->driverPassengerEditDistance(name, age, pattern, patternAndDistance);
+	 for (auto i = patternAndDistance.cbegin(); i != patternAndDistance.cend(); i++)
+	 {
+		 if (i->second <= maximumEditDistance)
+			 cout << "Passenger's name: " << i->first << " - edit distance: " << i->second << endl;
+	 }
+
+}
+
 template class RideShare<int>;

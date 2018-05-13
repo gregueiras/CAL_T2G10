@@ -58,8 +58,9 @@ public:
 
 	void setFromFile(std::string name);
 
-	int driverkmpMatcher(string name, int age, string pattern);
-	void drivereditDistance(string name, int age,string pattern,map<string,int> &patternAndDistance);
+	int driverPassengerkmpMatcher(string name, int age, string pattern);
+	void driverPassengerEditDistance(string name, int age,string pattern,map<string,int> &patternAndDistance);
+	void getAndPrintDriverPassengerEditDistance(string name, int age, string pattern, int maximumEditDistance);
 
 };
 

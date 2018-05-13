@@ -86,8 +86,8 @@ public:
 	void setPassengersDrivedBy();
 	std::list<Vertex<T>*> getPath() const;
 
-	int driverKmpMatcher(string pattern);
-	void drivereditDistance(string pattern, map<string, int> &patternAndDistance);
+	int driverPassengerKmpMatcher(string pattern);
+	void driverPassengerEditDistance(string pattern, map<string, int> &patternAndDistance);
 
 };
 

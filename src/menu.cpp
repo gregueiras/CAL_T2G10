@@ -264,7 +264,8 @@ void GenerateRoutesMenu(RideShare<int> &rideShare)
 		std::chrono::duration<double> elapsed = finish - start;
 
 		std::cout << "Elapsed time: " << elapsed.count() << " s\n";
-		PrintRouteInformations(rideShare);
+		//PrintRouteInformations(rideShare);
+		PrintRouteOrSearchPatternMenu(rideShare);
 		break;
 	}
 	case 2:
@@ -294,7 +295,8 @@ void PrintRouteInformations(RideShare<int> &rideShare)
 	<< "1- All drivers routes information" << endl
 	<< "2- Select Driver" << endl
 	<< "3- Select Passenger" << endl
-	<< "4- Quit" << endl
+	//<< "4- Quit" << endl
+	<< "4- Go back" << endl
 	<< "Select one" << endl;
 	switch (getIntInInterval(1, 4))
 	{
@@ -309,8 +311,9 @@ void PrintRouteInformations(RideShare<int> &rideShare)
 		SelectPassengerMenu(rideShare);
 		break;
 	case 4:
-		cout << "Closing..." << endl;
-		return;
+		//cout << "Closing..." << endl;
+		//return;
+		PrintRouteOrSearchPatternMenu(rideShare);
 		break;
 	}
 
@@ -517,6 +520,57 @@ void PassengerOptionsMenu(RideShare<int> &rideShare, string name, int age)
 	}
 }
 
+
+
+
+void getDriverInfoMenu(string &name, int&age)
+{
+	cleanfunction();
+	cout << "Driver's name? (first and last) " << endl;
+	getline(cin, name);
+	cout << "Driver's age? " << endl;
+	age = getIntInInterval(18,70);
+}
+
+void getStreetNameMenu(string &name)
+{
+	cleanfunction();
+	cout << "What is the street's name?" << endl;
+	getline(cin,name);
+}
+
+void getPassengerNameMenu(string &name)
+{
+	cleanfunction();
+	cout << "What is the passenger's name?" << endl;
+	getline(cin,name);
+}
+
+
+void PrintRouteOrSearchPatternMenu(RideShare<int> &rideShare)
+{
+	cout
+	<< "1- Print route information" << endl
+	<< "2- Search pattern" << endl
+	<< "3- Quit" << endl
+	<< "Select one" << endl;
+	switch (getIntInInterval(1, 3))
+	{
+	case 1:
+		PrintRouteInformations(rideShare);
+		break;
+	case 2:
+		findPatternMenu(rideShare);
+		break;
+	case 3:
+		cout << "Closing..." << endl;
+		return;
+		break;
+	}
+
+}
+
+
 void findPatternMenu(RideShare<int> &rideShare)
 {
 	cout
@@ -533,6 +587,7 @@ void findPatternMenu(RideShare<int> &rideShare)
 		findStreetMenu(rideShare);
 		break;
 	case 3:
+		PrintRouteOrSearchPatternMenu(rideShare);
 		break;
 	}
 }
@@ -540,11 +595,12 @@ void findPatternMenu(RideShare<int> &rideShare)
 
 void findPersonMenu(RideShare<int> &rideShare)
 {
-	map<string,int> patternAndDistance;
 	string pattern;
 	string name;
-	int age;
-	SelectPersonMenu(name,age);
+	int age, found;
+	int maximumEditDistance;
+	getDriverInfoMenu(name,age);
+	getPassengerNameMenu(pattern);
 	cout
 	<< "1- Exact search" << endl
 	<< "2- Approximate search" << endl
@@ -553,11 +609,15 @@ void findPersonMenu(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 3))
 	{
 	case 1:
-		rideShare.driverkmpMatcher(name, age, pattern);
-		break;
+		found = rideShare.driverPassengerkmpMatcher(name, age, pattern);
+		cout << "Found " << found << " occurrence(s) of name " << pattern << "." << endl;
+		findPatternMenu(rideShare);
+ 		break;
 	case 2:
-		rideShare.drivereditDistance(name, age, pattern,patternAndDistance );
-		//imprimir e tal
+		cout << "Maximum edit distance? " << endl;
+		maximumEditDistance = getIntInInterval(1, pattern.length());
+		rideShare.getAndPrintDriverPassengerEditDistance(name, age, pattern, maximumEditDistance);
+		findPatternMenu(rideShare);
 		break;
 	case 3:
 		findPatternMenu(rideShare);
@@ -569,7 +629,9 @@ void findStreetMenu(RideShare<int> &rideShare)
 {
 	string pattern;
 	string name;
-
+	int age;
+	getDriverInfoMenu(name,age);
+	getStreetNameMenu(pattern);
 	cout
 	<< "1- Exact search" << endl
 	<< "2- Approximate search" << endl

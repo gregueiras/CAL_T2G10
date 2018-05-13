@@ -57,8 +57,18 @@ void SaveFileMenu(RideShare<int> &rideShare);
 
 
 
+
+void getDriverInfoMenu(string &name, int&age);
+
+void getStreetNameMenu(string &name);
+
+void getPassengerNameMenu(string &name);
+
+void PrintRouteOrSearchPatternMenu(RideShare<int> &rideShare);
+
 void findPatternMenu(RideShare<int> &rideShare);
 
 void findPersonMenu(RideShare<int> &rideShare);
 
 void findStreetMenu(RideShare<int> &rideShare);
+

@@ -361,22 +361,21 @@ void Driver<T>::setPassengersDrivedBy() {
 
 
 template<class T>
-int Driver<T>::driverKmpMatcher(string pattern)
+int Driver<T>::driverPassengerKmpMatcher(string pattern)
 {
 	int count = 0;
 	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
 	{
 		for (auto j : i->second)
 		{
-			kmpMatcher((*j).getName(), pattern);
-			count++;
+			count += kmpMatcher((*j).getName(), pattern);
 		}
 	}
 	return count;
 }
 
 template<class T>
-void Driver<T>::drivereditDistance(string pattern,map<string, int> &patternAndDistance)
+void Driver<T>::driverPassengerEditDistance(string pattern,map<string, int> &patternAndDistance)
 {
 	int distance;
 	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
