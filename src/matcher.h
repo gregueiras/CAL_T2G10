@@ -20,6 +20,7 @@ int kmpMatcher(string text, string pattern);
 
 int numStringMatching(string filename,string toSearch);
 
+int editDistance1(string pattern, string text);
 
 int editDistance(string pattern, string text);
 

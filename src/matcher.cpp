@@ -85,7 +85,9 @@ T em P, em que as alterações podem ser:
 • substituir um carácter por outro
 • inserir um carácter
 • eliminar um carácter */
-int editDistance(string pattern, string text) {
+
+//Tempo e espaco: O(|P|.|T|)
+int editDistance1(string pattern, string text) {
 	int t = text.length() + 1;
 	int p = pattern.length()+ 1;
 
@@ -111,6 +113,37 @@ int editDistance(string pattern, string text) {
 		}
 	}
 	return D[t-1][p-1];
+}
+
+//Espaco: O(|T|)
+int editDistance(string pattern, string text)
+{
+	int t = text.length()+1;
+	int p = pattern.length()+1;
+	vector<int> D;
+	int old, nw;
+	for (int j = 0; j < t; j++)
+	{
+		D.push_back(j);
+	}
+
+	for (int i = 1; i < p ; i++)
+	{
+		old = D.at(0);
+		D.at(0) = i;
+		for (int j = 1; j < t; j++)
+		{
+			if (pattern[i-1] == text[j-1])
+				nw = old;
+			else
+				nw = 1 + min(min(old,D.at(j)), D.at(j-1));
+
+			old = D.at(j);
+			D.at(j)= nw;
+		}
+	}
+
+	return D.at(t-1);
 }
 
 
