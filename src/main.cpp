@@ -19,7 +19,7 @@ void testDijkstraDistance() {
 
 	cout << "Start\n";
 	Graph<int> myGraph;
-	myGraph.addVertex(0, 10, 10);
+	/*myGraph.addVertex(0, 10, 10);
 	myGraph.addVertex(1, 0, 20);
 	myGraph.addVertex(2, 15, 5);
 	myGraph.addVertex(3, 20, 5);
@@ -53,7 +53,7 @@ void testDijkstraDistance() {
 	myGraph.addEdge(7, 6, 8);
 	myGraph.addEdge(7, 2, 25);
 	myGraph.addEdge(7, 5, 10);
-
+	*/
 
 	list<Vertex<int>*> path;
 	cout << myGraph.dijkstraPath(1, 6, path) << endl;
@@ -67,7 +67,7 @@ void testDijkstraDistance() {
 Graph<int> create_MyGraph()
 {
 	Graph<int> myGraph;
-	myGraph.addVertex(0, 10, 10);
+	/*myGraph.addVertex(0, 10, 10);
 	myGraph.addVertex(1, 0, 20);
 	myGraph.addVertex(2, 15, 5);
 	myGraph.addVertex(3, 20, 5);
@@ -104,7 +104,7 @@ Graph<int> create_MyGraph()
 	myGraph.addEdge(7, 5, 10);
 	//myGraph.addEdge(3, 10, 4);
 	//myGraph.addEdge(10, 3, 4);
-
+	*/
 	myGraph.updateGraphConnectivity();
 	myGraph.printNotConnected();
 
@@ -144,7 +144,7 @@ Graph<int> create_MyGraph()
 Graph<int> create_MyGraphNoPassengers()
 {
 	Graph<int> myGraph;
-	myGraph.addVertex(0, 50, 300);
+	/*myGraph.addVertex(0, 50, 300);
 	myGraph.addVertex(1, 50, 100);
 	myGraph.addVertex(2, 150, 200);
 	myGraph.addVertex(3, 290, 300);
@@ -181,7 +181,7 @@ Graph<int> create_MyGraphNoPassengers()
 	myGraph.addEdge(7, 5, 10);
 	//myGraph.addEdge(3, 10, 4);
 	//myGraph.addEdge(10, 3, 4);
-
+	*/
 //	myGraph.updateGraphConnectivity();
 //	myGraph.printNotConnected();
 

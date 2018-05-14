@@ -409,6 +409,7 @@ void AddVertexSubMenu(RideShare<int> &rideShare)
 void AddEdgeSubMenu(RideShare<int> &rideShare)
 {
 	int source, destination, time;
+	string name;
 	cout << "Source vertex? " << endl;
 	source = getInt();
 	cout << "Destination vertex? " << endl;
@@ -416,8 +417,10 @@ void AddEdgeSubMenu(RideShare<int> &rideShare)
 	cout << "Time between the two vertexes? " << endl;
 	time = getInt();
 	if (time == -1) return AddEdgeMenu(rideShare);
+	cout << "Name of the street?" << endl;
+	getline(cin, name);
 
-	if(!rideShare.addEdge(source,destination,time))
+	if(!rideShare.addEdge(source,destination,time, name))
 	{
 		cout << "Invalid road!" << endl;
 		return AddEdgeMenu(rideShare);
@@ -612,7 +615,7 @@ void findPersonMenu(RideShare<int> &rideShare)
 		found = rideShare.driverPassengerkmpMatcher(name, age, pattern);
 		cout << "Found " << found << " occurrence(s) of name " << pattern << "." << endl;
 		findPatternMenu(rideShare);
- 		break;
+		break;
 	case 2:
 		cout << "Maximum edit distance? " << endl;
 		maximumEditDistance = getIntInInterval(1, pattern.length());
@@ -629,7 +632,8 @@ void findStreetMenu(RideShare<int> &rideShare)
 {
 	string pattern;
 	string name;
-	int age;
+	int age, found;
+	int maximumEditDistance;
 	getDriverInfoMenu(name,age);
 	getStreetNameMenu(pattern);
 	cout
@@ -640,11 +644,15 @@ void findStreetMenu(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 3))
 	{
 	case 1:
-		//rideShare.streetkmpMatcher(name, age, pattern);
+		found = rideShare.streetkmpMatcher(name, age, pattern);
+		cout << "Found " << found << " occurrence(s) of street " << pattern << "." << endl;
+		findPatternMenu(rideShare);
 		break;
 	case 2:
-		//rideShare.streeteditDistance(name, age, pattern,patternAndDistance );
-		//imprimir e tal
+		cout << "Maximum edit distance? " << endl;
+		maximumEditDistance = getIntInInterval(1, pattern.length());
+		rideShare.getAndPrintDriverStreetEditDistance(name, age, pattern, maximumEditDistance);
+		findPatternMenu(rideShare);
 		break;
 	case 3:
 		findPatternMenu(rideShare);

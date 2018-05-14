@@ -27,6 +27,7 @@ class Driver: public Person {
 	std::multimap<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersPickedAt;
 	std::map<Vertex<T>*, std::vector<Passenger<T>*>, ptr_less<T>> passengersDroppedAt;
 	std::list<Vertex<T>*> path;
+	std::list<string> streets;
 
 	void clearPassengersPickedAt();
 	void clearPassengersDroppedAt();
@@ -86,9 +87,19 @@ public:
 	void setPassengersDrivedBy();
 	std::list<Vertex<T>*> getPath() const;
 
+	void setStreets(std::list<string> streets) {
+		this->streets = streets;
+	}
+
+	std::list<string> getStreets() {
+		return this->streets;
+	}
+
 	int driverPassengerKmpMatcher(string pattern);
 	void driverPassengerEditDistance(string pattern, map<string, int> &patternAndDistance);
 
+	int driverStreetKmpMatcher(string pattern);
+	void driverStreetEditDistance(string pattern, map<string, int> &patternAndDistance);
 };
 
 namespace std
