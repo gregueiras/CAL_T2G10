@@ -4,10 +4,6 @@
 #include "matcher.h"
 
 
-using namespace std;
-
-
-
 vector<int> computePrefixFunction(string pattern)
 {
 	int m = pattern.length();
