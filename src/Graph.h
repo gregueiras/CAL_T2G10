@@ -70,8 +70,9 @@ class Vertex {
 	Vertex *previous;
 	int queueIndex = 0;
 	vector<Passenger<T>*> pickedUp;
+	Edge<T> path;
 
-	void addEdge(Vertex<T> *dest, double w);
+	void addEdge(Vertex<T> *dest, double w, string name);
 	void addEdge(Vertex<T> *dest, double w, int p);
 	void addPeopleToEdge(Vertex<T>* vertex, Passenger<T>* passenger);
 	//void getPeopleOnEdge
@@ -130,10 +131,13 @@ class Edge {
 	int numP;
 	vector<Passenger<T>*> waiting;
 	int edgeId;
+	string name;
 public:
 	Edge();
 	Edge(Vertex<T> *d, double w);
 	Edge(Vertex<T> *d, double w, int p);
+	Edge(Vertex<T> *d, double w, string name);
+	Edge(Vertex<T> *d, double w, int p, string name);
 
 	string getVertexName() {
 		return to_string(dest->getInfo());
@@ -169,6 +173,14 @@ public:
 		return waiting;
 	}
 
+	string getName() {
+		return name;
+	}
+
+	void setName(string name) {
+		this->name = name;
+	}
+
 	bool operator<(const Edge<T>& e) const {
 		return this->numP < e.getNumPeople();
 	}
@@ -190,7 +202,7 @@ public:
 	int getNumVertex() const;
 	bool addVertex(const T &in, unsigned long x, unsigned long y);
 	bool removeVertex(const T &in);
-	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addEdge(const T &sourc, const T &dest, double w, string name);
 	bool addEdge(const T &sourc, const T &dest, double w, int p);
 	bool removeEdge(const T &sourc, const T &dest);
 	double dijkstraDistance(T source, T destination);
@@ -239,18 +251,30 @@ Vertex<T>::Vertex(T in, unsigned long x, unsigned long y) : info(in) ,vertexId(+
 
 template<class T>
 Edge<T>::Edge() :
-dest(nullptr), weight(-1), numP(-1), waiting(vector<Passenger<T>*> { }), edgeId(0) {
+dest(nullptr), weight(-1), numP(-1), waiting(vector<Passenger<T>*> { }), edgeId(0), name(""){
 }
 
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w) :
-dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }), edgeId(0) {
+dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }), edgeId(0), name(""){
 }
 
 template<class T>
 Edge<T>::Edge(Vertex<T> *d, double w, int p) :
-dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }), edgeId(0){
+dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }), edgeId(0), name(""){
+}
+
+template<class T>
+ Edge<T>::Edge(Vertex<T>* d, double w, string name) :
+	dest(d), weight(w), numP(0), waiting(vector<Passenger<T>*> { }), edgeId(0) {
+	 this->name = name;
+
+}
+
+template<class T>
+Edge<T>::Edge(Vertex<T>* d, double w, int p, string name) :
+	dest(d), weight(w), numP(p), waiting(vector<Passenger<T>*> { }), edgeId(0), name(name) {
 }
 
 template<class T>
@@ -298,7 +322,7 @@ bool Graph<T>::addVertex(const T &in, unsigned long x, unsigned long y) {
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 template<class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w, string name) {
 	// TODO (6 lines)
 	// HINT: use findVertex to obtain the actual vertices
 	// HINT: use the next function to actually add the edge
@@ -308,7 +332,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	if (tempSrc == nullptr || tempDest == nullptr)
 		return false;
 	else{
-		tempSrc->addEdge(tempDest, w);
+		tempSrc->addEdge(tempDest, w, name);
 		return true;
 	}
 }
@@ -334,9 +358,9 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w, int p) {
  * with a given destination vertex (d) and edge weight (w).
  */
 template<class T>
-void Vertex<T>::addEdge(Vertex<T> *d, double w) {
+void Vertex<T>::addEdge(Vertex<T> *d, double w, string name) {
 	// TODO (1 line)
-	this->adj.push_back(Edge<T>(d, w));
+	this->adj.push_back(Edge<T>(d, w, name));
 }
 
 template<class T>
@@ -529,6 +553,8 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 	driver->resetTravel();
 
+	list<string> streetNames;
+
 	Vertex<T> * ending = nullptr;
 
 	MutablePriorityQueue<Vertex<T>> Q;
@@ -564,6 +590,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 			while (temp->previous != nullptr) 
 			{ //percorre o caminho por ordem reversa
 				path.push_front(temp);
+				streetNames.push_front(temp->path.getName());
 
 				vector<Passenger<T>*> tempPass;
 
@@ -589,6 +616,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 
 			path.push_front(temp);
 			rePath = path;
+			driver->setStreets(streetNames);
 			driver->increaseTransportedPassengers(peopleT);
 			return peopleT;
 
@@ -636,6 +664,7 @@ int Graph<T>::dijkstraPeopleDistancePath(T source, T destination,
 				temp->adj[i].dest->distance = alt;
 				temp->adj[i].dest->time = time;
 				temp->adj[i].dest->previous = temp;
+				temp->adj[i].dest->path = temp->adj[i];
 				temp->adj[i].dest->pickedUp = picked;
 
 				if (temp->adj[i].dest->queueIndex != 0)
@@ -879,6 +908,7 @@ void Graph<T>::calculateAndPrintPath(T source, T destination,Driver<T>* driver, 
 	list<Vertex<int>*> path;
 	list<Vertex<int>*> tpath;
 	vector<Passenger<int>*> passen;
+	
 
 	if (!wasPreProcessed)
 		if (!existsAndHasEnoughTime(source, destination, driver,tpath))
@@ -1071,7 +1101,7 @@ bool Graph<T>::writeToFile(string companyName) {
 }
 
 template<class T>
-bool Graph<T>::readFromFile(string companyName) {
+bool Graph<T>::	readFromFile(string companyName) {
 	string file = companyName + "Graph.txt";
 	string line;
 	ifstream input;
@@ -1105,6 +1135,7 @@ bool Graph<T>::readFromFile(string companyName) {
 			getline(input, line);
 			lineStream.clear();
 			lineStream.str(line);
+			
 			lineStream >> type;
 			if(type == 'V') {
 				lineStream >> source;
@@ -1113,9 +1144,23 @@ bool Graph<T>::readFromFile(string companyName) {
 			T destination;
 			double weight;
 
+
 			lineStream >> destination;
 			lineStream >> weight;
-			this->addEdge(source, destination, weight);
+			
+			string name, s;
+			int count = 0;
+			while (getline(lineStream, s, ' '))
+			{
+				if (count == 1)
+					name += s;
+				else if (count > 1)
+					name += " " + s;
+
+				count++;
+			}
+
+			this->addEdge(source, destination, weight, name);
 		}
 	} else {
 		return false;

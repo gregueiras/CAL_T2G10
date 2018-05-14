@@ -75,6 +75,7 @@ template<class T>
 Driver<T>::Driver(int cap, int lim) : Person("",0,lim, Time(0,0)){
 	this->capacity = cap;
 	this->transportedPassengers = 0;
+	
 }
 
 template<class T>
@@ -385,6 +386,29 @@ void Driver<T>::driverPassengerEditDistance(string pattern,map<string, int> &pat
 			distance = editDistance((*j).getName(), pattern);
 			patternAndDistance.insert(std::make_pair((*j).getName(), distance));
 		}
+	}
+}
+
+template<class T>
+int Driver<T>::driverStreetKmpMatcher(string pattern)
+{
+	int count = 0;
+	for (auto i = this->streets.cbegin(); i != this->streets.cend(); ++i)
+	{
+		count += kmpMatcher((*i), pattern);
+	}
+	return count;
+}
+
+template<class T>
+void Driver<T>::driverStreetEditDistance(string pattern, map<string, int>& patternAndDistance)
+{
+	int distance;
+	for (auto i = this->streets.cbegin(); i != this->streets.cend(); ++i)
+	{
+		distance = editDistance((*i), pattern);
+		patternAndDistance.insert(std::make_pair((*i), distance));
+		
 	}
 }
 

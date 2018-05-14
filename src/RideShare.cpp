@@ -102,9 +102,9 @@ void RideShare<T>::DijkstraPeopleMultipleDrivers()
 }
 
 template<class T>
-bool RideShare<T>::addEdge(const T &sourc, const T &dest, double w)
+bool RideShare<T>::addEdge(const T &sourc, const T &dest, double w, string name)
 {
-	return this->graph.addEdge(sourc,dest,w);
+	return this->graph.addEdge(sourc,dest,w, name);
 }
 
 template<class T>
@@ -437,7 +437,7 @@ void RideShare<T>::setName(std::string name) {
 template<class T>
 int RideShare<T>::driverPassengerkmpMatcher(string name, int age, string pattern)
 {
-	int count;
+	int count = 0;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
@@ -474,5 +474,47 @@ void RideShare<T>::getAndPrintDriverPassengerEditDistance(string name, int age, 
 	 }
 
 }
+
+template<class T>
+int RideShare<T>::streetkmpMatcher(string name, int age, string pattern)
+{
+	int count = 0;
+	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			count = (*i)->driverStreetKmpMatcher(pattern);
+			break;
+		}
+	}
+	return count;
+}
+
+template<class T>
+void RideShare<T>::streetEditDistance(string name, int age, string pattern, map<string, int> &patternAndDistance)
+{
+	for (auto i = drivers.begin(); i != drivers.end(); i++)
+	{
+		if ((*i)->getName() == name && (*i)->getAge() == age)
+		{
+			(*i)->driverStreetEditDistance(pattern, patternAndDistance);
+			break;
+		}
+	}
+}
+
+template<class T>
+void RideShare<T>::getAndPrintDriverStreetEditDistance(string name, int age, string pattern, int maximumEditDistance)
+{
+	map<string, int> patternAndDistance;
+	this->streetEditDistance(name, age, pattern, patternAndDistance);
+	for (auto i = patternAndDistance.cbegin(); i != patternAndDistance.cend(); i++)
+	{
+		if (i->second <= maximumEditDistance)
+			cout << "Street: " << i->first << " - edit distance: " << i->second << endl;
+	}
+
+}
+
 
 template class RideShare<int>;

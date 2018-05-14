@@ -1,35 +1,35 @@
 V 0 50 300
-	E1 20
-	E2 10
-	E3 14
+	E1 20 Rua Joao
+	E2 10 Rua Mana
+	E3 14 Rua FEUP
 V 1 50 100
-	E0 20
-	E2 5
-	E4 5
+	E0 20 Rua Joao
+	E2 5 Rua Jaoja de oaks
+	E4 5 Rua Mlass oasd jasod
 V 2 150 200
-	E0 10
-	E1 5
-	E4 5
-	E3 14
-	E5 20
-	E7 25
+	E0 10 Rua Mana
+	E1 5 Rua Jaoja de oaks
+	E4 5 Rua POAL
+	E3 14 Rua Kia ko
+	E5 20 Rua Pan
+	E7 25 Rua Maior
 V 3 290 300
-	E0 14
-	E2 14
-	E5 8
+	E0 14 Rua FEUP
+	E2 14 Rua Kia ko
+	E5 8 Rua de Cima
 V 4 250 100
-	E1 5
-	E2 5
-	E6 8
+	E1 5 Rua Mlass oasd jasod
+	E2 5 Rua POAL
+	E6 8 Rua da Montanha
 V 5 370 250
-	E2 20
-	E3 8
-	E7 2
+	E2 20 Rua Pan
+	E3 8 Rua de Cima
+	E7 2 Rua de Baixo
 V 6 370 100
-	E4 8
-	E7 8
+	E4 8 Rua da Montanha
+	E7 8 Av. do Vale
 V 7 450 170
-	E6 8
-	E2 25
-	E5 10
+	E6 8 Av. do Vale
+	E2 25 Rua Maior
+	E5 10 Rua de Baixo
 V 9 550 300

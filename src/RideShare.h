@@ -36,7 +36,7 @@ public:
 
 	void DijkstraPeopleMultipleDrivers();
 
-	bool addEdge(const T &sourc, const T &dest, double w);
+	bool addEdge(const T &sourc, const T &dest, double w, string name);
 	bool addVertex(const T &in, unsigned long x, unsigned long y);
 	void checkSelectedMapConnectivity();
 	void graphInit();
@@ -61,6 +61,12 @@ public:
 	int driverPassengerkmpMatcher(string name, int age, string pattern);
 	void driverPassengerEditDistance(string name, int age,string pattern,map<string,int> &patternAndDistance);
 	void getAndPrintDriverPassengerEditDistance(string name, int age, string pattern, int maximumEditDistance);
+
+	int streetkmpMatcher(string name, int age, string pattern);
+
+	void streetEditDistance(string name, int age, string pattern, map<string, int>& patternAndDistance);
+
+	void getAndPrintDriverStreetEditDistance(string name, int age, string pattern, int maximumEditDistance);
 
 };
 
