@@ -95,11 +95,13 @@ public:
 		return this->streets;
 	}
 
-	int driverPassengerKmpMatcher(string pattern);
-	void driverPassengerEditDistance(string pattern, map<string, int> &patternAndDistance);
+	int driverPassengerKmpMatcher(string pattern, vector<string> &names);
 
-	int driverStreetKmpMatcher(string pattern);
-	void driverStreetEditDistance(string pattern, map<string, int> &patternAndDistance);
+	void driverPassengerEditDistance(string pattern, map<string, int> &patternAndDistance, int maximumEditDistance);
+
+	int driverStreetKmpMatcher(string pattern, vector<string> &names);
+
+	void driverStreetEditDistance(string pattern, map<string, int> &patternAndDistance, int maximumEditDistance);
 };
 
 namespace std

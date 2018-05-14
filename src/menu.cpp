@@ -612,8 +612,7 @@ void findPersonMenu(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 3))
 	{
 	case 1:
-		found = rideShare.driverPassengerkmpMatcher(name, age, pattern);
-		cout << "Found " << found << " occurrence(s) of name " << pattern << "." << endl;
+		rideShare.getAndPrintDriverPassengerKmpMatcher(name, age, pattern);
 		findPatternMenu(rideShare);
 		break;
 	case 2:
@@ -644,8 +643,7 @@ void findStreetMenu(RideShare<int> &rideShare)
 	switch (getIntInInterval(1, 3))
 	{
 	case 1:
-		found = rideShare.streetkmpMatcher(name, age, pattern);
-		cout << "Found " << found << " occurrence(s) of street " << pattern << "." << endl;
+		rideShare.getAndPrintStreetKmpMatcher(name,age,pattern);
 		findPatternMenu(rideShare);
 		break;
 	case 2:

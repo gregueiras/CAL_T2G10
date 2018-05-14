@@ -362,21 +362,25 @@ void Driver<T>::setPassengersDrivedBy() {
 
 
 template<class T>
-int Driver<T>::driverPassengerKmpMatcher(string pattern)
+int Driver<T>::driverPassengerKmpMatcher(string pattern, vector<string> &names)
 {
 	int count = 0;
+	int tmp = 0;
 	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
 	{
 		for (auto j : i->second)
 		{
-			count += kmpMatcher((*j).getName(), pattern);
+			tmp = kmpMatcher((*j).getName(), pattern);
+			count += tmp;
+			if (tmp != 0)
+				names.push_back((*j).getName());
 		}
 	}
 	return count;
 }
 
 template<class T>
-void Driver<T>::driverPassengerEditDistance(string pattern,map<string, int> &patternAndDistance)
+void Driver<T>::driverPassengerEditDistance(string pattern,map<string, int> &patternAndDistance, int maximumEditDistance)
 {
 	int distance;
 	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
@@ -384,30 +388,36 @@ void Driver<T>::driverPassengerEditDistance(string pattern,map<string, int> &pat
 		for (auto j : i->second)
 		{
 			distance = editDistance((*j).getName(), pattern);
-			patternAndDistance.insert(std::make_pair((*j).getName(), distance));
+			if (distance <= maximumEditDistance)
+				patternAndDistance.insert(std::make_pair((*j).getName(), distance));
 		}
 	}
 }
 
 template<class T>
-int Driver<T>::driverStreetKmpMatcher(string pattern)
+int Driver<T>::driverStreetKmpMatcher(string pattern, vector<string> &names)
 {
 	int count = 0;
+	int tmp = 0;
 	for (auto i = this->streets.cbegin(); i != this->streets.cend(); ++i)
 	{
-		count += kmpMatcher((*i), pattern);
+		tmp = kmpMatcher((*i), pattern);
+		count += tmp;
+		if (tmp != 0)
+			names.push_back((*i));
 	}
 	return count;
 }
 
 template<class T>
-void Driver<T>::driverStreetEditDistance(string pattern, map<string, int>& patternAndDistance)
+void Driver<T>::driverStreetEditDistance(string pattern, map<string, int>& patternAndDistance, int maximumEditDistance)
 {
 	int distance;
 	for (auto i = this->streets.cbegin(); i != this->streets.cend(); ++i)
 	{
 		distance = editDistance((*i), pattern);
-		patternAndDistance.insert(std::make_pair((*i), distance));
+		if (distance <= maximumEditDistance)
+			patternAndDistance.insert(std::make_pair((*i), distance));
 		
 	}
 }

@@ -435,14 +435,14 @@ void RideShare<T>::setName(std::string name) {
 }
 
 template<class T>
-int RideShare<T>::driverPassengerkmpMatcher(string name, int age, string pattern)
+int RideShare<T>::driverPassengerkmpMatcher(string name, int age, string pattern, vector<string> &names)
 {
-	int count = 0;
+	int count = -1;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
-			count = (*i)->driverPassengerKmpMatcher(pattern);
+			count = (*i)->driverPassengerKmpMatcher(pattern,names);
 			break;
 		}
 	}
@@ -450,13 +450,32 @@ int RideShare<T>::driverPassengerkmpMatcher(string name, int age, string pattern
 }
 
 template<class T>
-void RideShare<T>::driverPassengerEditDistance(string name, int age,string pattern, map<string,int> &patternAndDistance)
+void RideShare<T>::getAndPrintDriverPassengerKmpMatcher(string name, int age, string pattern)
+{
+	vector<string> names;
+	int found = driverPassengerkmpMatcher(name, age, pattern, names);
+	if (found == -1)
+	{
+		cout << "Invalid driver..." << endl;
+		return;
+	}
+
+	cout << "Found " << found << " occurrence(s) of name " << pattern << "." << endl;
+	for (auto i = names.begin(); i != names.end(); i++)
+	{
+		cout << "Name: " << (*i) << endl;
+	}
+
+}
+
+template<class T>
+void RideShare<T>::driverPassengerEditDistance(string name, int age,string pattern, map<string,int> &patternAndDistance, int maximumEditDistance)
 {
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
-			(*i)->driverPassengerEditDistance(pattern, patternAndDistance);
+			(*i)->driverPassengerEditDistance(pattern, patternAndDistance, maximumEditDistance);
 			break;
 		}
 	}
@@ -466,38 +485,57 @@ template<class T>
 void RideShare<T>::getAndPrintDriverPassengerEditDistance(string name, int age, string pattern, int maximumEditDistance)
 {
 	 map<string,int> patternAndDistance;
-	 this->driverPassengerEditDistance(name, age, pattern, patternAndDistance);
+	 this->driverPassengerEditDistance(name, age, pattern, patternAndDistance, maximumEditDistance);
 	 for (auto i = patternAndDistance.cbegin(); i != patternAndDistance.cend(); i++)
 	 {
-		 if (i->second <= maximumEditDistance)
-			 cout << "Passenger's name: " << i->first << " - edit distance: " << i->second << endl;
+		cout << "Passenger's name: " << i->first << " - edit distance: " << i->second << endl;
 	 }
 
 }
 
 template<class T>
-int RideShare<T>::streetkmpMatcher(string name, int age, string pattern)
+int RideShare<T>::streetkmpMatcher(string name, int age, string pattern, vector<string> &names)
 {
-	int count = 0;
+	int count = -1;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
-			count = (*i)->driverStreetKmpMatcher(pattern);
+			count = (*i)->driverStreetKmpMatcher(pattern, names);
 			break;
 		}
 	}
 	return count;
 }
 
+
 template<class T>
-void RideShare<T>::streetEditDistance(string name, int age, string pattern, map<string, int> &patternAndDistance)
+void RideShare<T>::getAndPrintStreetKmpMatcher(string name, int age, string pattern)
+{
+	vector<string> names;
+	int found = streetkmpMatcher(name, age, pattern, names);
+	if (found == -1)
+	{
+		cout << "Invalid driver..." << endl;
+		return;
+	}
+
+	cout << "Found " << found << " occurrence(s) of street " << pattern << "." << endl;
+	for (auto i = names.begin(); i != names.end(); i++)
+	{
+		cout << "Street: " << (*i) << endl;
+	}
+
+}
+
+template<class T>
+void RideShare<T>::streetEditDistance(string name, int age, string pattern, map<string, int> &patternAndDistance, int maximumEditDistance)
 {
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)
 		{
-			(*i)->driverStreetEditDistance(pattern, patternAndDistance);
+			(*i)->driverStreetEditDistance(pattern, patternAndDistance, maximumEditDistance);
 			break;
 		}
 	}
@@ -507,11 +545,10 @@ template<class T>
 void RideShare<T>::getAndPrintDriverStreetEditDistance(string name, int age, string pattern, int maximumEditDistance)
 {
 	map<string, int> patternAndDistance;
-	this->streetEditDistance(name, age, pattern, patternAndDistance);
+	this->streetEditDistance(name, age, pattern, patternAndDistance, maximumEditDistance);
 	for (auto i = patternAndDistance.cbegin(); i != patternAndDistance.cend(); i++)
 	{
-		if (i->second <= maximumEditDistance)
-			cout << "Street: " << i->first << " - edit distance: " << i->second << endl;
+		cout << "Street: " << i->first << " - edit distance: " << i->second << endl;
 	}
 
 }
