@@ -437,7 +437,7 @@ void RideShare<T>::setName(std::string name) {
 template<class T>
 int RideShare<T>::driverPassengerkmpMatcher(string name, int age, string pattern)
 {
-	int count;
+	int count = 0;
 	for (auto i = drivers.begin(); i != drivers.end(); i++)
 	{
 		if ((*i)->getName() == name && (*i)->getAge() == age)

@@ -88,7 +88,7 @@ T em P, em que as alterações podem ser:
 
 //Tempo e espaco: O(|P|.|T|)
 int editDistance1(string pattern, string text) {
-	int t = text.length() + 1;
+/*	int t = text.length() + 1;
 	int p = pattern.length()+ 1;
 
 	int D[t][p];
@@ -113,6 +113,8 @@ int editDistance1(string pattern, string text) {
 		}
 	}
 	return D[t-1][p-1];
+	*/
+	return 0;
 }
 
 //Espaco: O(|T|)
