@@ -425,7 +425,8 @@ bool Vertex<T>::writeVertexToFile(ofstream *output) {
 	if (output->is_open()) {
 		*output << "V " << this->info << " " << this->x << " " << this->y << endl;
 		for(unsigned int i = 0; i < this->adj.size(); ++i) {
-			*output << "\tE" << this->adj.at(i).dest->info << " " << this->adj.at(i).weight << endl;
+			*output << "\tE" << this->adj.at(i).dest->info << " " << this->adj.at(i).weight
+					<< " " << this->adj.at(i).name << endl;
 		}
 	} else
 		return false;
