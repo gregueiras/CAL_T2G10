@@ -25,10 +25,10 @@ vector<int> computePrefixFunction(string pattern)
 
 
 
-int kmpMatcher(string text, string pattern) {
+int kmpMatcher(string text, string pattern, vector<int> pi) {
 	int n = text.length();
 	int m = pattern.length();
-	vector<int> pi =  computePrefixFunction(pattern);
+	//vector<int> pi =  computePrefixFunction(pattern);
 	int q = 0;
 	int count = 0;
 
@@ -57,22 +57,7 @@ int kmpMatcher(string text, string pattern) {
 }
 
 
-int numStringMatching(string filename,string toSearch) {
-	int num = 0;
-	string line;
-	ifstream input;
-	input.open(filename);
-	while (getline(input, line))
-	{
-		num += kmpMatcher(line, toSearch);
-	}
 
-	input.close();
-	return num;
-}
-
-
-//ha um mais eficaz mas ainda nao o implementei
 
 
 /*A distância de edição entre P (pattern string) e T (text string)
@@ -82,36 +67,6 @@ T em P, em que as alterações podem ser:
 • inserir um carácter
 • eliminar um carácter */
 
-//Tempo e espaco: O(|P|.|T|)
-int editDistance1(string pattern, string text) {
-/*	int t = text.length() + 1;
-	int p = pattern.length()+ 1;
-
-	int D[t][p];
-
-	for (int i = 0; i < t ; i++)
-	{
-			D[i][0] = i;
-	}
-	for (int i = 0; i < p; i++)
-	{
-		D[0][i] = i;
-	}
-
-	for (int i = 1; i < t; i++)
-	{
-		for (int j = 1; j < p; j++)
-		{
-			if (pattern[j - 1] == text[i - 1])
-				D[i][j] = D[i - 1][j - 1];
-			else
-				D[i][j] = 1 + min(min(D[i - 1][j - 1], D[i - 1][j]), D[i][j - 1]);
-		}
-	}
-	return D[t-1][p-1];
-	*/
-	return 0;
-}
 
 //Espaco: O(|T|)
 int editDistance(string pattern, string text)
@@ -144,26 +99,3 @@ int editDistance(string pattern, string text)
 	return D.at(t-1);
 }
 
-
-float numApproximateStringMatching(string filename,string toSearch) {
-	int num = 0;
-	int count = 0;
-	string line;
-	ifstream input;
-	input.open(filename);
-
-	while (getline(input, line))
-	{
-	  istringstream iss(line);
-	  string s;
-	  while ( getline( iss, s, ' ' ) )
-	  {
-		num += editDistance(s, toSearch);
-		count ++;
-	  }
-	}
-
-	input.close();
-	float avg = num/(count*1.0);
-	return avg;
-}

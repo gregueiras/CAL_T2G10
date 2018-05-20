@@ -366,11 +366,12 @@ int Driver<T>::driverPassengerKmpMatcher(string pattern, vector<string> &names)
 {
 	int count = 0;
 	int tmp = 0;
+	vector<int> pi =  computePrefixFunction(pattern);
 	for (auto i = this->passengersPickedAt.cbegin(); i != this->passengersPickedAt.cend(); ++i)
 	{
 		for (auto j : i->second)
 		{
-			tmp = kmpMatcher((*j).getName(), pattern);
+			tmp = kmpMatcher((*j).getName(), pattern, pi);
 			count += tmp;
 			if (tmp != 0)
 				names.push_back((*j).getName());
@@ -399,9 +400,10 @@ int Driver<T>::driverStreetKmpMatcher(string pattern, vector<string> &names)
 {
 	int count = 0;
 	int tmp = 0;
+	vector<int> pi =  computePrefixFunction(pattern);
 	for (auto i = this->streets.cbegin(); i != this->streets.cend(); ++i)
 	{
-		tmp = kmpMatcher((*i), pattern);
+		tmp = kmpMatcher((*i), pattern, pi);
 		count += tmp;
 		if (tmp != 0)
 			names.push_back((*i));
