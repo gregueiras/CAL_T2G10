@@ -604,7 +604,7 @@ void findPersonMenu(RideShare<int> &rideShare)
 	int maximumEditDistance;
 	getDriverInfoMenu(name,age);
 	getPassengerNameMenu(pattern);
-	if (pattern == "")
+	if (pattern.length() == 0)
 	{
 		cout << "Invalid Name!" << endl;
 		findPatternMenu(rideShare);
@@ -640,7 +640,7 @@ void findStreetMenu(RideShare<int> &rideShare)
 	int maximumEditDistance;
 	getDriverInfoMenu(name,age);
 	getStreetNameMenu(pattern);
-	if (pattern == "")
+	if (pattern.length() == 0)
 	{
 		cout << "Invalid Street!" << endl;
 		findPatternMenu(rideShare);
