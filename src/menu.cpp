@@ -600,10 +600,15 @@ void findPersonMenu(RideShare<int> &rideShare)
 {
 	string pattern;
 	string name;
-	int age, found;
+	int age;
 	int maximumEditDistance;
 	getDriverInfoMenu(name,age);
 	getPassengerNameMenu(pattern);
+	if (pattern == "")
+	{
+		cout << "Invalid Name!" << endl;
+		findPatternMenu(rideShare);
+	}
 	cout
 	<< "1- Exact search" << endl
 	<< "2- Approximate search" << endl
@@ -617,7 +622,7 @@ void findPersonMenu(RideShare<int> &rideShare)
 		break;
 	case 2:
 		cout << "Maximum edit distance? " << endl;
-		maximumEditDistance = getIntInInterval(1, pattern.length());
+		maximumEditDistance = getIntInInterval(1, pattern.length()-1);
 		rideShare.getAndPrintDriverPassengerEditDistance(name, age, pattern, maximumEditDistance);
 		findPatternMenu(rideShare);
 		break;
@@ -631,10 +636,15 @@ void findStreetMenu(RideShare<int> &rideShare)
 {
 	string pattern;
 	string name;
-	int age, found;
+	int age;
 	int maximumEditDistance;
 	getDriverInfoMenu(name,age);
 	getStreetNameMenu(pattern);
+	if (pattern == "")
+	{
+		cout << "Invalid Street!" << endl;
+		findPatternMenu(rideShare);
+	}
 	cout
 	<< "1- Exact search" << endl
 	<< "2- Approximate search" << endl
@@ -648,7 +658,7 @@ void findStreetMenu(RideShare<int> &rideShare)
 		break;
 	case 2:
 		cout << "Maximum edit distance? " << endl;
-		maximumEditDistance = getIntInInterval(1, pattern.length());
+		maximumEditDistance = getIntInInterval(1, pattern.length()-1);
 		rideShare.getAndPrintDriverStreetEditDistance(name, age, pattern, maximumEditDistance);
 		findPatternMenu(rideShare);
 		break;
